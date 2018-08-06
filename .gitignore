@@ -1,2 +1,4 @@
 secrets.json
 images/
+.bundle/
+vendor/

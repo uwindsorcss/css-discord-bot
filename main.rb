@@ -1,6 +1,7 @@
 require 'discordrb'
 require 'pry'
 require 'json'
+require 'fuzzystringmatch'
 require_relative 'services/discord_message_sender'
 require_relative 'services/building_service'
 
@@ -24,35 +25,48 @@ class Main
   }
 
   bot.command(:whereis) do |event|
-    arg = event.message.content.split(' ')[1]
-    if BuildingService.new.getBuilding(arg)
-      building = arg
-      DiscordMessageSender.new.send_embedded(
+    begin
+      arg = event.message.content.split(' ').drop(1).join(' ')
+      if building = BuildingService.find_building(arg)
+        DiscordMessageSender.send_embedded(
+          event.channel,
+          title: "Building Search",
+          image: Discordrb::Webhooks::EmbedImage.new(url: "#{IMAGE_DIRECTORY_URL}/#{building}.png"),
+          description: BuildingService.get_building_name(building),
+        )
+      elsif arg == "list"
+        building_list = BuildingService.gather_building_list
+        DiscordMessageSender.send_embedded(
+          event.channel,
+          title: "Building List",
+          fields: [
+            Discordrb::Webhooks::EmbedField.new(name: "Codes", value: building_list[:codes], inline: true),
+            Discordrb::Webhooks::EmbedField.new(name: "Full Names", value: building_list[:full_names], inline: true)
+          ],
+        )
+      elsif arg == "help"
+        DiscordMessageSender.send_embedded(
+          event.channel,
+          title: "BuildingBot Help",
+          fields: $commands.each_with_object([]) do |(command, description), fields|
+            fields << Discordrb::Webhooks::EmbedField.new(name: "~whereis #{command}", value: description)
+          end
+        )
+      else
+        DiscordMessageSender.send_embedded(
+          event.channel,
+          title: "Invalid Command",
+          description: "Building or command could not be found. :disappointed:\n\nTry using **~whereis help**",
+        )
+      end
+    rescue RestClient::Exception, RestClient::ExceptionWithResponse
+      DiscordMessageSender.send_embedded(
         event.channel,
-        title: "Building Search",
-        image: Discordrb::Webhooks::EmbedImage.new(url: "#{IMAGE_DIRECTORY_URL}/#{building}.png"),
-        description: BuildingService.new.getBuilding(arg),
-      )
-    elsif arg == "list"
-      building_list = BuildingService.new.gatherBuildingList
-      DiscordMessageSender.new.send_embedded(
-        event.channel,
-        title: "Building List",
-        fields: [
-          Discordrb::Webhooks::EmbedField.new(name: "Codes", value: building_list[:codes], inline: true),
-          Discordrb::Webhooks::EmbedField.new(name: "Full Names", value: building_list[:full_names], inline: true)
-        ],
-      )
-    else
-      DiscordMessageSender.new.send_embedded(
-        event.channel,
-        title: "BuildingBot Help",
-        fields: $commands.each_with_object([]) do |(command, description), fields|
-          fields << Discordrb::Webhooks::EmbedField.new(name: "~whereis #{command}", value: description)
-        end
+        title: ":bangbang: Error",
+        description: "Caught a 400 error from RestClient. Please report this incident to administrator.",
+        thumbnail: nil,
       )
     end
   end
-
   bot.run
 end
