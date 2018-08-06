@@ -4,7 +4,7 @@ class DiscordMessageSender
   IMAGE_DIRECTORY_URL = secrets["image_directory_url"]
   UWINDSOR_THUMBNAIL = Discordrb::Webhooks::EmbedThumbnail.new(url: "#{IMAGE_DIRECTORY_URL}/uw_logo.png")
 
-  def send_embedded(
+  def self.send_embedded(
     channel,
     title: nil,
     description: nil,
