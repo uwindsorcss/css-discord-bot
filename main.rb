@@ -69,4 +69,5 @@ class Main
     end
   end
   bot.run
+  bot.game="~whereis help"
 end
