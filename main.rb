@@ -24,6 +24,10 @@ class Main
     "help" => "returns the help menu"
   }
 
+  bot.ready() do |event|
+    bot.game="~whereis help"
+  end
+
   bot.command(:whereis) do |event|
     begin
       arg = event.message.content.split(' ').drop(1).join(' ')
@@ -69,5 +73,4 @@ class Main
     end
   end
   bot.run
-  bot.game="~whereis help"
 end
