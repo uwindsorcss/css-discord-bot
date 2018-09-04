@@ -72,5 +72,12 @@ class Main
       )
     end
   end
+
+  Bot.command(:whereiskill) do |event|
+    if event.user.nickname = "Eric Pickup"
+      exit
+    end
+  end
+
   bot.run
 end
