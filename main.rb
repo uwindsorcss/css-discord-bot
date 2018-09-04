@@ -73,9 +73,15 @@ class Main
     end
   end
 
-  Bot.command(:whereiskill) do |event|
-    if event.user.nickname = "Eric Pickup"
+  bot.command(:whereiskill) do |event|
+    if event.user.nickname == "Eric Pickup"
       exit
+    end
+  end
+
+  bot.command(:whereispid) do |event|
+    if event.user.nickname == "Eric Pickup"
+      event.user.pm("PID is " + Process.pid)
     end
   end
 
