@@ -73,16 +73,21 @@ class Main
     end
   end
 
-  bot.command(:whereiskill) do |event|
-    if event.user.nickname == "Eric Pickup"
-      exit
-    end
-  end
+  bot.command(:purge) do |event|
+    return if event.server.nil?
+    num_messages = event.message.content.split(' ').drop(1).join(' ').to_i + 1
+    member = event.server.members.find { |member| member.id == event.user.id }
 
-  bot.command(:whereispid) do |event|
-    if event.user.nickname == "Eric Pickup"
-      event.user.pm("PID is " + Process.pid)
-    end
+    if member.permission?(:administrator)
+      if num_messages < 2 || num_messages > 100
+        member.pm("Invalid number of messages, must be between 2 and 100.")
+        return
+      end
+      event.channel.prune(num_messages)
+    else
+      member.pm("You do not have permission to use this command!")
+      event.message.delete
+    end 
   end
 
   bot.run
