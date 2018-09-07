@@ -9,6 +9,7 @@ class BuildingService
     "DB" => "Drama Building",
     "DH" => "Dillon Hall",
     "ED" => "Neal Education Building",
+    "EH" => "Essex Hall",
     "ER" => "Erie Hall",
     "JC" => "Jackman Dramatic Art Centre",
     "LB" => "Ianni Law Building",
