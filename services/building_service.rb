@@ -1,7 +1,6 @@
 class BuildingService
   $buildings = {
     "AC" => "Assumption Chapel",
-    "AR" => "Centre for Automotive Research",
     "BB" => "Biology Building",
     "CE" => "Centre for Engineering Innovation",
     "CN" => "Chrysler Hall North",
