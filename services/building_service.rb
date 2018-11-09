@@ -3,6 +3,7 @@ class BuildingService
     "AC" => "Assumption Chapel",
     "BB" => "Biology Building",
     "CE" => "Centre for Engineering Innovation",
+    "CH" => "Cartier Hall",
     "CN" => "Chrysler Hall North",
     "CS" => "Chrysler Hall South",
     "DB" => "Drama Building",
@@ -15,11 +16,14 @@ class BuildingService
     "LL" => "Leddy Library",
     "LT" => "Lambton Tower",
     "MB" => "O'Neil Medical Education Centre",
+    "MC" => "Macdonald Hall"
     "MH" => "Memorial Hall",
     "MU" => "Music Building",
     "OB" => "Odette Building",
     "TC" => "Toldo Health Education Centre",
     "UC" => "C.A.W. Student Centre",
+    "VH" => "Vanier Hall",
+    "WC" => "Welcome Centre",
     "WL" => "West Library"
   }
 
