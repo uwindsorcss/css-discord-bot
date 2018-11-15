@@ -205,5 +205,13 @@ class Main
     end
   end
 
+
+  bot.message(from: 166185037883113472) do |event|
+    rooch_emoji = event.server.emojis.values.find { |emoji| emoji.name == "rooch" }
+    unless rooch_emoji.nil?
+      event.message.create_reaction(rooch_emoji)
+    end
+  end
+
   bot.run
 end
