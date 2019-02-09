@@ -75,12 +75,8 @@ class Main
 
       # Arguments did not match a command or building
       else
-        DiscordMessageSender.send_embedded(
-          event.channel,
-          title: "Invalid Command or Building",
-          description: ":bangbang: Building or command could not be found."\
-            "\n\nTry using **~whereis list**",
-        )
+        return_error(event.channel, "Building or command could not be found."\
+          "\n\nList of buildings can be found at **~whereis list**")
       end
     end
   end
@@ -92,20 +88,13 @@ class Main
 
     if member.permission?(:administrator)
       if num_messages < 2 || num_messages > 100
-        DiscordMessageSender.send_embedded(
-          member.pm,
-          title: "Invalid Usage",
-          description: ":bangbang: Invalid number of messages to be removed.\n\n Correct usage: `~purge <2-99>`",
-        )
+        return_error(member.pm, "Invalid number of messages to be removed.\n\nCorrect usage: `~purge <2-99>`")
         return
       end
+
       event.channel.prune(num_messages)
     else
-      DiscordMessageSender.send_embedded(
-        member.pm,
-        title: "Insufficient Permissions",
-        description: ":bangbang: You do not have permission to use this command.",
-      )
+      return_error(member.pm, "You do not have permission to use this command.")
       event.message.delete
     end
   end
@@ -114,33 +103,20 @@ class Main
     year = event.message.content.split(' ').drop(1).join(' ').upcase
 
     if command_sent_as_direct_message_to_bot? (event)
-      DiscordMessageSender.send_embedded(
-        event.user.pm,
-        title: "Invalid Usage",
-        description: ":bangbang: Please use this command in the server.",
-      )
+      return_error(event.user.pm, "Please use this command in the server.")
       return
     end
 
     begin
       event.message.delete
     rescue Discordrb::Errors::NoPermission
-      DiscordMessageSender.send_embedded(
-        event.user.pm,
-        title: "Error",
-        description: ":bangbang: Bot has insufficient permissions to delete your command message.",
-      )
     end
 
     server = event.server
     member = server.members.find { |member| member.id == event.user.id }
 
-    if (member.roles.find { |role| role.name.upcase == "VERIFIED" }).nil?
-      DiscordMessageSender.send_embedded(
-        event.user.pm,
-        title: "No Permission",
-        description: ":bangbang: You must be verified to use this command.\n\n Verify using `~verify`",
-      )
+    unless verified_member? (member)
+      return_error(event.user.pm, "You must be verified to use this command!")
       return
     end
 
@@ -154,11 +130,7 @@ class Main
     }
 
     if !(year_roles.include? year)
-      DiscordMessageSender.send_embedded(
-        event.user.pm,
-        title: "Invalid Usage",
-        description: ":bangbang: Invalid option. Please select from: `#{year_roles.keys.to_s}`",
-      )
+      return_error(event.user.pm, "Invalid option. Please select from: `#{year_roles.keys.to_s}`")
       return
     end
 
@@ -175,23 +147,27 @@ class Main
           description: ":white_check_mark: Successfully added your year/status to your profile.",
         )
       rescue Discordrb::Errors::NoPermission
-        DiscordMessageSender.send_embedded(
-          member.pm,
-          title: "Error",
-          description: ":bangbang: Bot has insufficient permissions to modify your roles.",
-        )
+        return_error(member.pm, "Bot has insufficient permissions to modify your roles.")
       end
     else
-      DiscordMessageSender.send_embedded(
-        member.pm,
-        title: "Error",
-        description: ":bangbang: Bot was unable to find the associating role in the server. Please notify admin.",
-      )
+      return_error(member.pm, "Bot was unable to find the associating role in the server. Please notify admin.")
     end
   end
 
   def self.command_sent_as_direct_message_to_bot?(event)
     return event.server.nil?
+  end
+
+  def self.verified_member?(member)
+    member.roles.find { |role| role.name.upcase == "VERIFIED" }
+  end
+
+  def self.return_error(channel, message)
+    DiscordMessageSender.send_embedded(
+      channel,
+      title: "Error",
+      description: ":bangbang: " + message,
+    )
   end
 
   bot.run
