@@ -3,6 +3,7 @@ class BuildingService
     "AC" => "Assumption Chapel",
     "BB" => "Biology Building",
     "CE" => "Centre for Engineering Innovation",
+    "CEI" => "Centre for Engineering Innovation",
     "CH" => "Cartier Hall",
     "CN" => "Chrysler Hall North",
     "CS" => "Chrysler Hall South",
