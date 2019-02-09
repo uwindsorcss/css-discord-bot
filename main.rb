@@ -51,15 +51,9 @@ class Main
 
   bot.command(:whereis) do |event|
     begin
-      arg = event.message.content.split(' ').drop(1).join(' ')
-      if building = BuildingService.find_building(arg)
-        DiscordMessageSender.send_embedded(
-          event.channel,
-          title: "Building Search",
-          image: Discordrb::Webhooks::EmbedImage.new(url: "#{IMAGE_DIRECTORY_URL}/#{building}.png"),
-          description: BuildingService.get_building_name(building),
-        )
-      elsif arg == "list"
+      # Combine every word after 'whereis' for multi-word arguments (e.g. "Erie Hall")
+      args = event.message.content.split(' ').drop(1).join(' ')
+      if args == "list"
         building_list = BuildingService.gather_building_list
         DiscordMessageSender.send_embedded(
           event.channel,
@@ -69,20 +63,25 @@ class Main
             Discordrb::Webhooks::EmbedField.new(name: "Full Names", value: building_list[:full_names], inline: true)
           ],
         )
+
+      # If the argument matches a building
+      elsif building = BuildingService.find_building(args)
+        DiscordMessageSender.send_embedded(
+          event.channel,
+          title: "Building Search",
+          image: Discordrb::Webhooks::EmbedImage.new(url: "#{IMAGE_DIRECTORY_URL}/#{building}.png"),
+          description: BuildingService.get_building_name(building),
+        )
+
+      # Arguments did not match a command or building
       else
         DiscordMessageSender.send_embedded(
           event.channel,
-          title: "Invalid Command",
-          description: "Building or command could not be found. :disappointed:\n\nTry using **~whereis list**",
+          title: "Invalid Command or Building",
+          description: ":bangbang: Building or command could not be found."\
+            "\n\nTry using **~whereis list**",
         )
       end
-    rescue RestClient::Exception, RestClient::ExceptionWithResponse
-      DiscordMessageSender.send_embedded(
-        event.channel,
-        title: ":bangbang: Error",
-        description: "Caught a 400 error from RestClient. Please report this incident to administrator.",
-        thumbnail: nil,
-      )
     end
   end
 
