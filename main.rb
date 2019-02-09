@@ -18,18 +18,6 @@ class Main
   puts "This bot's invite URL is #{bot.invite_url}."
   puts 'Click on it to invite it to your server.'
 
-  $commands = {
-    "~year <1-4, masters, alumni>" => "add your current academic status to your profile.",
-    "~purge <2-99>" => "remove the last `n` messages in channel (**admin only**)",
-    "~verify" => "verify your account",
-    "~help" => "return the help menu"
-  }
-
-  $whereis_commands = {
-    "<buildingName || buildingCode>" => "return the name of building and location on map",
-    "list" => "return the list of all building codes and their associating names",
-  }
-
   bot.ready() do |event|
     bot.game="~help"
   end
@@ -38,21 +26,19 @@ class Main
     fields = []
     fields << Discordrb::Webhooks::EmbedField.new(
       name: "General Commands",
-      value: $commands.each_with_object("") do |(command, description), commands_string|
-        commands_string << "**`#{command}`** - #{description}\n"
-      end + "\n\u200B"
+      value:
+        "**`~year <1-4, masters, alumni>`** - add your current academic status to your profile.\n"\
+        "**`~purge <2-99>`** - remove the last `n` messages in channel (**admin only**)\n"\
+        "**`~verify`** - verify your account\n"\
+        "**`~help`** - return the help menu\n"\
+        "\n\u200B"
     )
 
     fields << Discordrb::Webhooks::EmbedField.new(
       name: "Building Search Commands",
-      value: $whereis_commands.each_with_object("") do |(command, description), commands_string|
-        commands_string << "**`~whereis #{command}`** - #{description}\n"
-      end + "\n\u200B"
-    )
-
-    fields << Discordrb::Webhooks::EmbedField.new(
-      name: "Course Search Commands",
-      value: "**`~course -h`** - return the help menu for course searching\n"
+      value:
+        "**`~whereis <buildingName || buildingCode>`** - return building details and location on map\n"\
+        "**`~whereis list`** - return the list of all building codes and their associating names\n"
     )
 
     DiscordMessageSender.send_embedded(
