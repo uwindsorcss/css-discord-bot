@@ -6,12 +6,12 @@ require_relative 'services/discord_message_sender'
 require_relative 'services/building_service'
 
 class Main
-  secrets = JSON.parse(File.read('secrets.json'))
-  IMAGE_DIRECTORY_URL = secrets["image_directory_url"]
+  SECRETS = JSON.parse(File.read('secrets.json'))
+  IMAGE_DIRECTORY_URL = SECRETS["image_directory_url"]
 
   bot = Discordrb::Commands::CommandBot.new(
-    token: secrets["api_token"],
-    client_id: secrets["api_client_id"],
+    token: SECRETS["api_token"],
+    client_id: SECRETS["api_client_id"],
     prefix: '~',
   )
 
@@ -122,7 +122,7 @@ class Main
         description: ":bangbang: You do not have permission to use this command.",
       )
       event.message.delete
-    end 
+    end
   end
 
   bot.command(:year) do |event|
