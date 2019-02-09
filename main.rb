@@ -86,7 +86,7 @@ class Main
   end
 
   bot.command(:purge) do |event|
-    return if event.server.nil?
+    return if command_sent_as_direct_message_to_bot? (event)
     num_messages = event.message.content.split(' ').drop(1).join(' ').to_i + 1
     member = event.server.members.find { |member| member.id == event.user.id }
 
@@ -113,7 +113,7 @@ class Main
   bot.command(:year) do |event|
     year = event.message.content.split(' ').drop(1).join(' ').upcase
 
-    if event.server.nil?
+    if command_sent_as_direct_message_to_bot? (event)
       DiscordMessageSender.send_embedded(
         event.user.pm,
         title: "Invalid Usage",
@@ -188,6 +188,10 @@ class Main
         description: ":bangbang: Bot was unable to find the associating role in the server. Please notify admin.",
       )
     end
+  end
+
+  def self.command_sent_as_direct_message_to_bot?(event)
+    return event.server.nil?
   end
 
   bot.run
