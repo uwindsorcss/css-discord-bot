@@ -65,12 +65,12 @@ class Main
         )
 
       # If the argument matches a building
-      elsif building = BuildingService.find_building(args)
+      elsif building_code = BuildingService.find_building(args)
         DiscordMessageSender.send_embedded(
           event.channel,
           title: "Building Search",
-          image: Discordrb::Webhooks::EmbedImage.new(url: "#{IMAGE_DIRECTORY_URL}/#{building}.png"),
-          description: BuildingService.get_building_name(building),
+          image: Discordrb::Webhooks::EmbedImage.new(url: "#{IMAGE_DIRECTORY_URL}/#{building_code}.png"),
+          description: BuildingService.get_building_name(building_code) + " (#{building_code})",
         )
 
       # Arguments did not match a command or building
