@@ -15,9 +15,6 @@ class Main
     prefix: '~',
   )
 
-  puts "This bot's invite URL is #{bot.invite_url}."
-  puts 'Click on it to invite it to your server.'
-
   bot.ready() do |event|
     bot.game="~help"
   end
@@ -83,35 +80,30 @@ class Main
 
   bot.command(:purge) do |event|
     return if command_sent_as_direct_message_to_bot? (event)
-    num_messages = event.message.content.split(' ').drop(1).join(' ').to_i + 1
+
+    # Number of messages is the command argument + 1 to delete command message itself
+    num_messages = event.message.content.split(' ')[1].to_i + 1
     member = event.server.members.find { |member| member.id == event.user.id }
 
-    if member.permission?(:administrator)
-      if num_messages < 2 || num_messages > 100
-        return_error(member.pm, "Invalid number of messages to be removed.\n\nCorrect usage: `~purge <2-99>`")
-        return
-      end
-
-      event.channel.prune(num_messages)
-    else
-      return_error(member.pm, "You do not have permission to use this command.")
-      event.message.delete
-    end
-  end
-
-  bot.command(:year) do |event|
-    year = event.message.content.split(' ').drop(1).join(' ').upcase
-
-    if command_sent_as_direct_message_to_bot? (event)
-      return_error(event.user.pm, "Please use this command in the server.")
+    if num_messages < 2 || num_messages > 100
+      return_error(member.pm, "Invalid number of messages to be removed.\n\nCorrect usage: `~purge <2-99>`")
       return
     end
 
-    begin
-      event.message.delete
-    rescue Discordrb::Errors::NoPermission
+    unless member.permission?(:administrator)
+      return_error(member.pm, "You do not have permission to use this command.")
+      return
     end
 
+    event.channel.prune(num_messages)
+  end
+
+  bot.command(:year) do |event|
+    return if command_sent_as_direct_message_to_bot? (event)
+
+    event.message.delete
+
+    year = event.message.content.split(' ').drop(1).join(' ').upcase
     server = event.server
     member = server.members.find { |member| member.id == event.user.id }
 
@@ -155,7 +147,11 @@ class Main
   end
 
   def self.command_sent_as_direct_message_to_bot?(event)
-    return event.server.nil?
+    if event.server.nil?
+      return_error(event.user.pm, "This command can only be used in the Discord server.")
+      return true
+    end
+    return false
   end
 
   def self.verified_member?(member)
@@ -170,5 +166,7 @@ class Main
     )
   end
 
+  puts "This bot's invite URL is #{bot.invite_url}."
+  puts 'Click on it to invite it to your server.'
   bot.run
 end
