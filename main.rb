@@ -26,7 +26,6 @@ class Main
       value:
         "**`~year <1-4, masters, alumni>`** - add your current academic status to your profile.\n"\
         "**`~purge <2-99>`** - remove the last `n` messages in channel (**admin only**)\n"\
-        "**`~verify`** - verify your account\n"\
         "**`~help`** - return the help menu\n"\
         "\n\u200B"
     )
@@ -107,11 +106,6 @@ class Main
     server = event.server
     member = server.members.find { |member| member.id == event.user.id }
 
-    unless verified_member? (member)
-      return_error(event.user.pm, "You must be verified to use this command!")
-      return
-    end
-
     year_roles = {
       "1" => server.roles.find { |role| role.name == "1st Year"},
       "2" => server.roles.find { |role| role.name == "2nd Year"},
@@ -152,10 +146,6 @@ class Main
       return true
     end
     return false
-  end
-
-  def self.verified_member?(member)
-    member.roles.find { |role| role.name.upcase == "VERIFIED" }
   end
 
   def self.return_error(channel, message)
