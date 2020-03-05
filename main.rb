@@ -8,6 +8,7 @@ require_relative 'services/building_service'
 class Main
   SECRETS = JSON.parse(File.read('secrets.json'))
   IMAGE_DIRECTORY_URL = SECRETS["image_directory_url"]
+  LATEX_DIRECTORY_URL = SECRETS["latex_directory_url"]
 
   bot = Discordrb::Commands::CommandBot.new(
     token: SECRETS["api_token"],
@@ -44,6 +45,28 @@ class Main
       fields: fields,
     )
   end
+
+  #run when command is ~latex
+  bot.command(:latex) do |event|
+    begin
+      # Combine every word after 'latex' for multi word arguments (eg \frac{23 a}{32} )
+      args = event.message.content.split(' ').drop(1).join(' ')
+
+      # Clean for escaped latex characters
+      cleanArgs = LatexService.sanitize(event.message.content.split)
+
+      if LatexService.render(cleanArgs)
+
+
+      else
+
+      end
+
+      LatexService.cleanup
+
+
+
+    end
 
   bot.command(:whereis) do |event|
     begin
