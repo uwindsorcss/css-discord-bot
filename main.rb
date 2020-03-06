@@ -8,7 +8,7 @@ require_relative 'services/building_service'
 class Main
   SECRETS = JSON.parse(File.read('secrets.json'))
   IMAGE_DIRECTORY_URL = SECRETS["image_directory_url"]
-  LATEX_DIRECTORY_URL = SECRETS["latex_directory_url"]
+  LATEX_DIRECTORY_RELATIVE_PATH = "./LatexImages/"
 
   bot = Discordrb::Commands::CommandBot.new(
     token: SECRETS["api_token"],
@@ -53,19 +53,15 @@ class Main
       args = event.message.content.split(' ').drop(1).join(' ')
 
       # Clean for escaped latex characters
-      cleanArgs = LatexService.sanitize(event.message.content.split)
+      cleanArgs = LatexService.sanitize(args)
 
       if LatexService.render(cleanArgs)
-
-
+        event.send_file(File.open('formula.png', 'r'))
       else
-
+        return_error(event.channel, "Formula Didnt Compile")
       end
 
       LatexService.cleanup
-
-
-
     end
 
   bot.command(:whereis) do |event|
