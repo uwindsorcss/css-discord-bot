@@ -4,6 +4,7 @@ require 'json'
 require 'fuzzystringmatch'
 require_relative 'services/discord_message_sender'
 require_relative 'services/building_service'
+require_relative 'services/latex_service'
 
 class Main
   SECRETS = JSON.parse(File.read('secrets.json'))
@@ -46,23 +47,25 @@ class Main
     )
   end
 
-  #run when command is ~latex
+  # run when command is ~latex
   bot.command(:latex) do |event|
     begin
       # Combine every word after 'latex' for multi word arguments (eg \frac{23 a}{32} )
       args = event.message.content.split(' ').drop(1).join(' ')
+      puts args
 
       # Clean for escaped latex characters
-      cleanArgs = LatexService.sanitize(args)
+      clean_args = LatexService.sanitize(args)
 
-      if LatexService.render(cleanArgs)
+      if LatexService.render(clean_args)
         event.send_file(File.open('formula.png', 'r'))
       else
-        return_error(event.channel, "Formula Didnt Compile")
+        return_error(event.channel, 'Formula Didnt Compile')
       end
 
-      LatexService.cleanup
+      # LatexService.cleanup
     end
+  end
 
   bot.command(:whereis) do |event|
     begin
