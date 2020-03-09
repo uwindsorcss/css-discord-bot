@@ -29,7 +29,7 @@ class LatexService
     template = File.read(File.join(path, 'template.tex'))
 
     # changing the file template and writing it to a new file
-    File.open(File.join(path, file + '.tex'), 'w'){ |outfile|
+    File.open(File.join(path, file + '.tex'), 'w') { |outfile|
       outfile.puts template.gsub('__DATA__', message)
     }
   end
