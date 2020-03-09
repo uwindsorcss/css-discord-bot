@@ -41,11 +41,9 @@ class LatexService
   def self.cleanup(path, file)
     # these are the files that are created
     file_endings = ['.aux', '.log', '.dvi', '.png', '.tex']
-    file_endings.each{ |fending|
-      if File.exist?(File.join(path, file + fending))
-        File.delete(File.join(path, file + fending))
-      end
-    }
+    file_endings.each do |fending|
+        File.delete(File.join(path, file + fending)) if File.exist? (File.join(path, file + fending))
+    end
     #have to return nil or something will be send as a message
     nil
   end
