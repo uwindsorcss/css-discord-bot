@@ -57,9 +57,9 @@ class LatexService
     # \\ is obvious
     # " could cause an escape of the latex function
     res_chars = ['$', '\\', '"']
-    res_chars.each{ |res|
+    res_chars.each do |res|
       message = message.gsub(res, "\\#{res}")
-    }
+    end
     message
   end
 end
