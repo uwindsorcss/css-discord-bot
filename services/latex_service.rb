@@ -3,9 +3,7 @@ class LatexService
   # renders the message
   def self.render?(message, path, file)
     # stripping it so you cant just put in one letter or a string of backslashs
-    if message.strip.length == 1 || message.strip == '\\' * message.length
-      return false
-    end
+   return false if message.strip.length == 1 || message.strip == '\\' * message.length
 
     write2file(message, path, file)
 
