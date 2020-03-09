@@ -62,5 +62,4 @@ class LatexService
     }
     message
   end
-
 end
