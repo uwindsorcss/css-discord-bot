@@ -11,7 +11,6 @@ class LatexService
     # put output into /dev/null gets rid of output
     did_comp = system("latex -interaction=nonstopmode -output-directory=#{path} #{File.join(path, file)}.tex >>/dev/null")
 
-
     # changes the .dvi to .png 
     # -q* makes it quiet
     # -D is resolution or "density" 
