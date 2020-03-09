@@ -9,7 +9,7 @@ require_relative 'services/latex_service'
 class Main
   SECRETS = JSON.parse(File.read('secrets.json'))
   IMAGE_DIRECTORY_URL = SECRETS["image_directory_url"]
-  LATEX_DIRECTORY_RELATIVE_PATH = "./LatexImages/"
+  LATEX_DIRECTORY_RELATIVE_PATH = "latex"
 
   bot = Discordrb::Commands::CommandBot.new(
     token: SECRETS["api_token"],
@@ -28,6 +28,7 @@ class Main
       value:
         "**`~year <1-4, masters, alumni>`** - add your current academic status to your profile.\n"\
         "**`~purge <2-99>`** - remove the last `n` messages in channel (**admin only**)\n"\
+        "**`~latex <latex command>`** - write latex in Mathmode to get a rendered image.\n"\
         "**`~help`** - return the help menu\n"\
         "\n\u200B"
     )
@@ -52,18 +53,21 @@ class Main
     begin
       # Combine every word after 'latex' for multi word arguments (eg \frac{23 a}{32} )
       args = event.message.content.split(' ').drop(1).join(' ')
-      puts args
 
       # Clean for escaped latex characters
       clean_args = LatexService.sanitize(args)
 
-      if LatexService.render(clean_args)
-        event.send_file(File.open('formula.png', 'r'))
+      # if it renders properly then send the image
+      # else return error
+      if LatexService.render?(clean_args, LATEX_DIRECTORY_RELATIVE_PATH, 'formula')
+        event.send_file(File.open(File.join(LATEX_DIRECTORY_RELATIVE_PATH, 'formula.png'), 'r'))
       else
         return_error(event.channel, 'Formula Didnt Compile')
       end
 
-      # LatexService.cleanup
+      # delete the files created
+      LatexService.cleanup(LATEX_DIRECTORY_RELATIVE_PATH, 'formula')
+
     end
   end
 

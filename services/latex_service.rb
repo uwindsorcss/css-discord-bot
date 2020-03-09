@@ -1,41 +1,53 @@
 class LatexService
 
-=begin
-  def self.render(message)
-    if message.strip.length == 1 or message.strip == '\\' * message.length
-      return false
-    end
-    # first runs pdflatex on a function called formula
-    # then run convert(from imagemagick) to convert to png
-    #system("pdflatex -interaction=nonstopmode \"\\def\\formula{ #{message} }\\input{formula.tex}\" >>/dev/null") && system("convert -density 300 formula.pdf -alpha off -quality 90 +profile \"*\" formula.png")
-    system("pdflatex \"\\def\\formula{ #{message} }\\input{formula.tex}\" ") and system("convert -density 300 formula.pdf -alpha off -quality 90 +profile \"*\" formula.png")
-
-  end
-=end
-
-  def self.render(message, path, file)
+  # renders the message
+  def self.render?(message, path, file)
     # stripping it so you cant just put in one letter or a string of backslashs
     if message.strip.length == 1 || message.strip == '\\' * message.length
       return false
     end
 
+    write2file(message, path, file)
+
+    # latex in nonstopmode so if error it just quits
+    # put output into /dev/null gets rid of output
+    did_comp = system("latex -interaction=nonstopmode -output-directory=#{path} #{File.join(path, file)}.tex >>/dev/null")
+
+
+    # changes the .dvi to .png 
+    # -q* makes it quiet
+    # -D is resolution or "density" 
+    # -T is image size
+    # -o is output file
+    if did_comp
+      system("dvipng -q* -D 300 -T tight #{File.join(path, file)}.dvi -o #{File.join(path, file)}.png")
+    else 
+      return false
+    end
+  end
+
+  # writes the message to the file
+  def self.write2file(message, path, file)
     # reading the template file
     template = File.read(File.join(path, 'template.tex'))
 
+    # changing the file template and writing it to a new file
     File.open(File.join(path, file + '.tex'), 'w'){ |outfile|
-      changed = template.gsub('__DATA__', message)
-      outfile.puts changed
+      outfile.puts template.gsub('__DATA__', message)
     }
-    true
   end
 
   # deletes the extra files
   def self.cleanup(path, file)
     # these are the files that are created
-    file_endings = ['.aux', '.log', '.pdf', '.png', '.tex']
+    file_endings = ['.aux', '.log', '.dvi', '.png', '.tex']
     file_endings.each{ |fending|
-      File.delete(path + file + fending) if File.exist?(path + file + fending)
+      if File.exist?(File.join(path, file + fending))
+        File.delete(File.join(path, file + fending))
+      end
     }
+    #have to return nil or something will be send as a message
+    nil
   end
 
   # sanitizes the message by putting a backslash in front of some chars
