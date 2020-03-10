@@ -3,7 +3,11 @@ class LatexService
   # renders the message
   def self.render?(message, path, file)
     # stripping it so you cant just put in one letter or a string of backslashs
+<<<<<<< HEAD
     return false if message.strip.length == 1 || message.strip == '\\' * message.length
+=======
+   return false if message.strip.length == 1 || message.strip == '\\' * message.length
+>>>>>>> 9861d06aaad795c8bde63e4d6c0a0ecb23f17c9b
 
     write2file(message, path, file)
 
@@ -29,7 +33,7 @@ class LatexService
     template = File.read(File.join(path, 'template.tex'))
 
     # changing the file template and writing it to a new file
-    File.open(File.join(path, file + '.tex'), 'w'){ |outfile|
+    File.open(File.join(path, file + '.tex'), 'w') { |outfile|
       outfile.puts template.gsub('__DATA__', message)
     }
   end
@@ -39,8 +43,13 @@ class LatexService
     # these are the files that are created
     file_endings = ['.aux', '.log', '.dvi', '.png', '.tex']
     file_endings.each do |fending|
+<<<<<<< HEAD
       File.delete(File.join(path, file + fending)) if File.exist?(File.join(path, file + fending))
     end 
+=======
+        File.delete(File.join(path, file + fending)) if File.exist? (File.join(path, file + fending))
+    end
+>>>>>>> 9861d06aaad795c8bde63e4d6c0a0ecb23f17c9b
     #have to return nil or something will be send as a message
     nil
   end

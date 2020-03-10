@@ -67,7 +67,6 @@ class Main
 
       # delete the files created
       LatexService.cleanup(LATEX_DIRECTORY_RELATIVE_PATH, 'formula')
-
     end
   end
 
