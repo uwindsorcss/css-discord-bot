@@ -3,7 +3,7 @@ class LatexService
   # renders the message
   def self.render?(message, path, file)
     # stripping it so you cant just put in one letter or a string of backslashs
-   return false if message.strip.length == 1 || message.strip == '\\' * message.length
+    return false if message.strip.length == 1 || message.strip == '\\' * message.length
 
     write2file(message, path, file)
 
@@ -17,8 +17,8 @@ class LatexService
     # -T is image size
     # -o is output file
     if did_comp
-      system("dvipng -q* -D 300 -T tight #{File.join(path, file)}.dvi -o #{File.join(path, file)}.png")
-    else 
+      system("convert -density 300 -flatten #{File.join(path, file)}.dvi #{File.join(path, file)}.png >>/dev/null")
+    else
       return false
     end
   end
@@ -29,9 +29,9 @@ class LatexService
     template = File.read(File.join(path, 'template.tex'))
 
     # changing the file template and writing it to a new file
-    File.open(File.join(path, file + '.tex'), 'w') { |outfile|
+    File.open(File.join(path, file + '.tex'), 'w') do |outfile|
       outfile.puts template.gsub('__DATA__', message)
-    }
+    end
   end
 
   # deletes the extra files
@@ -41,7 +41,7 @@ class LatexService
     file_endings.each do |fending|
         File.delete(File.join(path, file + fending)) if File.exist? (File.join(path, file + fending))
     end
-    #have to return nil or something will be send as a message
+    # have to return nil or something will be send as a message
     nil
   end
 
