@@ -16,11 +16,8 @@ class LatexService
     # -D is resolution or "density" 
     # -T is image size
     # -o is output file
-    if did_comp
-      system("convert -density 300 -flatten #{File.join(path, file)}.dvi #{File.join(path, file)}.png >>/dev/null")
-    else
-      return false
-    end
+    return false unless did_comp
+    system("convert -density 300 -flatten #{File.join(path, file)}.dvi #{File.join(path, file)}.png >>/dev/null")
   end
 
   # writes the message to the file
