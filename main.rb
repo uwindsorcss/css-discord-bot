@@ -10,7 +10,8 @@ class Main
   SECRETS = JSON.parse(File.read('secrets.json'))
   IMAGE_DIRECTORY_URL = SECRETS["image_directory_url"]
   LATEX_DIRECTORY_RELATIVE_PATH = "latex"
-  MAJID_USER_ID = 491425577027371038
+  MAJID_USER_ID = 250814060419874816
+  BOT_USER_ID = 543916809607315487
 
   bot = Discordrb::Commands::CommandBot.new(
     token: SECRETS["api_token"],
@@ -123,18 +124,27 @@ class Main
     event.channel.prune(num_messages)
   end
 
+  bot.reaction_add do |event|
+    return if event.user.id == BOT_USER_ID || event.message.user.id != MAJID_USER_ID
+    event.message.reactions.each do |emoji, reaction|
+      if reaction.me
+        event.message.delete_reaction(bot.profile, emoji)
+      end
+    end
+  end
+
   bot.message(from: MAJID_USER_ID) do |event|
     server = event.server
 
     dirtymaj = find_emoji("dirtymaj", server)
-    bowl = find_emoji("bowl_with_spoon", server)
-    bat = find_emoji("bat", server)
-    pinching_hand = find_emoji("pinching_hand", server)
-    eggplant = find_emoji("eggplant", server)
-    yum = find_emoji("yum", server)
-    yawn = find_emoji("yawning_face", server)
-    china = find_emoji("flag_cn", server)
-    one = find_emoji("one", server)
+    bowl = "🥣"
+    bat = "🦇"
+    pinching_hand = "🤏"
+    eggplant = "🍆"
+    yum = "😋"
+    yawn = "🥱"
+    china = "🇨🇳"
+    one = "1️⃣"
 
     emoji_combos = [
       [dirtymaj],
@@ -192,7 +202,7 @@ class Main
   end
 
   def self.find_emoji(emoji_string, server)
-    server.emojis.find { |emoji| emoji.name == emoji_string }
+    server.emojis.find { |_, emoji| emoji.name == emoji_string }[1]
   end
 
   def self.command_sent_as_direct_message_to_bot?(event)
