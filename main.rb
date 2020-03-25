@@ -10,6 +10,7 @@ class Main
   SECRETS = JSON.parse(File.read('secrets.json'))
   IMAGE_DIRECTORY_URL = SECRETS["image_directory_url"]
   LATEX_DIRECTORY_RELATIVE_PATH = "latex"
+  MAJID_USER_ID = 491425577027371038
 
   bot = Discordrb::Commands::CommandBot.new(
     token: SECRETS["api_token"],
@@ -122,6 +123,31 @@ class Main
     event.channel.prune(num_messages)
   end
 
+  bot.message(from: MAJID_USER_ID) do |event|
+    server = event.server
+
+    dirtymaj = find_emoji("dirtymaj", server)
+    bowl = find_emoji("bowl_with_spoon", server)
+    bat = find_emoji("bat", server)
+    pinching_hand = find_emoji("pinching_hand", server)
+    eggplant = find_emoji("eggplant", server)
+    yum = find_emoji("yum", server)
+    yawn = find_emoji("yawning_face", server)
+    china = find_emoji("flag_cn", server)
+    one = find_emoji("one", server)
+
+    emoji_combos = [
+      [dirtymaj],
+      [bowl, bat, yum],
+      [pinching_hand, eggplant],
+      [yawn],
+      [china, one]
+    ]
+
+    emoji_combo = emoji_combos.sample
+    emoji_combo.each { |emoji| event.message.create_reaction(emoji) } if [true, false, false].sample
+  end
+
   bot.command(:year) do |event|
     return if command_sent_as_direct_message_to_bot? (event)
 
@@ -163,6 +189,10 @@ class Main
     else
       return_error(member.pm, "Bot was unable to find the associating role in the server. Please notify admin.")
     end
+  end
+
+  def self.find_emoji(emoji_string, server)
+    server.emojis.find { |emoji| emoji.name == emoji_string }
   end
 
   def self.command_sent_as_direct_message_to_bot?(event)
