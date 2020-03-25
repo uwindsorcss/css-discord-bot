@@ -10,8 +10,8 @@ class Main
   SECRETS = JSON.parse(File.read('secrets.json'))
   IMAGE_DIRECTORY_URL = SECRETS["image_directory_url"]
   LATEX_DIRECTORY_RELATIVE_PATH = "latex"
-  MAJID_USER_ID = 250814060419874816
-  BOT_USER_ID = 543916809607315487
+  MAJID_USER_ID = 491425577027371038
+  BOT_USER_ID = 468629052643868673
 
   bot = Discordrb::Commands::CommandBot.new(
     token: SECRETS["api_token"],
