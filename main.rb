@@ -124,40 +124,6 @@ class Main
     event.channel.prune(num_messages)
   end
 
-  bot.reaction_add do |event|
-    return if event.user.id == BOT_USER_ID || event.message.user.id != MAJID_USER_ID
-    event.message.reactions.each do |emoji, reaction|
-      if reaction.me
-        event.message.delete_reaction(bot.profile, emoji)
-      end
-    end
-  end
-
-  bot.message(from: MAJID_USER_ID) do |event|
-    server = event.server
-
-    dirtymaj = find_emoji("dirtymaj", server)
-    bowl = "🥣"
-    bat = "🦇"
-    pinching_hand = "🤏"
-    eggplant = "🍆"
-    yum = "😋"
-    yawn = "🥱"
-    china = "🇨🇳"
-    one = "1️⃣"
-
-    emoji_combos = [
-      [dirtymaj],
-      [bowl, bat, yum],
-      [pinching_hand, eggplant],
-      [yawn],
-      [china, one]
-    ]
-
-    emoji_combo = emoji_combos.sample
-    emoji_combo.each { |emoji| event.message.create_reaction(emoji) } if [true, false, false].sample
-  end
-
   bot.command(:year) do |event|
     return if command_sent_as_direct_message_to_bot? (event)
 
@@ -199,10 +165,6 @@ class Main
     else
       return_error(member.pm, "Bot was unable to find the associating role in the server. Please notify admin.")
     end
-  end
-
-  def self.find_emoji(emoji_string, server)
-    server.emojis.find { |_, emoji| emoji.name == emoji_string }[1]
   end
 
   def self.command_sent_as_direct_message_to_bot?(event)
