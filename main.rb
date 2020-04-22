@@ -29,7 +29,7 @@ class Main
       value:
         "**`~year <1-4, masters, alumni>`** - add your current academic status to your profile.\n"\
         "**`~purge <2-99>`** - remove the last `n` messages in channel (**admin only**)\n"\
-        "**`~latex <latex command>`** - write latex in Mathmode to get a rendered image.\n"\
+        "**`~equation <latex command>`** - returns an image of a latex equation.\n"\
         "**`~help`** - return the help menu\n"\
         "\n\u200B"
     )
@@ -50,7 +50,7 @@ class Main
   end
 
   # run when command is ~latex
-  bot.command(:latex) do |event|
+  bot.command(:equation) do |event|
     begin
       # Combine every word after 'latex' for multi word arguments (eg \frac{23 a}{32} )
       args = event.message.content.split(' ').drop(1).join(' ')
