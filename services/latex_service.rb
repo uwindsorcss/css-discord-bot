@@ -45,9 +45,10 @@ class LatexService
   # sanitizes the message by putting a backslash in front of some chars
   def self.sanitize(message)
     # these are restricted commands
+    # commands need to end with a { or it will match all commands that start with it
     # \text because it can let people put text in math mode and bog down it system
     # \text is replaced with \backslash text
-    res_commands = [['\\text', '\\backslash text~']]
+    res_commands = [['\\text{', '\\backslash text~{']]
     res_commands.each do |res, replace|
       message = message.gsub(res, replace)
     end
