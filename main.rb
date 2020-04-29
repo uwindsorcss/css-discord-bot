@@ -121,6 +121,7 @@ class Main
     end
 
     event.channel.prune(num_messages)
+    return
   end
 
   bot.command(:year) do |event|
