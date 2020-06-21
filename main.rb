@@ -167,6 +167,66 @@ class Main
     end
   end
 
+  # event roles channel add role system
+  # 
+  # event messages will have a simple structure
+  # first line is the role
+  # then a buffer line
+  # then a description of the event
+  # example: 
+  # @name
+  # 
+  # this event exists and some ohter stuff
+  
+  # this is the first function to add a reaction if the message fits that format
+  bot.message(in: "#event-roles") do |event|
+    # returns the role object
+    role = event.message.role_mentions.first
+    
+    # matches against the regex of what roles are handles on the backend
+    unless role.nil?
+      event.message.react("✅")
+    end
+  end
+
+  # function to add a role to someone who clicked it
+  # makes sure its in the right channel with the right emote
+  bot.reaction_add(in: "#event-roles", emoji: "✅") do |event|
+    # returns a role object
+    role = event.message.role_mentions.first
+
+    # a weird way to get the member, which is an user that belongs to a server
+    member = event.user.on(event.channel.server)
+
+    # if the role isnt nil and it isnt a bot
+    if !role.nil? && !event.user.bot_account?
+      # if the user doesnt have the role
+      # then add the role
+      unless member.role?(role)
+        member.add_role(role)
+      end
+    end
+  end
+
+  # function to remove a role from someone who unreacted
+  # makes sure its in the right channel with the right emote
+  bot.reaction_remove(in: "#event-roes", emoji: "✅") do |event|
+    role = event.message.role_mentions.first
+
+    member = event.user.on(event.channel.server)
+
+    # if the role isnt nil and it isnt a bot
+    if !role.nil? && !event.user.bot_account?
+      # if the user has the role
+      # then remove
+      if member.role?(role)
+        member.remove_role(role)
+      end
+    end
+  end
+
+  # end of functions relating to event-roles
+
   def self.command_sent_as_direct_message_to_bot?(event)
     if event.server.nil?
       return_error(event.user.pm, "This command can only be used in the Discord server. Try sending this command in the #bot-commands channel in the CSS server.")
