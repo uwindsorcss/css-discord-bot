@@ -10,8 +10,18 @@ class Main
   SECRETS = JSON.parse(File.read('secrets.json'))
   IMAGE_DIRECTORY_URL = SECRETS["image_directory_url"]
   LATEX_DIRECTORY_RELATIVE_PATH = "latex"
-  #BOT_USER_ID = 468629052643868673
-
+  # comment out the BOT_USER_ID when dev
+  BOT_USER_ID = 468629052643868673
+  EXCLUDE_ROLES = [
+    "Bot",
+    "Admin",
+    "Moderator",
+    "CSS President",
+    "CSS Board Executive",
+    "CSS Board Head",
+    "CSS Board Member",
+  ]
+  
   bot = Discordrb::Commands::CommandBot.new(
     token: SECRETS["api_token"],
     client_id: SECRETS["api_client_id"],
@@ -180,11 +190,11 @@ class Main
   
   # this is the first function to add a reaction if the message fits that format
   bot.message(in: "#event-roles") do |event|
-    # returns the role object
     role = event.message.role_mentions.first
     
-    # matches against the regex of what roles are handles on the backend
-    unless role.nil?
+    # if role isnt nil and role isnt in EXCLUDE_ROLES
+    # !(a || b) == (!a && !b)
+    unless role.nil? || EXCLUDE_ROLES.include?(role.name)
       event.message.react("✅")
     end
   end
@@ -192,20 +202,22 @@ class Main
   # function to add a role to someone who clicked it
   # makes sure its the right emote
   bot.reaction_add(emoji: "✅") do |event|
-    # returns a role object
     role = event.message.role_mentions.first
+    channel = event.message.channel
+    server = channel.server
+    member = server.members.find { |member| member.id == event.user.id }
 
-    puts event.message.channel.name
-    # a weird way to get the member, which is an user that belongs to a server
-    member = event.user.on(event.channel.server)
+    # split these up to read easier
 
-    # if the role isnt nil and it isnt a bot
-    # and it is in the channel "event-roles"
-    if !role.nil? && !event.user.bot_account? && event.message.channel.name == "event-roles"
-      # if the user doesnt have the role
-      # then add the role
-      unless member.role?(role)
-        member.add_role(role)
+    # if channel name is "event-roles" and the user isnt a bot
+    if channel.name == "event-roles" && !event.user.bot_account?
+      # if role isnt nil and role isnt in EXCLUDE_ROLES
+      # !(a || b) == (!a && !b)
+      unless role.nil? || EXCLUDE_ROLES.include?(role.name)
+        # if the user doesnt have the role
+        unless member.role?(role)
+          member.add_role(role)
+        end
       end
     end
   end
@@ -213,17 +225,22 @@ class Main
   # function to remove a role from someone who unreacted
   # makes sure its the right emote
   bot.reaction_remove(emoji: "✅") do |event|
+
     role = event.message.role_mentions.first
+    channel = event.message.channel
+    server = channel.server
+    member = server.members.find { |member| member.id == event.user.id }
 
-    member = event.user.on(event.channel.server)
-
-    # if the role isnt nil and it isnt a bot
-    # and if its in the channel "event-roles"
-    if !role.nil? && !event.user.bot_account? && event.message.channel.name == "event-roles"
+    # if user isnt a bot and its in channel "event-roles"
+    if !event.user.bot_account? && channel.name == "event-roles"
+      # if role isnt nil and role isnt in EXCLUDE_ROLES
+      # !(a || b) == (!a && !b)
+      unless role.nil? || EXCLUDE_ROLES.include?(role.name)
       # if the user has the role
       # then remove
-      if member.role?(role)
-        member.remove_role(role)
+        if member.role?(role)
+          member.remove_role(role)
+        end
       end
     end
   end
