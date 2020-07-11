@@ -29,6 +29,7 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
+    mini_magick (4.10.1)
     netrc (0.11.0)
     opus-ruby (1.0.1)
       ffi
@@ -56,6 +57,7 @@ DEPENDENCIES
   fuzzy-string-match
   json
   mathematical
+  mini_magick
 
 BUNDLED WITH
    2.1.4
