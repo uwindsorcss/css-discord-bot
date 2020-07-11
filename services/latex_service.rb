@@ -1,4 +1,27 @@
+require 'mathematical'
+require 'mini_magick'
+
 class LatexService
+
+  def self.render?(message, path, file)
+    # stripping it so you cant just put in one letter or a string of backslashs
+    return false if message.strip.length == 1 || message.strip == '\\' * message.length
+
+    # return a png
+    # pixels per inch is 300
+    renderer = Mathematical.new(format: :png, ppi: 300.0)
+
+    # renders the image but it needs to be cleaned
+    dirtyFile = renderer.render("$ #{message} $")
+    
+    # puts that image into mini_magick to be cleaned
+    # change the background to white instead of alpha
+    # trim so not a ton of space around
+    # add a black border if i can figure that out
+    cleanFile = MiniMagick::Image.read(dirtyFile[:data])
+
+
+  end
 
   # renders the message
   def self.render?(message, path, file)
