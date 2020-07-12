@@ -9,7 +9,7 @@ require_relative 'services/latex_service'
 class Main
   SECRETS = JSON.parse(File.read('secrets.json'))
   IMAGE_DIRECTORY_URL = SECRETS["image_directory_url"]
-  LATEX_DIRECTORY_RELATIVE_PATH = "latex"
+  LATEX_DIRECTORY_RELATIVE_PATH = "tmp"
   # comment out the BOT_USER_ID when dev
   BOT_USER_ID = 468629052643868673
   EXCLUDE_ROLES = [
@@ -62,6 +62,8 @@ class Main
   # run when command is ~latex
   bot.command(:equation) do |event|
     begin
+      file_name = "formula#{event.user.id}#{event.message.timestamp.to_i}.png"
+
       # Combine every word after 'latex' for multi word arguments (eg \frac{23 a}{32} )
       args = event.message.content.split(' ').drop(1).join(' ')
 
@@ -70,14 +72,14 @@ class Main
 
       # if it renders properly then send the image
       # else return error
-      if LatexService.render?(clean_args, LATEX_DIRECTORY_RELATIVE_PATH, 'formula')
-        event.send_file(File.open(File.join(LATEX_DIRECTORY_RELATIVE_PATH, 'formula.png'), 'r'))
+      if LatexService.render?(clean_args, LATEX_DIRECTORY_RELATIVE_PATH, file_name)
+        event.send_file(File.open(File.join('./' ,LATEX_DIRECTORY_RELATIVE_PATH, file_name), 'r'))
       else
         return_error(event.channel, 'Formula Didnt Compile')
       end
 
       # delete the files created
-      LatexService.cleanup(LATEX_DIRECTORY_RELATIVE_PATH, 'formula')
+      LatexService.cleanup(LATEX_DIRECTORY_RELATIVE_PATH, file_name)
     end
   end
 
