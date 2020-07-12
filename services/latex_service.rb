@@ -17,11 +17,9 @@ class LatexService
     return false unless dirtyFile[:exception].nil?
 
     # puts that image into mini_magick to be cleaned
-    # change the background to white instead of alpha
-    # trim so not a ton of space around
-    # add a black border if i can figure that out
     cleanFile = MiniMagick::Image.read(dirtyFile[:data])
 
+    # get rid of alpha channel
     cleanFile.flatten
     # add padding of 10 px of white pixels
     cleanFile.combine_options do |img|
@@ -33,7 +31,8 @@ class LatexService
       img.border 3
       img.bordercolor 'black'
     end
-    cleanFile.write 'clean.png'
+    # write img
+    cleanFile.write File.join(path, file)
 
     true
   end
@@ -42,10 +41,7 @@ class LatexService
   # deletes the extra files
   def self.cleanup(path, file)
     # these are the files that are created
-    file_endings = ['.aux', '.log', '.dvi', '.png', '.tex']
-    file_endings.each do |fending|
-        File.delete(File.join(path, file + fending)) if File.exist? (File.join(path, file + fending))
-    end
+    File.delete(File.join(path, file)) if File.exist? (File.join(path, file))
     # have to return nil or something will be send as a message
     nil
   end
@@ -65,14 +61,11 @@ class LatexService
       ['$', '\\$'],
       ['"', '\\"']
     ]
+
     res_commands.each do |res, replace|
       message = message.gsub(res, replace)
     end
 
-    # each symbol is a different one that could cause problems
-    # $ is to enter/exit math mode which would cause compilation problems
-    # \\ is obvious
-    # " could cause an escape of the latex function
     message
   end
 end
