@@ -61,8 +61,8 @@ class Main
 
   # run when command is ~latex
   bot.command(:equation) do |event|
+    file_name = "formula#{event.user.id}#{event.message.timestamp.to_i}.png"
     begin
-      file_name = "formula#{event.user.id}#{event.message.timestamp.to_i}.png"
 
       # Combine every word after 'latex' for multi word arguments (eg \frac{23 a}{32} )
       args = event.message.content.split(' ').drop(1).join(' ')
@@ -77,7 +77,11 @@ class Main
       else
         return_error(event.channel, 'Formula Didnt Compile')
       end
-
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace.inspect
+    ensure
+      # cleans file even if error
       # delete the files created
       LatexService.cleanup(LATEX_DIRECTORY_RELATIVE_PATH, file_name)
     end
