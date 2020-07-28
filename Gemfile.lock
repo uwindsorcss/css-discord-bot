@@ -23,7 +23,7 @@ GEM
       domain_name (~> 0.5)
     i18n (1.8.3)
       concurrent-ruby (~> 1.0)
-    json (2.0.2)
+    json (2.3.0)
     mathematical (1.6.13)
       ruby-enum (~> 0.4)
     mime-types (3.1)
