@@ -1,5 +1,4 @@
-secrets.json
-config.hcl
+config.conf
 images/
 .bundle/
 vendor/

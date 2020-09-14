@@ -1,7 +1,7 @@
 class DiscordMessageSender
-  secrets = JSON.parse(File.read('secrets.json'))
+  CONFIG = Hocon.load("config.conf")
   SIDE_COLOR = "005696"
-  IMAGE_DIRECTORY_URL = secrets["image_directory_url"]
+  IMAGE_DIRECTORY_URL = CONFIG["urls"]["image_directory_url"]
   UWINDSOR_THUMBNAIL = Discordrb::Webhooks::EmbedThumbnail.new(url: "#{IMAGE_DIRECTORY_URL}/uw_logo.png")
 
   def self.send_embedded(
