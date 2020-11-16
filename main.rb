@@ -1,17 +1,16 @@
 require 'discordrb'
 require 'pry'
-require 'json'
+require 'hocon'
 require 'fuzzystringmatch'
 require_relative 'services/discord_message_sender'
 require_relative 'services/building_service'
 require_relative 'services/latex_service'
 
 class Main
-  SECRETS = JSON.parse(File.read('secrets.json'))
-  IMAGE_DIRECTORY_URL = SECRETS["image_directory_url"]
+  CONFIG = Hocon.load("config.conf")
+  IMAGE_DIRECTORY_URL = CONFIG["urls"]["image_directory_url"]
   LATEX_DIRECTORY_RELATIVE_PATH = "tmp"
-  # comment out the BOT_USER_ID when dev
-  BOT_USER_ID = 468629052643868673
+  BOT_USER_ID = CONFIG["bot_user_id"]
   EXCLUDE_ROLES = [
     "Bot",
     "Admin",
@@ -23,8 +22,8 @@ class Main
   ]
   
   bot = Discordrb::Commands::CommandBot.new(
-    token: SECRETS["api_token"],
-    client_id: SECRETS["api_client_id"],
+    token: CONFIG["api_token"],
+    client_id: CONFIG["api_client_id"],
     prefix: '~',
   )
 

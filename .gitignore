@@ -1,4 +1,5 @@
-secrets.json
+config.conf
 images/
 .bundle/
 vendor/
+tmp/
