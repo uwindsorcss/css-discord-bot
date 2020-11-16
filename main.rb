@@ -142,11 +142,10 @@ class Main
   bot.command(:year) do |event|
     return if command_sent_as_direct_message_to_bot? (event)
 
-    event.message.delete
-
     year = event.message.content.split(' ').drop(1).join(' ').upcase
     server = event.server
     member = server.members.find { |member| member.id == event.user.id }
+
 
     year_roles = {
       "1" => server.roles.find { |role| role.name == "1st Year"},
@@ -180,6 +179,7 @@ class Main
     else
       return_error(member.pm, "Bot was unable to find the associating role in the server. Please notify admin.")
     end
+    event.message.delete
   end
 
   # event roles channel add role system
@@ -191,7 +191,7 @@ class Main
   # example: 
   # @name
   # 
-  # this event exists and some ohter stuff
+  # this event exists and some other stuff
   
   # this is the first function to add a reaction if the message fits that format
   bot.message(in: "#event-roles") do |event|
