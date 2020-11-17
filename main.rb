@@ -8,8 +8,11 @@ require_relative 'services/discord_message_sender'
 require_relative 'services/building_service'
 require_relative 'services/latex_service'
 
+require_relative 'services/return_error'
+include ReturnError
+
 # modules
-require_relative 'modules/eventRoles'
+require_relative 'modules/event_roles'
 
 
 class Main
@@ -202,13 +205,6 @@ class Main
     return false
   end
 
-  def self.return_error(channel, message)
-    DiscordMessageSender.send_embedded(
-      channel,
-      title: "Error",
-      description: ":bangbang: " + message,
-    )
-  end
 
   puts "This bot's invite URL is #{bot.invite_url}."
   puts 'Click on it to invite it to your server.'
