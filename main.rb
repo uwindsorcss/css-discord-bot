@@ -1,5 +1,4 @@
 require 'discordrb'
-require 'fuzzystringmatch'
 
 # services
 require_relative 'services/discord_message_sender'
@@ -18,6 +17,7 @@ require_relative './config'
 require_relative 'modules/event_roles'
 require_relative 'modules/purge'
 require_relative 'modules/equation'
+require_relative 'modules/year'
 
 class Main
  
@@ -64,33 +64,6 @@ class Main
     bot.include! Equation
   end
 
-  # bot.command(:equation) do |event|
-  #   file_name = "formula#{event.user.id}#{event.message.timestamp.to_i}.png"
-  #   begin
-
-  #     # Combine every word after 'latex' for multi word arguments (eg \frac{23 a}{32} )
-  #     args = event.message.content.split(' ').drop(1).join(' ')
-
-  #     # Clean for escaped latex characters
-  #     clean_args = LatexService.sanitize(args)
-
-  #     # if it renders properly then send the image
-  #     # else return error
-  #     if LatexService.render?(clean_args, Config::LATEX_DIRECTORY_RELATIVE_PATH, file_name)
-  #       event.send_file(File.open(File.join('./' ,Config::LATEX_DIRECTORY_RELATIVE_PATH, file_name), 'r'))
-  #     else
-  #       ReturnError.return_error(event.channel, 'Formula Didnt Compile')
-  #     end
-  #   rescue Exception => e
-  #     puts e.message
-  #     puts e.backtrace.inspect
-  #   ensure
-  #     # cleans file even if error
-  #     # delete the files created
-  #     LatexService.cleanup(Config::LATEX_DIRECTORY_RELATIVE_PATH, file_name)
-  #   end
-  # end
-
   bot.command(:whereis) do |event|
     begin
       # Combine every word after 'whereis' for multi-word arguments (e.g. "Erie Hall")
@@ -127,47 +100,8 @@ class Main
     bot.include! Purge
   end
 
-  bot.command(:year) do |event|
-    return if CommandSentAsDirectMessageToBot.command_sent_as_direct_message_to_bot? (event)
-
-    year = event.message.content.split(' ').drop(1).join(' ').upcase
-    server = event.server
-    member = server.members.find { |member| member.id == event.user.id }
-
-
-    year_roles = {
-      "1" => server.roles.find { |role| role.name == "1st Year"},
-      "2" => server.roles.find { |role| role.name == "2nd Year"},
-      "3" => server.roles.find { |role| role.name == "3rd Year"},
-      "4" => server.roles.find { |role| role.name == "4th Year"},
-      "MASTERS" => server.roles.find { |role| role.name == "Masters"},
-      "ALUMNI" => server.roles.find { |role| role.name == "Alumni"},
-    }
-
-    if !(year_roles.include? year)
-      ReturnError.return_error(event.user.pm, "Invalid option. Please select from: `#{year_roles.keys.to_s}`")
-      return
-    end
-
-    year_role = year_roles[year]
-
-    if year_role
-      begin
-        member.add_role(year_role)
-        previous_year_roles = member.roles.select { |role| (year_roles.values.include? role) && role != year_role }
-        previous_year_roles.each { |role| member.remove_role(role) }
-        DiscordMessageSender.send_embedded(
-          member.pm,
-          title: "Success",
-          description: ":white_check_mark: Successfully added your year/status to your profile.",
-        )
-      rescue Discordrb::Errors::NoPermission
-        ReturnError.return_error(member.pm, "Bot has insufficient permissions to modify your roles.")
-      end
-    else
-      ReturnError.return_error(member.pm, "Bot was unable to find the associating role in the server. Please notify admin.")
-    end
-    event.message.delete
+  if Config::CONFIG["features"]["year"]
+    bot.include! Year
   end
 
   # event roles featurization
