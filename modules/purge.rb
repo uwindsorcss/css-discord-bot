@@ -13,8 +13,6 @@ include CommandSentAsDirectMessageToBot
 module Purge
   extend Discordrb::Commands::CommandContainer
 
-
-
   command(:purge) do |event|
     return if CommandSentAsDirectMessageToBot.command_sent_as_direct_message_to_bot? (event)
 
