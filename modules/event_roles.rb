@@ -1,17 +1,9 @@
 require 'discordrb'
 
+require_relative '../config'
+
 module EventRoles
   extend Discordrb::EventContainer
-  
-  EXCLUDE_ROLES = [
-    "Bot",
-    "Admin",
-    "Moderator",
-    "CSS President",
-    "CSS Board Executive",
-    "CSS Board Head",
-    "CSS Board Member",
-  ]
 
   # event roles channel add role system
   # 
@@ -30,7 +22,7 @@ module EventRoles
     
     # if role isnt nil and role isnt in EXCLUDE_ROLES
     # !(a || b) == (!a && !b)
-    unless role.nil? || EXCLUDE_ROLES.include?(role.name)
+    unless role.nil? || Config::EXCLUDE_ROLES.include?(role.name)
       event.message.react("✅")
     end
   end
@@ -49,7 +41,7 @@ module EventRoles
     if channel.name == "event-roles" && !event.user.bot_account?
       # if role isnt nil and role isnt in EXCLUDE_ROLES
       # !(a || b) == (!a && !b)
-      unless role.nil? || EXCLUDE_ROLES.include?(role.name)
+      unless role.nil? || Config::EXCLUDE_ROLES.include?(role.name)
         # if the user doesnt have the role
         unless member.role?(role)
           member.add_role(role)
@@ -71,7 +63,7 @@ module EventRoles
     if !event.user.bot_account? && channel.name == "event-roles"
       # if role isnt nil and role isnt in EXCLUDE_ROLES
       # !(a || b) == (!a && !b)
-      unless role.nil? || EXCLUDE_ROLES.include?(role.name)
+      unless role.nil? || Config::EXCLUDE_ROLES.include?(role.name)
       # if the user has the role
       # then remove
         if member.role?(role)
