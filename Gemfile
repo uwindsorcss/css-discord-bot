@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'discordrb'
+gem 'discordrb', '3.4.0'
 gem 'fuzzy-string-match'
 gem 'hocon'
 gem 'mathematical'

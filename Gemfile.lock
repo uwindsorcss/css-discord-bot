@@ -6,19 +6,18 @@ GEM
     ZenTest (4.12.0)
     coderay (1.1.3)
     concurrent-ruby (1.1.7)
-    discordrb (3.3.0)
+    discordrb (3.4.0)
       discordrb-webhooks (~> 3.3.0)
       ffi (>= 1.9.24)
       opus-ruby
-      rbnacl (~> 3.4.0)
-      rest-client (>= 2.1.0.rc1)
+      rest-client (>= 2.0.0)
       websocket-client-simple (>= 0.3.0)
     discordrb-webhooks (3.3.0)
       rest-client (>= 2.1.0.rc1)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     event_emitter (0.2.6)
-    ffi (1.13.1)
+    ffi (1.14.2)
     fuzzy-string-match (1.0.1)
       RubyInline (>= 3.8.6)
     hocon (1.3.1)
@@ -40,8 +39,6 @@ GEM
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    rbnacl (3.4.0)
-      ffi
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
@@ -52,7 +49,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.7)
-    websocket (1.2.8)
+    websocket (1.2.9)
     websocket-client-simple (0.3.0)
       event_emitter
       websocket
@@ -61,7 +58,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  discordrb
+  discordrb (= 3.4.0)
   fuzzy-string-match
   hocon
   mathematical
