@@ -2,13 +2,6 @@ require 'discordrb'
 
 # services
 require_relative 'services/discord_message_sender'
-require_relative 'services/building_service'
-require_relative 'services/latex_service'
-
-require_relative 'services/return_error'
-
-require_relative 'services/command_direct_to_bot'
-
 
 # config module
 require_relative './config'
@@ -18,6 +11,7 @@ require_relative 'modules/event_roles'
 require_relative 'modules/purge'
 require_relative 'modules/equation'
 require_relative 'modules/year'
+require_relative 'modules/where_is'
 
 class Main
  
@@ -29,7 +23,7 @@ class Main
   )
 
   bot.ready() do |event|
-    bot.game="~help"
+    bot.game = '~help'
   end
 
   bot.command(:help) do |event|
@@ -64,42 +58,20 @@ class Main
     bot.include! Equation
   end
 
-  bot.command(:whereis) do |event|
-    begin
-      # Combine every word after 'whereis' for multi-word arguments (e.g. "Erie Hall")
-      args = event.message.content.split(' ').drop(1).join(' ')
-      if args == "list"
-        building_list = BuildingService.gather_building_list
-        DiscordMessageSender.send_embedded(
-          event.channel,
-          title: "Building List",
-          fields: [
-            Discordrb::Webhooks::EmbedField.new(name: "Codes", value: building_list[:codes], inline: true),
-            Discordrb::Webhooks::EmbedField.new(name: "Full Names", value: building_list[:full_names], inline: true)
-          ],
-        )
-
-      # If the argument matches a building
-      elsif building_code = BuildingService.find_building(args)
-        DiscordMessageSender.send_embedded(
-          event.channel,
-          title: "Building Search",
-          image: Discordrb::Webhooks::EmbedImage.new(url: "#{Config::IMAGE_DIRECTORY_URL}/#{building_code}.png"),
-          description: BuildingService.get_building_name(building_code) + " (#{building_code})",
-        )
-
-      # Arguments did not match a command or building
-      else
-        ReturnError.return_error(event.channel, "Building or command could not be found."\
-          "\n\nList of buildings can be found at **~whereis list**")
-      end
-    end
+  # whereis featurization
+  # runs when command is ~whereis
+  if Config::CONFIG["features"]["whereis"]
+    bot.include! WhereIs
   end
 
+  # purge featurization
+  # runs when command is ~purge
   if Config::CONFIG["features"]["purge"]
     bot.include! Purge
   end
 
+  # year featurization
+  # runs when command is ~year
   if Config::CONFIG["features"]["year"]
     bot.include! Year
   end
