@@ -27,6 +27,35 @@ sudo apt install build-essential make libglib2.0-dev libgdk-pixbuf2.0-0 libxml2 
 
 if you notice, we arent installing CMake, im assuming that your system has it by default. if it doesnt then uhhhh sorry you have to install it yourself.
 
+### Weird font issue for `~equation`
+
+There is this weird font issue that happens sometimes
+
+it can be easily seen by running `~equation \frac{\sqrt{32}}{3}`
+
+this can be read more about at https://github.com/gjtorikian/mathematical/issues/79
+
+and a solution can be found
+https://github.com/gjtorikian/mathematical#fonts-and-special-notices-for-mac-os-x
+
+for whatever reason you dont/cant read about it, il put a solution here
+
+`cd` into the font directory for whatever OS youre using
+
+then run 
+
+``` sh
+curl -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/cmex10.ttf \
+     -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/cmmi10.ttf \
+     -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/cmr10.ttf \
+     -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/cmsy10.ttf \
+     -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/esint10.ttf \
+     -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/eufm10.ttf \
+     -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/msam10.ttf \
+     -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/msbm10.ttf
+
+```
+
 ### Dependencies for Ruby
 
 this part is easier, you just need to install
