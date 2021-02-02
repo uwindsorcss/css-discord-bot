@@ -13,13 +13,13 @@ module EventRoles
   # then a description of the event
   # example: 
   # @name
-  # 
+  #
   # this event exists and some other stuff
-  
+ 
   # this is the first function to add a reaction if the message fits that format
   message(in: "#event-roles") do |event|
     role = event.message.role_mentions.first
-    
+   
     # if role isnt nil and role isnt in EXCLUDE_ROLES
     # !(a || b) == (!a && !b)
     unless role.nil? || Config::EXCLUDE_ROLES.include?(role.name)
@@ -72,7 +72,5 @@ module EventRoles
       end
     end
   end
-
-  # end of functions relating to event-roles
 
 end

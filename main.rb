@@ -1,3 +1,4 @@
+# discordrb api
 require 'discordrb'
 
 # services
@@ -14,7 +15,7 @@ require_relative 'modules/year'
 require_relative 'modules/where_is'
 
 class Main
- 
+
   # startup sequence
   bot = Discordrb::Commands::CommandBot.new(
     token: Config::CONFIG["api_token"],
@@ -22,7 +23,7 @@ class Main
     prefix: '~'
   )
 
-  bot.ready() do |event|
+  bot.ready do
     bot.game = '~help'
   end
 
@@ -54,30 +55,30 @@ class Main
   end
 
   # run when command is ~equation
-  if Config::CONFIG["features"]["equation"]
+  if Config::FEATURES["equation"]
     bot.include! Equation
   end
 
   # whereis featurization
   # runs when command is ~whereis
-  if Config::CONFIG["features"]["whereis"]
+  if Config::FEATURES["whereis"]
     bot.include! WhereIs
   end
 
   # purge featurization
   # runs when command is ~purge
-  if Config::CONFIG["features"]["purge"]
+  if Config::FEATURES["purge"]
     bot.include! Purge
   end
 
   # year featurization
   # runs when command is ~year
-  if Config::CONFIG["features"]["year"]
+  if Config::FEATURES["year"]
     bot.include! Year
   end
 
   # event roles featurization
-  if Config::CONFIG['features']['eventRoles']
+  if Config::FEATURES['eventRoles']
     bot.include! EventRoles
   end
 

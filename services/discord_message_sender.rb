@@ -2,7 +2,6 @@ require_relative '../config'
 
 class DiscordMessageSender
   SIDE_COLOR = "005696"
-  IMAGE_DIRECTORY_URL = Config::CONFIG["urls"]["image_directory_url"]
   UWINDSOR_THUMBNAIL = Discordrb::Webhooks::EmbedThumbnail.new(url: "#{Config::IMAGE_DIRECTORY_URL}/uw_logo.png")
 
   def self.send_embedded(
