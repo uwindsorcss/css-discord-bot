@@ -22,10 +22,9 @@ all of these dependencies is for the `~equation` command
 
 to install them you can run(if you use ubuntu) 
 ``` sh
-sudo apt install build-essential make libglib2.0-dev libgdk-pixbuf2.0-0 libxml2 cairo libcogl-pango20 flex bison imagemagick
+sudo apt install build-essential make libglib2.0-dev libgdk-pixbuf2.0-0 libxml2 cairo cmake libcogl-pango20 flex bison imagemagick
 ```
 
-if you notice, we arent installing CMake, im assuming that your system has it by default. if it doesnt then uhhhh sorry you have to install it yourself.
 
 ### Weird font issue for `~equation`
 
