@@ -1,3 +1,5 @@
+require 'fuzzystringmatch'
+
 class BuildingService
   $buildings = {
     "AC" => "Assumption Chapel",
