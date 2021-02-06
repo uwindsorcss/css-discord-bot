@@ -14,6 +14,7 @@ require_relative 'modules/purge'
 require_relative 'modules/equation'
 require_relative 'modules/year'
 require_relative 'modules/where_is'
+require_relative 'modules/say'
 
 class Main
   # startup sequence
@@ -58,14 +59,10 @@ class Main
     )
   end
 
-  bot.command(:say) do |event, channel, *text|
-    # the args come in as an array
-    # this changes it to a string
-    text = text.join(' ')
-
-    channel = ChannelFindService.find_channel_by_encoded_id(bot, channel)
-
-    DiscordMessageSender.send(channel, text)
+  # say featurization
+  # run when command is ~say
+  if Config::FEATURES["say"]
+    bot.include! Say
   end
 
   # equation featurization
