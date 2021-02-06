@@ -30,4 +30,13 @@ class DiscordMessageSender
       embed.url = url
     end
   end
+
+  def self.send(channel,
+                content,
+                tts: false,
+                attachments: nil
+               )
+
+    channel.send_message(content)
+  end
 end

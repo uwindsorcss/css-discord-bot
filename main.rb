@@ -3,6 +3,7 @@ require 'discordrb'
 
 # services
 require_relative 'services/discord_message_sender'
+require_relative 'services/channel_find_service'
 
 # config module
 require_relative './config'
@@ -58,12 +59,13 @@ class Main
   end
 
   bot.command(:say) do |event, channel, *text|
-    # event.channel.send_message(text)
+    # the args come in as an array
+    # this changes it to a string
+    text = text.join(' ')
 
-    text = text.join(" ")
+    channel = ChannelFindService.find_channel_by_encoded_id(bot, channel)
 
-    #bot.send_message(channel, text)
-    #DiscordMessageSender.send(bot, channel, text)
+    DiscordMessageSender.send(channel, text)
   end
 
   # equation featurization
