@@ -15,7 +15,6 @@ require_relative 'modules/year'
 require_relative 'modules/where_is'
 
 class Main
-
   # startup sequence
   bot = Discordrb::Commands::CommandBot.new(
     token: Config::CONFIG["api_token"],
@@ -23,10 +22,13 @@ class Main
     prefix: '~'
   )
 
+  # set the game the bot plays to `~help`
   bot.ready do
     bot.game = '~help'
   end
 
+  # help command
+  # no need to featurize that
   bot.command(:help) do |event|
     fields = []
     fields << Discordrb::Webhooks::EmbedField.new(
@@ -54,6 +56,7 @@ class Main
     )
   end
 
+  # equation featurization
   # run when command is ~equation
   if Config::FEATURES["equation"]
     bot.include! Equation
