@@ -17,14 +17,15 @@ require_relative 'modules/where_is'
 class Main
   # startup sequence
   bot = Discordrb::Commands::CommandBot.new(
-    token: Config::CONFIG["api_token"],
-    client_id: Config::CONFIG["api_client_id"],
-    prefix: '~'
+    token: Config::API_TOKEN,
+    client_id: Config::API_CLIENT_ID,
+    prefix: Config::PREFIX,
   )
 
   # set the game the bot plays to `~help`
   bot.ready do
     bot.game = '~help'
+    bot.debug = Config::DEBUG
   end
 
   # help command
@@ -54,6 +55,15 @@ class Main
       description: "Note: Arguments in <this format> do not require the '<', '>' characters\n\u200B",
       fields: fields,
     )
+  end
+
+  bot.command(:say) do |event, channel, *text|
+    # event.channel.send_message(text)
+
+    text = text.join(" ")
+
+    #bot.send_message(channel, text)
+    #DiscordMessageSender.send(bot, channel, text)
   end
 
   # equation featurization
@@ -87,5 +97,10 @@ class Main
 
   puts "This bot's invite URL is #{bot.invite_url}."
   puts 'Click on it to invite it to your server.'
+
+
   bot.run
+
+  # to gracefully shutdown
+  at_exit { bot.stop }
 end
