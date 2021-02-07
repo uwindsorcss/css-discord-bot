@@ -33,8 +33,8 @@ class DiscordMessageSender
 
   def self.send(channel,
                 content,
-                tts = false,
-                attachments = nil
+                tts: false,
+                attachments: nil
                )
 
     channel.send_message(content, tts, attachments)
