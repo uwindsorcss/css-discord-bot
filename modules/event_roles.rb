@@ -20,9 +20,9 @@ module EventRoles
   message(in: "#event-roles") do |event|
     role = event.message.role_mentions.first
    
-    # if role isnt nil and role isnt in EXCLUDE_ROLES
+    # if role isnt nil and role isnt in IMPORTANT_ROLES
     # !(a || b) == (!a && !b)
-    unless role.nil? || Config::EXCLUDE_ROLES.include?(role.name)
+    unless role.nil? || Config::IMPORTANT_ROLES.include?(role.name)
       event.message.react("✅")
     end
   end
@@ -39,9 +39,9 @@ module EventRoles
 
     # if channel name is "event-roles" and the user isnt a bot
     if channel.name == "event-roles" && !event.user.bot_account?
-      # if role isnt nil and role isnt in EXCLUDE_ROLES
+      # if role isnt nil and role isnt in IMPORTANT_ROLES
       # !(a || b) == (!a && !b)
-      unless role.nil? || Config::EXCLUDE_ROLES.include?(role.name)
+      unless role.nil? || Config::IMPORTANT_ROLES.include?(role.name)
         # if the user doesnt have the role
         unless member.role?(role)
           member.add_role(role)
@@ -61,9 +61,9 @@ module EventRoles
 
     # if user isnt a bot and its in channel "event-roles"
     if !event.user.bot_account? && channel.name == "event-roles"
-      # if role isnt nil and role isnt in EXCLUDE_ROLES
+      # if role isnt nil and role isnt in IMPORTANT_ROLES
       # !(a || b) == (!a && !b)
-      unless role.nil? || Config::EXCLUDE_ROLES.include?(role.name)
+      unless role.nil? || Config::IMPORTANT_ROLES.include?(role.name)
       # if the user has the role
       # then remove
         if member.role?(role)

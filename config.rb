@@ -15,7 +15,7 @@ module Config
   BOT_USER_ID = CONFIG["bot_user_id"]
   FEATURES = CONFIG["features"]
   DEBUG = CONFIG["debug"]
-  EXCLUDE_ROLES = [
+  IMPORTANT_ROLES = [
     "Bot",
     "Admin",
     "Moderator",
