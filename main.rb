@@ -3,7 +3,6 @@ require 'discordrb'
 
 # services
 require_relative 'services/discord_message_sender'
-require_relative 'services/channel_find_service'
 
 # config module
 require_relative './config'
@@ -96,7 +95,6 @@ class Main
 
   puts "This bot's invite URL is #{bot.invite_url}."
   puts 'Click on it to invite it to your server.'
-
 
   bot.run
 
