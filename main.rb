@@ -13,20 +13,24 @@ require_relative 'modules/purge'
 require_relative 'modules/equation'
 require_relative 'modules/year'
 require_relative 'modules/where_is'
+require_relative 'modules/say'
 
 class Main
-
   # startup sequence
   bot = Discordrb::Commands::CommandBot.new(
-    token: Config::CONFIG["api_token"],
-    client_id: Config::CONFIG["api_client_id"],
-    prefix: '~'
+    token: Config::API_TOKEN,
+    client_id: Config::API_CLIENT_ID,
+    prefix: Config::PREFIX,
   )
 
+  # set the game the bot plays to `~help`
   bot.ready do
     bot.game = '~help'
+    bot.debug = Config::DEBUG
   end
 
+  # help command
+  # no need to featurize that
   bot.command(:help) do |event|
     fields = []
     fields << Discordrb::Webhooks::EmbedField.new(
@@ -54,6 +58,13 @@ class Main
     )
   end
 
+  # say featurization
+  # run when command is ~say
+  if Config::FEATURES["say"]
+    bot.include! Say
+  end
+
+  # equation featurization
   # run when command is ~equation
   if Config::FEATURES["equation"]
     bot.include! Equation
@@ -84,5 +95,9 @@ class Main
 
   puts "This bot's invite URL is #{bot.invite_url}."
   puts 'Click on it to invite it to your server.'
+
   bot.run
+
+  # to gracefully shutdown
+  at_exit { bot.stop }
 end
