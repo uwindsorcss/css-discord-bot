@@ -14,6 +14,7 @@ require_relative 'modules/equation'
 require_relative 'modules/year'
 require_relative 'modules/where_is'
 require_relative 'modules/say'
+require_relative 'modules/prompt'
 
 class Main
   # startup sequence
@@ -58,32 +59,10 @@ class Main
     )
   end
 
-  bot.command(:prompt) do |event|
-    return if CommandSentAsDirectMessageToBot.command_sent_as_direct_message_to_bot?(event)
-
-    begin
-      # split 2 times and get the second split
-      # this gets the text after the command
-      text = event.message.content.split(' ', 2)[1]
-
-      puts Config::PROMPT
-
-      # check if the user has an important role
-      if UtilityService.important_role?(event.author)
-        prompt_channel = event.bot.find_channel(Config::PROMPT["channel"]).first
-
-        puts Config::PROMPT["channel"]
-        puts prompt_channel
-
-        prompt_text = Config::PROMPT["top_text"] + text + Config::PROMPT["bottom_text"]
-
-        DiscordMessageSender.send(prompt_channel, prompt_text)
-      end
-    rescue Exception
-      ReturnError.return_error(event.channel, "Couldn't say message")
-    end
+  if Config::FEATURES["prompt"]
+    bot.include! Prompt
   end
-
+  
   # say featurization
   # run when command is ~say
   if Config::FEATURES["say"]
