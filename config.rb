@@ -10,7 +10,7 @@ module Config
   API_TOKEN = CONFIG["api_token"]
   API_CLIENT_ID = CONFIG["api_client_id"]
   PREFIX = CONFIG["prefix"]
-  PROMPT_CHANNEL = CONFIG["prompt_channel"]
+  PROMPT = CONFIG["prompt"]
   IMAGE_DIRECTORY_URL = CONFIG["urls"]["image_directory_url"]
   LATEX_DIRECTORY_RELATIVE_PATH = "tmp"
   BOT_USER_ID = CONFIG["bot_user_id"]
@@ -25,5 +25,5 @@ module Config
     "CSS Board Head",
     "CSS Board Member",
   ]
- 
+
 end
