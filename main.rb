@@ -61,17 +61,27 @@ class Main
   bot.command(:prompt) do |event|
     return if CommandSentAsDirectMessageToBot.command_sent_as_direct_message_to_bot?(event)
 
-    # split 2 times and get the second split
-    # this gets the text after the command
-    text = event.message.content.split(' ', 2)[1]
+    begin
+      # split 2 times and get the second split
+      # this gets the text after the command
+      text = event.message.content.split(' ', 2)[1]
 
-    # check if the user has an important role
-    if UtilityService.important_role?(event.author)
-      prompt_channel = event.bot.find_channel(Config::PROMPT_CHANNEL).first
+      puts Config::PROMPT
 
-      DiscordMessageSender.send(prompt_channel, text)
+      # check if the user has an important role
+      if UtilityService.important_role?(event.author)
+        prompt_channel = event.bot.find_channel(Config::PROMPT["channel"]).first
+
+        puts Config::PROMPT["channel"]
+        puts prompt_channel
+
+        prompt_text = Config::PROMPT["top_text"] + text + Config::PROMPT["bottom_text"]
+
+        DiscordMessageSender.send(prompt_channel, prompt_text)
+      end
+    rescue Exception
+      ReturnError.return_error(event.channel, "Couldn't say message")
     end
-
   end
 
   # say featurization
