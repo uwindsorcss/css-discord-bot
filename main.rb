@@ -58,6 +58,22 @@ class Main
     )
   end
 
+  bot.command(:prompt) do |event|
+    return if CommandSentAsDirectMessageToBot.command_sent_as_direct_message_to_bot?(event)
+
+    # split 2 times and get the second split
+    # this gets the text after the command
+    text = event.message.content.split(' ', 2)[1]
+
+    # check if the user has an important role
+    if UtilityService.important_role?(event.author)
+      prompt_channel = event.bot.find_channel(Config::PROMPT_CHANNEL).first
+
+      DiscordMessageSender.send(prompt_channel, text)
+    end
+
+  end
+
   # say featurization
   # run when command is ~say
   if Config::FEATURES["say"]
