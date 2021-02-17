@@ -14,6 +14,7 @@ require_relative 'modules/equation'
 require_relative 'modules/year'
 require_relative 'modules/where_is'
 require_relative 'modules/say'
+require_relative 'modules/prompt'
 
 class Main
   # startup sequence
@@ -58,6 +59,10 @@ class Main
     )
   end
 
+  if Config::FEATURES["prompt"]
+    bot.include! Prompt
+  end
+  
   # say featurization
   # run when command is ~say
   if Config::FEATURES["say"]

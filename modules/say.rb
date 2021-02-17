@@ -28,7 +28,7 @@ module Say
         raise StandardError.new "Message wasnt formatted correctly or user didnt have perms"
       end
     rescue Exception
-        ReturnError.return_error(event.channel, "Couldn't say message")
+      ReturnError.return_error(event.channel, "Couldn't say message")
     end
   end
 end
