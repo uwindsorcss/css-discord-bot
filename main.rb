@@ -8,7 +8,7 @@ require_relative 'services/discord_message_sender'
 require_relative './config'
 
 # modules
-require_relative 'modules/event_roles'
+require_relative 'modules/self_roles'
 require_relative 'modules/purge'
 require_relative 'modules/equation'
 require_relative 'modules/year'
@@ -93,9 +93,9 @@ class Main
     bot.include! Year
   end
 
-  # event roles featurization
-  if Config::FEATURES['eventRoles']
-    bot.include! EventRoles
+  # self roles featurization
+  if Config::FEATURES['selfRoles']
+    bot.include! SelfRoles
   end
 
   puts "This bot's invite URL is #{bot.invite_url}."
