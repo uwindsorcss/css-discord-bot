@@ -2,7 +2,7 @@ require 'discordrb'
 
 require_relative '../config'
 
-module EventRoles
+module SelfRoles
   extend Discordrb::EventContainer
 
   # event roles channel add role system
