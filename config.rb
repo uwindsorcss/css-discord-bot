@@ -11,6 +11,7 @@ module Config
   API_CLIENT_ID = CONFIG["api_client_id"]
   PREFIX = CONFIG["prefix"]
   PROMPT = CONFIG["prompt"]
+  SELF_ROLES_CHANNEL = CONFIG["self_roles_channel"]
   IMAGE_DIRECTORY_URL = CONFIG["urls"]["image_directory_url"]
   LATEX_DIRECTORY_RELATIVE_PATH = "tmp"
   BOT_USER_ID = CONFIG["bot_user_id"]

@@ -5,7 +5,7 @@ require_relative '../config'
 module SelfRoles
   extend Discordrb::EventContainer
 
-  # event roles channel add role system
+  # self roles channel add role system
   # 
   # event messages will have a simple structure
   # first line is the role
@@ -17,7 +17,7 @@ module SelfRoles
   # this event exists and some other stuff
  
   # this is the first function to add a reaction if the message fits that format
-  message(in: "#event-roles") do |event|
+  message(in: "##{Config::SELF_ROLES_CHANNEL}") do |event|
     role = event.message.role_mentions.first
    
     # if role isnt nil and role isnt in IMPORTANT_ROLES
@@ -37,8 +37,8 @@ module SelfRoles
 
     # split these up to read easier
 
-    # if channel name is "event-roles" and the user isnt a bot
-    if channel.name == "event-roles" && !event.user.bot_account?
+    # if channel name is for self roles and the user isnt a bot
+    if channel.name == Config::SELF_ROLES_CHANNEL && !event.user.bot_account?
       # if role isnt nil and role isnt in IMPORTANT_ROLES
       # !(a || b) == (!a && !b)
       unless role.nil? || Config::IMPORTANT_ROLES.include?(role.name)
@@ -59,8 +59,8 @@ module SelfRoles
     server = channel.server
     member = server.members.find { |member| member.id == event.user.id }
 
-    # if user isnt a bot and its in channel "event-roles"
-    if !event.user.bot_account? && channel.name == "event-roles"
+    # if user isnt a bot and its in channel for self roles
+    if !event.user.bot_account? && channel.name == Config::SELF_ROLES_CHANNEL
       # if role isnt nil and role isnt in IMPORTANT_ROLES
       # !(a || b) == (!a && !b)
       unless role.nil? || Config::IMPORTANT_ROLES.include?(role.name)
@@ -72,5 +72,4 @@ module SelfRoles
       end
     end
   end
-
 end
