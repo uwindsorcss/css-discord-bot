@@ -94,11 +94,18 @@ to run it just do
 ruby main.rb
 ```
 
+## Documentation
+
+- discordrb version 3.4.0 - API and version we use
+
+- ARCHITECTURE.md - a high level view of bot architecture
+
+- CONTRIBUTING.md - things to keep in mind while contributing
 
 ## Todo
 
 * Docker 
 
-* featurized config based gem file
+* Featurized config based gem file
 
 * Fully implement mcping
