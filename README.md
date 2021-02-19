@@ -1,7 +1,10 @@
 # UWindsor CSS Discord Bot
 
+**By contributing to this software in anyway, you agree to the terms layed out in CONTRIBUTING.md**
+
 *Warning: This bot was designed to work on unix based os'*
 *your milage may vary and might be a nightmare to install if you use it on windows*
+
 
 ## Setup
 
@@ -94,11 +97,18 @@ to run it just do
 ruby main.rb
 ```
 
+## Documentation
+
+- discordrb version 3.4.0 - API and version we use
+
+- ARCHITECTURE.md - a high level view of bot architecture
+
+- CONTRIBUTING.md - things to keep in mind while contributing
 
 ## Todo
 
 * Docker 
 
-* featurized config based gem file
+* Featurized config based gem file
 
 * Fully implement mcping
