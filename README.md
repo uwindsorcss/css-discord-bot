@@ -1,7 +1,10 @@
 # UWindsor CSS Discord Bot
 
+**By contributing to this software in anyway, you agree to the terms layed out in CONTRIBUTING.md**
+
 *Warning: This bot was designed to work on unix based os'*
 *your milage may vary and might be a nightmare to install if you use it on windows*
+
 
 ## Setup
 
