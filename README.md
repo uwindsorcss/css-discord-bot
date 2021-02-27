@@ -98,6 +98,10 @@ ruby main.rb
 
 ## Setup And Run With Docker
 
+### Dependencies
+
+* Docker
+
 ### Build
 to build just run
 
