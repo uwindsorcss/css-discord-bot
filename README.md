@@ -25,7 +25,7 @@ all of these dependencies is for the `~equation` command
 
 to install them you can run(if you use ubuntu) 
 ``` sh
-sudo apt install build-essential make libglib2.0-dev libgdk-pixbuf2.0-0 libxml2 cairo cmake libcogl-pango20 flex bison imagemagick
+sudo apt install -y build-essential cmake make libcairo2-dev libpangox-1.0-dev flex bison libglib2.0-dev libgdk-pixbuf-2.0-dev libxml2-dev imagemagick
 ```
 
 
