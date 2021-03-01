@@ -1,8 +1,6 @@
 # using ubuntu 21.04 as a base and building from there
 FROM ubuntu:21.04
 
-# copy everything into home
-COPY . .
 
 # change permissions of /tmp cause it throws a fit otherwise
 RUN chmod 1777 /tmp
@@ -40,17 +38,6 @@ RUN apt-get update -yqq && apt-get install -yqq \
     imagemagick libmagickwand-dev --no-install-recommends
 
 ############
-# installing ruby dependencies
-############
-
-# bundler throws a fit because we are root
-# but thats the point of a container
-RUN bundle config --global silence_root_warning 1
-
-# download ruby dependencies
-RUN bundle install
-
-############
 # installing the correct fonts for `~equation`
 ############
  
@@ -66,6 +53,21 @@ RUN  cd ~/.fonts && curl -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/tt
      -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/eufm10.ttf \
      -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/msam10.ttf \
      -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/msbm10.ttf
+
+# copy everything into home
+COPY . .
+
+############
+# installing ruby dependencies
+############
+
+# bundler throws a fit because we are root
+# but thats the point of a container
+RUN bundle config --global silence_root_warning 1
+
+# download ruby dependencies
+RUN bundle install
+
 
 ############
 # running the bot
