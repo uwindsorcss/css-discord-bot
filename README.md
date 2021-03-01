@@ -6,7 +6,21 @@
 *your milage may vary and might be a nightmare to install if you use it on windows*
 
 
-## Setup
+## Config
+
+you first need to copy `config.example.conf` to `config.conf`
+
+you can do that by doing
+
+``` sh
+cp config.example.conf config.conf
+```
+
+once that is done, you have to replace or change the variables to get it up and running. a bunch of it is self explainitory.
+
+for `features` each flag can be changed to turn on or off features. this is good for testing and for security reasons.
+
+## Setup And Run Without Docker(not reccomended)
 
 ### Dependencies Before Ruby
 
@@ -25,11 +39,11 @@ all of these dependencies is for the `~equation` command
 
 to install them you can run(if you use ubuntu) 
 ``` sh
-sudo apt install build-essential make libglib2.0-dev libgdk-pixbuf2.0-0 libxml2 cairo cmake libcogl-pango20 flex bison imagemagick
+sudo apt install -y build-essential cmake make libcairo2-dev libpangox-1.0-dev flex bison libglib2.0-dev libgdk-pixbuf-2.0-dev libxml2-dev imagemagick
 ```
 
 
-### Weird font issue for `~equation`
+### Weird Font Issue For `~equation`
 
 There is this weird font issue that happens sometimes
 
@@ -58,7 +72,7 @@ curl -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/cmex10.ttf \
 
 ```
 
-### Dependencies for Ruby
+### Dependencies For Ruby
 
 this part is easier, you just need to install
 
@@ -75,27 +89,57 @@ run while in the <Main> directory
 bundle install
 ```
 
-## Config
-
-you first need to copy `config.example.conf` to `config.conf`
-
-you can do that by doing
-
-``` sh
-cp config.example.conf config.conf
-```
-
-once that is done, you have to replace or change the variables to get it up and running. a bunch of it is self explainitory.
-
-for `features` each flag can be changed to turn on or off features. this is good for testing and for security reasons.
-
-
 ## Run
 to run it just do 
 
 ``` sh
 ruby main.rb
 ```
+
+## Setup And Run With Docker
+
+### Dependencies
+
+* Docker
+
+### Build
+to build just run
+
+``` sh
+docker build -t CssBot .
+```
+
+### Run
+
+you can either run detached(in the background) or not
+
+#### Detached
+``` sh
+docker run -d CssBot
+```
+
+#### Not Detached
+
+``` sh
+docker run CssBot
+```
+
+#### Stop Detached Bot
+
+you first need to find the container id. that can be found by running 
+
+``` sh
+docker ps
+```
+
+under the first column
+
+to kill run 
+
+``` sh
+docker stop <container id>
+```
+
 
 ## Documentation
 
@@ -106,8 +150,6 @@ ruby main.rb
 - CONTRIBUTING.md - things to keep in mind while contributing
 
 ## Todo
-
-* Docker 
 
 * Featurized config based gem file
 
