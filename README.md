@@ -1,29 +1,73 @@
 # UWindsor CSS Discord Bot
 
-**By contributing to this software in anyway, you agree to the terms layed out in CONTRIBUTING.md**
+**By contributing to this software in any way, you agree to the terms laid out in CONTRIBUTING.md**
 
-*Warning: This bot was designed to work on unix based os'*
-*your milage may vary and might be a nightmare to install if you use it on windows*
+*Warning: This bot was designed to work on Unix-based OS'.*
+*Your milage may vary and it may be a nightmare to install without Docker on Windows.*
 
 
-## Config
+## Setting Up the Configuration
 
-you first need to copy `config.example.conf` to `config.conf`
-
-you can do that by doing
-
-``` sh
+Copy the `config.example.conf` file to `config.conf`. You can do this with
+```sh
 cp config.example.conf config.conf
 ```
+Once you've copied your config, you need to configure it to work with the Discord API.
 
-once that is done, you have to replace or change the variables to get it up and running. a bunch of it is self explainitory.
+### Customizing your Config
+##### Connecting with the Discord API
+`api_token`: the token for your Bot User from the Bot section of the Discord Developer Portal.
 
-for `features` each flag can be changed to turn on or off features. this is good for testing and for security reasons.
+`api_client_id`: the Client ID from the Application page of the Discord Developer Portal.
 
-## Setup And Run Without Docker(not reccomended)
+`bot_user_id`: the "permission integer", usually 8 (administrator).
 
+`debug`: when true, extra messages will be logged in the terminal to aid debugging.
+
+
+##### Customizing the Commands
+`prefix`: the character that should indicate a command is being called.
+
+`self_roles_channel`: indicates which channel the "self roles" command should use.
+
+`prompt.channel`: indicates which channel prompts should be sent to.
+
+`prompt.top_text`: the text that should appear before a prompt.
+
+`prompt.bottom_text`: the text that should appear after a prompt.
+
+`urls.image_directory_url`: the URL at which the images used for the "whereis" command are located. **Must be a valid URL for the bot to work correctly.**
+
+`urls.mc_address_url`: (work-in-progress feature) the address for the Minecraft Server the MC-Ping service should use.
+
+`features`: an array of the different features that can be turned on and off with true and false respectively.
+
+
+## Setup And Run With Docker (Recommended)
+### Dependencies
+* Docker
+
+### Build
+``` sh
+docker build -t CssBot .
+```
+
+### Run
+You can choose to run the bot detached (in the background) or not.
+
+**Detached**: `docker run -d CssBot`
+
+**Not Detached**: `docker run CssBot`
+
+#### Stopping a Detached Bot
+
+You need the container ID, which can be found with `docker ps`, under the first column.
+
+You can then stop the bot with `docker stop <container id>`.
+
+
+## Setup And Run Without Docker (Not Recommended)
 ### Dependencies Before Ruby
-
 * GNU make
 * glib-2.0
 * gdk-pixbuf-2.0
@@ -35,9 +79,9 @@ for `features` each flag can be changed to turn on or off features. this is good
 * Flex
 * ImageMagick
 
-all of these dependencies is for the `~equation` command
+All of these dependencies are for the `~equation` command
 
-to install them you can run(if you use ubuntu) 
+To install them (on Ubuntu) you can run 
 ``` sh
 sudo apt install -y build-essential cmake make libcairo2-dev libpangox-1.0-dev flex bison libglib2.0-dev libgdk-pixbuf-2.0-dev libxml2-dev imagemagick
 ```
@@ -45,22 +89,16 @@ sudo apt install -y build-essential cmake make libcairo2-dev libpangox-1.0-dev f
 
 ### Weird Font Issue For `~equation`
 
-There is this weird font issue that happens sometimes
+A weird font issue can occur in some cases. You can see whether or not you need the following fix by running `~equation \frac{\sqrt{32}}{3}`
 
-it can be easily seen by running `~equation \frac{\sqrt{32}}{3}`
+You can read more about it at https://github.com/gjtorikian/mathematical/issues/79,
+and a solution can be found at https://github.com/gjtorikian/mathematical#fonts-and-special-notices-for-mac-os-x
 
-this can be read more about at https://github.com/gjtorikian/mathematical/issues/79
+##### TL;DR Solution:
 
-and a solution can be found
-https://github.com/gjtorikian/mathematical#fonts-and-special-notices-for-mac-os-x
-
-for whatever reason you dont/cant read about it, il put a solution here
-
-`cd` into the font directory for whatever OS youre using
-
-then run 
-
+You need to install some extra fonts. You can do this as follows:
 ``` sh
+cd <your OS font directory>
 curl -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/cmex10.ttf \
      -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/cmmi10.ttf \
      -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/cmr10.ttf \
@@ -73,77 +111,26 @@ curl -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/cmex10.ttf \
 ```
 
 ### Dependencies For Ruby
-
-this part is easier, you just need to install
-
 * Ruby version 2.7.0
 * Bundle
 * Gem
-* rbenv(optional but highly reccomended by Ryan Prairie, seriously, itll make your life much easier)
+* rbenv (optional but highly reccomended by Ryan Prairie. Seriously, it'll make your life much easier.)
 
-once those are all installed and setup
-
-run while in the <Main> directory
-
+Once you have all the dependencies list above installed and set up, run the following while in the <Main> directory:
 ``` sh
 bundle install
 ```
 
 ## Run
-to run it just do 
-
+To start the bot, simply run
 ``` sh
 ruby main.rb
 ```
 
-## Setup And Run With Docker
 
-### Dependencies
+## Further Documentation
 
-* Docker
-
-### Build
-to build just run
-
-``` sh
-docker build -t CssBot .
-```
-
-### Run
-
-you can either run detached(in the background) or not
-
-#### Detached
-``` sh
-docker run -d CssBot
-```
-
-#### Not Detached
-
-``` sh
-docker run CssBot
-```
-
-#### Stop Detached Bot
-
-you first need to find the container id. that can be found by running 
-
-``` sh
-docker ps
-```
-
-under the first column
-
-to kill run 
-
-``` sh
-docker stop <container id>
-```
-
-
-## Documentation
-
-- discordrb version 3.4.0 - API and version we use
+- API and version: `discordrb v3.4.0`
 
 - ARCHITECTURE.md - a high level view of bot architecture
 
