@@ -8,13 +8,11 @@
 
 ## Setting Up the Configuration
 
-Copy the `config.example.conf` file to `config.conf`. You can do this with
-```sh
-cp config.example.conf config.conf
-```
-Once you've copied your config, you need to configure it to work with the Discord API.
+Copy the `config.example.conf` file to `config.conf`. You can do this with `cp config.example.conf config.conf`.
 
-### Customizing your Config
+Once you've copied your config, you'll need to configure it to work with the Discord API.
+
+### Configuring the Bot
 ##### Connecting with the Discord API
 `api_token`: the token for your Bot User from the Bot section of the Discord Developer Portal.
 
@@ -116,16 +114,10 @@ curl -LO http://mirrors.ctan.org/fonts/cm/ps-type1/bakoma/ttf/cmex10.ttf \
 * Gem
 * rbenv (optional but highly reccomended by Ryan Prairie. Seriously, it'll make your life much easier.)
 
-Once you have all the dependencies list above installed and set up, run the following while in the <Main> directory:
-``` sh
-bundle install
-```
+Once you have all the dependencies list above installed and set up, run `bundle install` while in the \<Main\> directory.
 
 ## Run
-To start the bot, simply run
-``` sh
-ruby main.rb
-```
+To start the bot, simply run `ruby main.rb`
 
 
 ## Further Documentation
