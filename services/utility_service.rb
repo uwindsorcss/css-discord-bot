@@ -37,4 +37,20 @@ class UtilityService
     # role names has any values
     (member_role_names & Config::IMPORTANT_ROLES).any?
   end
+
+  # returns a User object given the encoded user ID
+  # input: String, Event
+  # output: User
+  def self.find_user_by_id(encoded_id, event)
+	id = encoded_id.delete_prefix('<@!').delete_suffix!('>')
+	return event.bot.member(event.server, id)
+  end
+
+  # returns the display name of the provided user
+  # Input: User
+  # Output: String
+  def self.get_user_display_name(user)
+	return user.nick unless user.nick == nil
+	return user.username
+  end
 end

@@ -15,6 +15,8 @@ require_relative 'modules/year'
 require_relative 'modules/where_is'
 require_relative 'modules/say'
 require_relative 'modules/prompt'
+require_relative 'modules/jail'
+require_relative 'modules/train'
 
 class Main
   # startup sequence
@@ -98,6 +100,15 @@ class Main
     bot.include! SelfRoles
   end
 
+  # jail/free commands featurization
+  if Config::FEATURES['jail']
+	bot.include! Jail
+  end
+  
+  if Config::FEATURES['train']
+	bot.include! Train
+  end
+  
   puts "This bot's invite URL is #{bot.invite_url}."
   puts 'Click on it to invite it to your server.'
 
