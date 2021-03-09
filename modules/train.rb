@@ -5,13 +5,7 @@ require_relative '../services/discord_message_sender'
 
 module Train
 	extend Discordrb::Commands::CommandContainer
-
 	# sl and train commands print the steam locomotive :)
-	command(:sl, attributes={:aliases=:train}) do |event|
-		draw_train(event)
-	end
-
-	def self.draw_train(event)
 		train = """
 ```
                         (@@) (  ) (@)  ( )  @@    ()    @     O     @     O      @\n
@@ -31,6 +25,15 @@ __/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__|______________________
   \\_/      \\__/  \\__/  \\__/  \\__/      \\_/               \\_/   \\_/    \\_/   \\_/
 ```
 		"""
+
+	# set up the rate limiter for this command
+	cooldown = Config::COOLDOWNS["train"]
+	use_user_cooldown = Config::PER_USER_COOLDOWN["train"]
+
+	rate_limiter = bucket(:speed_limit, delay: cooldown)
+	command(:sl, aliases: [:train], bucket: rate_limiter) do |event|
+		return if use_user_cooldown && rate_limited?(:speed_limit, event.message.author.id)
+		return if !use_user_cooldown && rate_limited?(:speed_limit, 0)
 		DiscordMessageSender.send(event.channel, train)
 	end
 end

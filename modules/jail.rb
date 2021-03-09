@@ -6,6 +6,59 @@ require_relative '../services/discord_message_sender'
 module Jail
 	extend Discordrb::Commands::CommandContainer
 
+	# prepare the cooldowns for the two commands
+	cooldown = Config::COOLDOWNS["jail"]
+	use_user_cooldown = Config::PER_USER_COOLDOWN["jail"]
+
+	jail_limiter = bucket(:jail_limit, delay: cooldown)
+	free_limiter = bucket(:free_limit, delay: cooldown)
+	
+	# jail command
+	# creates a jail cell (closed) around the given text:
+	# ----------------
+	# |||   text   |||
+	# ----------------
+	command(:jail) do |event|
+		# first, we want to make sure this is a valid call. If its not, we don't want to start the cooldown
+		text = event.message.content.split(' ', 2)[1]
+		return ReturnError.return_error(event.channel, "You can't put nothing in jail!") unless text != nil
+		
+		return if use_user_cooldown && rate_limited?(:jail_limit, event.message.author.id)
+		return if !use_user_cooldown && rate_limited?(:jail_limit, 0)
+
+		text = decode_users(text, event)
+
+		line = "-" * (12 + text.length)
+		resp  = "```\n" + line + "\n"
+		resp += "|||   " + text + "   |||\n"
+		resp += line + "\n```"
+		
+		DiscordMessageSender.send(event.channel, resp)
+	end
+	
+	# free command
+	# creates a jail cell (open) around the given text:
+	# ----------------
+	# |||   text
+	# ----------------
+	command(:free) do |event|
+		# first, we want to make sure this is a valid call. If its not, we don't want to start the cooldown
+		text = event.message.content.split(' ', 2)[1]
+		return ReturnError.return_error(event.channel, "You can't free nothing from jail!") unless text != nil
+		
+		return if use_user_cooldown && rate_limited?(:free_limit, event.message.author.id)
+		return if !use_user_cooldown && rate_limited?(:free_limit, 0)
+		
+		text = decode_users(text, event)
+
+		line = "-" * (12 + text.length)
+		resp  = "```\n" + line + "\n"
+		resp += "|||   " + text + "\n"
+		resp += line + "\n```"
+		
+		DiscordMessageSender.send(event.channel, resp)
+	end
+
 	# checks a string for encoded users (<@!number>) and replaces
 	# them with the user's display name
 	# Input: String
@@ -18,38 +71,5 @@ module Jail
 			text = text.sub(id, UtilityService.get_user_display_name(user))
 		end
 		return text
-	end
-
-	# jail command
-	# creates a jail cell (closed) around the given text:
-	# ----------------
-	# |||   text   |||
-	# ----------------
-	command(:jail) do |event|
-		text = decode_users(event.message.content.split(' ', 2)[1], event)
-		t_len = text.length
-		
-		resp  = "```\n" + "-" * (12 + t_len) + "\n"
-		resp += "|||   " + text + "   |||\n"
-		resp += "-" * (12 + t_len) + "\n```"
-		
-		DiscordMessageSender.send(event.channel, resp)
-	end
-
-	# free command
-	# creates a jail cell (open) around the given text:
-	# ----------------
-	# |||   text
-	# ----------------
-	command(:free) do |event|
-		text = decode_users(event.message.content.split(' ', 2)[1],event)
-		t_len = text.length
-		
-		cell_border = "-" * (12 + t_len)
-		resp  = "```\n" + cell_border + "\n"
-		resp += "|||   " + text + "\n"
-		resp += cell_border + "\n```"
-		
-		DiscordMessageSender.send(event.channel, resp)
 	end
 end

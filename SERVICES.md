@@ -15,9 +15,9 @@ The `equation` command allows members to create images of mathematical equations
 **Usage**: `equation <latex expression>`
 
 ## Whereis
-The `whereis` command responds with a map of the campus buildings, on which the requested building is highlighted. The command uses fuzzy matching, so typos such as "Eeri Hlal" ("Erie Hall") will still return a map.
+The `whereis` command responds with a map of the campus buildings, on which the requested building is highlighted. The command uses fuzzy matching, so typos such as "Eeri Hlal" ("Erie Hall") will still return a map. Passing `list` as the argument will give back the list of valid buildings.
 
-**Usage**: `whereis <building>`
+**Usage**: `whereis <list, building_name>`
 
 ## Self Roles
 The self roles feature automatically forms an "opt-in" role when messages matching the expected format (see below) are sent in a specific channel. The bot reacts with a checkmark which members can click to receive the specified role. Users opt-out by unreacting with the same message.
