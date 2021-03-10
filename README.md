@@ -40,6 +40,9 @@ Once you've copied your config, you'll need to configure it to work with the Dis
 
 `features`: an array of the different features that can be turned on and off with true and false respectively.
 
+`per_user_cooldown`: an array of the different features with cooldowns. When set to true, the feature will enforce cooldowns on a per user basis. When false, the cooldown will be enforced server-wide.
+
+`cooldowns`: an array of the cooldown lengths (in seconds) for features with cooldowns. See `per_user_cooldown` for how cooldowns are enforced.
 
 ## Setup And Run With Docker (Recommended)
 ### Dependencies
