@@ -32,6 +32,8 @@ __/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__|______________________
 
 	rate_limiter = bucket(:speed_limit, delay: cooldown)
 	command(:sl, aliases: [:train], bucket: rate_limiter) do |event|
+		# ensure this isn't a DM, then return if rate limited
+		return if CommandSentAsDirectMessageToBot.command_sent_as_direct_message_to_bot?(event)
 		return if use_user_cooldown && rate_limited?(:speed_limit, event.message.author.id)
 		return if !use_user_cooldown && rate_limited?(:speed_limit, 0)
 		DiscordMessageSender.send(event.channel, train)

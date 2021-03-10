@@ -101,10 +101,13 @@ class Main
   end
 
   # jail/free commands featurization
+  # wraps provided text in a jail cell
   if Config::FEATURES['jail']
 	bot.include! Jail
   end
   
+  # train featurization
+  # train prints the sl command's train in a code block
   if Config::FEATURES['train']
 	bot.include! Train
   end

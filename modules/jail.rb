@@ -19,6 +19,8 @@ module Jail
 	# |||   text   |||
 	# ----------------
 	command(:jail) do |event|
+		return if CommandSentAsDirectMessageToBot.command_sent_as_direct_message_to_bot?(event)
+
 		# first, we want to make sure this is a valid call. If its not, we don't want to start the cooldown
 		text = event.message.content.split(' ', 2)[1]
 		return ReturnError.return_error(event.channel, "You can't put nothing in jail!") unless text != nil
@@ -42,6 +44,8 @@ module Jail
 	# |||   text
 	# ----------------
 	command(:free) do |event|
+		return if CommandSentAsDirectMessageToBot.command_sent_as_direct_message_to_bot?(event)
+
 		# first, we want to make sure this is a valid call. If its not, we don't want to start the cooldown
 		text = event.message.content.split(' ', 2)[1]
 		return ReturnError.return_error(event.channel, "You can't free nothing from jail!") unless text != nil
@@ -65,8 +69,7 @@ module Jail
 	# Output: String
 	def self.decode_users(text, event)
 		# look for users in the string
-		enc_ids = text.scan(/<@![0-9]+>/)
-		for id in enc_ids
+		text.scan(/<@![0-9]+>/).each do |id|
 			user = UtilityService.find_user_by_id(id, event)
 			text = text.sub(id, UtilityService.get_user_display_name(user))
 		end
