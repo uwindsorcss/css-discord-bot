@@ -17,6 +17,8 @@ module Config
   BOT_USER_ID = CONFIG["bot_user_id"]
   FEATURES = CONFIG["features"]
   DEBUG = CONFIG["debug"]
+  PER_USER_COOLDOWN = CONFIG["per_user_cooldown"]
+  COOLDOWNS = CONFIG["cooldowns"]
   IMPORTANT_ROLES = [
     "Bot",
     "Admin",
@@ -26,5 +28,4 @@ module Config
     "CSS Board Head",
     "CSS Board Member",
   ]
-
 end
