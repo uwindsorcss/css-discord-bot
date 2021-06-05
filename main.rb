@@ -39,9 +39,9 @@ class Main
     fields << Discordrb::Webhooks::EmbedField.new(
       name: "General Commands",
       value:
-        "**`~year <1-4, masters, alumni>`** - add your current academic status to your profile.\n"\
-        "**`~purge <2-99>`** - remove the last `n` messages in channel (**admin only**)\n"\
-        "**`~equation <latex command>`** - returns an image of a latex equation.\n"\
+        "**`~year 1-4, masters, alumni`** - add your current academic status to your profile.\n"\
+        "**`~purge 2-99`** - remove the last `n` messages in channel (**admin only**)\n"\
+        "**`~equation your-latex-command`** - returns an image of a latex equation.\n"\
         "**`~help`** - return the help menu\n"\
         "\n\u200B"
     )
@@ -49,14 +49,13 @@ class Main
     fields << Discordrb::Webhooks::EmbedField.new(
       name: "Building Search Commands",
       value:
-        "**`~whereis <buildingName || buildingCode>`** - return building details and location on map\n"\
+        "**`~whereis buildingName`** or **`~whereis buildingCode`** - return building details and location on map\n"\
         "**`~whereis list`** - return the list of all building codes and their associating names\n"
     )
 
     DiscordMessageSender.send_embedded(
       event.channel,
       title: "Help Menu",
-      description: "Note: Arguments in <this format> do not require the '<', '>' characters\n\u200B",
       fields: fields,
     )
   end
