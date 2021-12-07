@@ -9,6 +9,9 @@
   "author": "CSS Devs css@uwindsor.ca",
   "license": "MIT",
   "dependencies": {
+    "@types/js-yaml": "^4.0.5",
+    "@types/node": "^16.11.12",
+    "js-yaml": "^4.1.0",
     "pino": "^7.5.1"
   },
   "repository": "git@github.com:UWindsorCSS/uwindsor-discord-bot.git",
