@@ -1,0 +1,36 @@
+# See README.md for extra documentation on the specifics of an element.
+---
+api_token: ""
+api_client_id: ""
+bot_user_id: 8
+
+# debug message on or off
+debug: true
+
+self_roles_channel: "self-roles"
+
+urls:
+  mc_address_url: ""
+
+# anything related to the community prompt
+prompt:
+  channel: "community-prompts"
+
+  # top and bottom text to the prompt message
+  # the prompt text given will be inbetween those
+  # if you want to reference a channel or user, you need to follow
+  # the proper way to reference things with their encoded IDs
+  top_text: ""
+  bottom_text: ""
+
+# featurization
+features:
+  year: true
+  purge: true
+  equation: true
+  whereis: true
+  selfRoles: true
+  say: true
+  prompt: true
+  jail: true
+  train: true

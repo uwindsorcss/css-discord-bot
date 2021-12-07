@@ -1,0 +1,35 @@
+{
+  "name": "css-uwindsor-bot",
+  "version": "2.0.0",
+  "description": "Bot for UWindsor CSS discord",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node ./src/index.ts"
+  },
+  "author": "CSS Devs css@uwindsor.ca",
+  "license": "MIT",
+  "dependencies": {
+    "pino": "^7.5.1"
+  },
+  "repository": "git@github.com:UWindsorCSS/uwindsor-discord-bot.git",
+  "prettier": {
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": false,
+    "quoteProps": "as-needed",
+    "trailingComma": "es5",
+    "bracketSpacing": false,
+    "arrowParens": "always",
+    "endOfLine": "lf"
+  },
+  "eslintConfig": {
+    "node": true,
+    "es6": true
+  },
+  "devDependencies": {
+    "@tsconfig/node16": "^1.0.2",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.2"
+  }
+}

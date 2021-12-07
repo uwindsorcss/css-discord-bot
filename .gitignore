@@ -1,5 +1,2 @@
-config.conf
-images/
-.bundle/
-vendor/
-tmp/
+config.yaml
+node_modules/
