@@ -1,4 +1,4 @@
-import {readFile} from "fs/promises";
+import {readFileSync} from "fs";
 import yaml from "js-yaml";
 import {logger} from "./logger";
 
@@ -8,9 +8,7 @@ type ConfigType = {
   bot_user_id: number;
   debug: boolean;
   self_roles_channel: string;
-  urls: {
-    mc_address_url: string;
-  };
+  urls: {mc_address_url: string};
   prompt: {
     channel: string;
     top_text: string;
@@ -31,11 +29,12 @@ type ConfigType = {
 
 let Config: null | ConfigType = null;
 
-const LoadConfig = async (file: string) => {
-  const data = yaml.load(await readFile(file, "utf8"));
+const LoadConfig = (file: string) => {
+  const data = yaml.load(readFileSync(file, "utf8"));
   Config = data as ConfigType;
+
   // if Config.debug is set, then set log level to debug, if naw then info
   logger.level = Config.debug ? "debug" : "info";
 };
 
-export {LoadConfig, Config};
+export {LoadConfig, Config, ConfigType};

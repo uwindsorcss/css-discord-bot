@@ -2,7 +2,7 @@
   "name": "css-uwindsor-bot",
   "version": "2.0.0",
   "description": "Bot for UWindsor CSS discord",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "start": "ts-node ./src/index.ts"
   },
