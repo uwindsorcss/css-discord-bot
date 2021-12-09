@@ -25,12 +25,12 @@ prompt:
 
 # featurization
 features:
-  year: true
-  purge: true
-  equation: true
-  whereis: true
-  selfRoles: true
-  say: true
-  prompt: true
-  jail: true
-  train: true
+  year: false
+  purge: false
+  equation: false
+  whereis: false
+  selfRoles: false
+  say: false
+  prompt: false
+  jail: false
+  train: false
