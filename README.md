@@ -5,6 +5,9 @@
 *Warning: This bot was designed to work on Unix-based OS'.*
 *Your milage may vary and it may be a nightmare to install without Docker on Windows.*
 
+## **THIS IS IN THE PROCESS OF BEING REWRITTEN**
+
+The rewrite is on branch `2.0`
 
 ## Setting Up the Configuration
 
