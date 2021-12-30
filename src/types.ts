@@ -22,4 +22,9 @@ interface ClientType extends Client {
   commands: Collection<string, CommandType>;
 }
 
-export {CommandType, EventType, ClientType};
+enum BotModes {
+  production,
+  development,
+}
+
+export {CommandType, EventType, ClientType, BotModes};

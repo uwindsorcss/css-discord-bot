@@ -1,12 +1,15 @@
 import {readFileSync} from "fs";
 import yaml from "js-yaml";
 import {logger} from "./logger";
+import {BotModes} from "./types";
 
 type ConfigType = {
   api_token: string;
   api_client_id: string;
   bot_user_id: number;
   api_version: string;
+  mode: BotModes;
+  development_guild_id: string;
   debug: boolean;
   self_roles_channel: string;
   urls: {mc_address_url: string};

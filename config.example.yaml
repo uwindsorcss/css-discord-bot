@@ -5,6 +5,12 @@ api_client_id: ""
 bot_user_id: 8
 api_version: 9
 
+# can either be "development" or "production"
+mode: "development"
+
+# in "development" mode, this is required to be set
+development_guild_id: ""
+
 # debug message on or off
 debug: true
 
