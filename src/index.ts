@@ -1,11 +1,16 @@
 import path from "path";
 import fs from "fs";
-import {Client, Intents, Collection} from "discord.js";
-//import {Routes} from "discord-api-types/v9";
+import {Client, Intents, Collection, Interaction, CacheType} from "discord.js";
 import {LoadConfig, Config} from "./config";
 import {logger} from "./logger";
-import {ClientType, CommandType} from "./types";
+import {
+  GlobalRegisterSlashCommands,
+  GuildRegisterSlashCommands,
+} from "./registerer";
+import {BotModes, ClientType, CommandType} from "./types";
 
+// start bot async function
+// needs to be async so we can `await` inside
 const start = async () => {
   // even though this is inside `src/`, pretend that it isnt
   // load in the config
@@ -36,14 +41,27 @@ const start = async () => {
     });
 
     // actual dynamic import
-    const command: CommandType = (await import(
-      filePath.slice(0, -3)
-    )) as CommandType;
+    const {command} = await import(filePath.slice(0, -3));
 
     logger.debug(`Load command file ${filePath}`);
+    logger.debug({command});
 
     // load into commands map
-    client.commands.set(command.data.name, command);
+    client.commands.set(command.data.name, command as CommandType);
+  }
+
+  // if in production mode, register slash commands with all servers
+  // if in development mode, register with specific server
+  if (Config?.mode === BotModes.production) {
+    // register the slash commands to all servers
+    // that the bot is a part of
+    await GlobalRegisterSlashCommands(client.commands);
+  } else {
+    // register the slash command with the dev server(guild)
+    await GuildRegisterSlashCommands(
+      client.commands,
+      Config?.development_guild_id as string
+    );
   }
 
   // array of event files
@@ -75,26 +93,31 @@ const start = async () => {
   });
 
   // command dispatcher
-  client.on("interactionCreate", async (interaction) => {
-    if (!interaction.isCommand()) return;
+  client.on(
+    "interactionCreate",
+    async (interaction: Interaction<CacheType>) => {
+      logger.debug({interaction});
+      if (!interaction.isCommand()) return;
 
-    const command = client.commands.get(interaction.commandName);
+      const command = client.commands.get(interaction.commandName);
 
-    if (!command) return;
+      if (!command) return;
 
-    try {
-      await command.execute(interaction);
-    } catch (error) {
-      logger.error(error);
-      return interaction.reply({
-        content: "There was an error while executing this command!",
-        ephemeral: true,
-      });
+      try {
+        await command.execute(interaction);
+      } catch (error) {
+        logger.error(error);
+        return interaction.reply({
+          content: "There was an error while executing this command!",
+          ephemeral: true,
+        });
+      }
     }
-  });
+  );
 
   // login the client
   client.login(Config?.api_token);
 };
 
+// start bot
 start();
