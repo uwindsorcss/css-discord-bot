@@ -8,7 +8,9 @@ import {
 } from "discord.js";
 
 interface CommandType {
-  data: SlashCommandBuilder;
+  data:
+    | SlashCommandBuilder // normal slash command builder instance
+    | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">; // slash command without any subcommands
   execute: (interaction: CommandInteraction<CacheType>) => Promise<any>;
 }
 
