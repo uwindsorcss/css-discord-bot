@@ -12,11 +12,25 @@ when creating a pull request, please make sure that
 
 - You follow this projects naming conventions
 - You follow this projects structure
-- You remove all debugging helpers
+- You remove all excessive debug helpers
 - You comment your code to explain how it works
 - You add to the documentation if needed
 - Your code works
 - You make your code easily readable and modifiable
+
+## Branch namin conventions
+
+We like to follow the branch naming convention of
+
+```
+<name>-<feature>
+```
+
+for example if Ryan Prairie is working on a feature called purge, the branch would look like
+
+```
+ryanp-purge
+```
 
 ## Code of Conduct
 
