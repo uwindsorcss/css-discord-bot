@@ -18,7 +18,17 @@ when creating a pull request, please make sure that
 - Your code works
 - You make your code easily readable and modifiable
 
-## Branch namin conventions
+## Commit Message Conventions
+
+Good commit message hygiene is extremely important. We follow the structure of
+
+- First line has 50 charecters. It is used say what you added or changed
+- Second line is empty
+- Third line starts the paragraph section
+- Paragraph section has 72 charecters per line and explains in detail what you did and why you did it
+- Each section can use markdown formatting
+
+## Branch Naming Conventions
 
 We like to follow the branch naming convention of
 
