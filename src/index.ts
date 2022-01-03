@@ -1,6 +1,13 @@
 import path from "path";
 import fs from "fs";
-import {Client, Intents, Collection, Interaction, CacheType} from "discord.js";
+import {
+  Client,
+  Intents,
+  Collection,
+  Interaction,
+  CacheType,
+  GuildMember,
+} from "discord.js";
 import {LoadConfig, Config} from "./config";
 import {logger} from "./logger";
 import {
@@ -8,6 +15,11 @@ import {
   GuildRegisterSlashCommands,
 } from "./registerer";
 import {BotModes, ClientType, CommandType} from "./types";
+import {
+  featurePermissionLevel,
+  userCanUseFeature,
+  userPermissionLevel,
+} from "./utilities/permissions";
 
 // start bot async function
 // needs to be async so we can `await` inside
@@ -102,6 +114,27 @@ const start = async () => {
       const command = client.commands.get(interaction.commandName);
 
       if (!command) return;
+
+      const userCanUseCommand = userCanUseFeature(
+        interaction.member,
+        interaction.commandName
+      );
+
+      if (Config?.debug) {
+        logger.info({
+          feature: interaction.commandName,
+          userLevel: userPermissionLevel(interaction.member! as GuildMember),
+          featureLevel: featurePermissionLevel(interaction.commandName),
+          allowed: userCanUseCommand,
+        });
+      }
+
+      if (!userCanUseCommand) {
+        interaction.reply(
+          "Sorry, you don't have permission to execute this command."
+        );
+        return;
+      }
 
       try {
         await command.execute(interaction);

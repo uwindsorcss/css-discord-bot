@@ -41,3 +41,18 @@ features:
   prompt: false
   jail: false
   train: false
+  pong: false
+
+# here, you assign the "permission level" of roles.
+# Default is 0 (no special permissions)
+# Note that to set everyone's permission level to
+# something other than 0, you should use "@everyone"
+# (in quotes, because YAML).
+role_permission_levels:
+
+# Here, you assign the minimum permission level
+# for features. Any permission level equal or above
+# the specified integer will be able to use the command.
+# If a feature is not specified explicitly, it is assumed
+# to have level 0 (everyone)
+feature_permissions:

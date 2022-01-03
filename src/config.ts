@@ -28,7 +28,10 @@ type ConfigType = {
     prompt: boolean;
     jail: boolean;
     train: boolean;
+    edit: boolean;
   };
+  role_permission_levels: {[key: string]: number};
+  feature_permissions: {[key: string]: number};
 };
 
 let Config: null | ConfigType = null;
