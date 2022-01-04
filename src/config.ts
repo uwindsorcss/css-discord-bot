@@ -1,7 +1,14 @@
+import {Collection} from "discord.js";
 import {readFileSync} from "fs";
 import yaml from "js-yaml";
 import {logger} from "./logger";
 import {BotModes} from "./types";
+
+type GuildType = {
+  name: string;
+  features: Array<string>;
+  role_perms: Collection<string, Collection<string, boolean>>;
+};
 
 type ConfigType = {
   api_token: string;
@@ -9,39 +16,39 @@ type ConfigType = {
   bot_user_id: number;
   api_version: string;
   mode: BotModes;
-  development_guild_id: string;
-  debug: boolean;
-  self_roles_channel: string;
-  urls: {mc_address_url: string};
-  prompt: {
-    channel: string;
-    top_text: string;
-    bottom_text: string;
-  };
-  features: {
-    year: boolean;
-    purge: boolean;
-    equation: boolean;
-    whereis: boolean;
-    selfRoles: boolean;
-    say: boolean;
-    prompt: boolean;
-    jail: boolean;
-    train: boolean;
-    edit: boolean;
-  };
-  role_permission_levels: {[key: string]: number};
-  feature_permissions: {[key: string]: number};
+  guilds?: Collection<string, GuildType>;
+  global_features?: Array<string>;
 };
 
-let Config: null | ConfigType = null;
+let Config: ConfigType;
 
 const LoadConfig = (file: string) => {
   const data = yaml.load(readFileSync(file, "utf8"));
   Config = data as ConfigType;
 
-  // if Config.debug is set, then set log level to debug, if naw then info
-  logger.level = Config.debug ? "debug" : "info";
+  // actually convert the Collections to Collections, otherwise they
+  // are Maps which don't have the functionality we expect
+  if (Config.guilds) {
+    Config.guilds = new Collection<string, GuildType>(
+      Object.entries(Config.guilds)
+    );
+    for (let guild of Config.guilds.values()) {
+      guild.role_perms = new Collection<string, Collection<string, boolean>>(
+        Object.entries(guild.role_perms)
+      );
+      for (let [role, rules] of guild.role_perms) {
+        guild.role_perms.set(
+          role,
+          new Collection<string, boolean>(Object.entries(rules))
+        );
+      }
+    }
+  }
+
+  console.log(Config);
+
+  // if bot in dev mode, then set log level to debug, if naw then info
+  logger.level = Config.mode == BotModes.development ? "debug" : "info";
 };
 
 export {LoadConfig, Config, ConfigType};

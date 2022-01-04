@@ -8,51 +8,41 @@ api_version: 9
 # can either be "development" or "production"
 mode: "development"
 
-# in "development" mode, this is required to be set
-development_guild_id: ""
+# list of global features
+# for commands, everyone can use them (no permissions possible)
+# and they may be run in DMs. If a feature appears here, it will
+# be global, even if specified in a guild
+global_features:
+  - pong
 
-# debug message on or off
-debug: true
+# here you configure each server. Label is the server's ID.
+# features:   list of features to enable
+# role_perms: Map from role to map from feature name to boolean (allowed).
+#             Having an @everyone rule which defines the starting state
+#             for all features is recommended, but not required.
+guilds:
+  "your_server_id_here":
+    name: "main server"
+    features:
+      - purge
+    role_perms:
+      "@everyone":
+        pong: true
+        purge: false
+      "admin":
+        purge: true
+# self_roles_channel: "self-roles"
 
-self_roles_channel: "self-roles"
+# urls:
+#   mc_address_url: ""
 
-urls:
-  mc_address_url: ""
+# # anything related to the community prompt
+# prompt:
+#   channel: "community-prompts"
 
-# anything related to the community prompt
-prompt:
-  channel: "community-prompts"
-
-  # top and bottom text to the prompt message
-  # the prompt text given will be inbetween those
-  # if you want to reference a channel or user, you need to follow
-  # the proper way to reference things with their encoded IDs
-  top_text: ""
-  bottom_text: ""
-
-# featurization
-features:
-  year: false
-  purge: false
-  equation: false
-  whereis: false
-  selfRoles: false
-  say: false
-  prompt: false
-  jail: false
-  train: false
-  pong: false
-
-# here, you assign the "permission level" of roles.
-# Default is 0 (no special permissions)
-# Note that to set everyone's permission level to
-# something other than 0, you should use "@everyone"
-# (in quotes, because YAML).
-role_permission_levels:
-
-# Here, you assign the minimum permission level
-# for features. Any permission level equal or above
-# the specified integer will be able to use the command.
-# If a feature is not specified explicitly, it is assumed
-# to have level 0 (everyone)
-feature_permissions:
+#   # top and bottom text to the prompt message
+#   # the prompt text given will be inbetween those
+#   # if you want to reference a channel or user, you need to follow
+#   # the proper way to reference things with their encoded IDs
+#   top_text: ""
+#   bottom_text: ""
