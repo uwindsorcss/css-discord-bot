@@ -5,64 +5,112 @@ import {CommandType, PermissionType} from "./types";
 import {Config} from "./config";
 import {logger} from "./logger";
 import {ResolveGuildCommandId} from "./helpers/resolvers";
+import {GlobalCommandIDs, GuildCommandIDs} from "./helpers/commandIdCache";
+
+type RegisteredCommand = {id: string; name: string};
 
 export const GlobalRegisterSlashCommands = async (
   commands: Collection<string, CommandType>
 ) => {
   const commandArr = [];
-  const clientId = Config.api_client_id;
   for (const command of commands.values())
     commandArr.push(command.data.toJSON());
 
-  let rest = new REST({version: Config.api_version});
-  rest.setToken(clientId);
+  let rest = new REST({version: Config.api_version}).setToken(Config.api_token);
   logger.debug(commandArr);
 
   // may throw error, let it bubble up and crash the bot
-  const route = Routes.applicationCommands(clientId);
-  await rest.put(route, {body: commandArr});
+  const route = Routes.applicationCommands(Config.api_client_id);
+  const res = (await rest.put(route, {
+    body: commandArr,
+  })) as RegisteredCommand[];
 
-  logger.log(`Succesfully registered ${commandArr.length} global commands`);
+  // cache the name and ID
+  for (const command of res) {
+    GlobalCommandIDs.set(command.name, command.id);
+  }
+
+  logger.info(`Registered ${commandArr.length} global commands`);
+};
+
+export const GlobalClearCommands = async () => {
+  GlobalCommandIDs.clear();
+
+  let r = new REST({version: Config.api_version}).setToken(Config.api_token);
+  await r.put(Routes.applicationCommands(Config.api_client_id), {body: []});
 };
 
 export const GuildRegisterSlashCommands = async (
-  commands: Collection<string, CommandType>, // command name -> command
-  guild_id: string
+  commands: Collection<string, CommandType>,
+  guild_id: string,
+  overwrite: boolean = false
 ) => {
-  const commandArr = [];
+  let commandArr = [];
   const clientId = Config.api_client_id as string;
   for (const command of commands.values()) {
     commandArr.push(command.data.toJSON());
   }
   const rest = new REST({version: Config.api_version});
-  rest.setToken(clientId);
+  rest.setToken(Config.api_token);
   logger.debug(commandArr);
 
-  // may throw error, let it bubble up and crash the bot
   const route = Routes.applicationGuildCommands(clientId, guild_id);
-  await rest.put(route, {body: commandArr});
+
+  // may throw error, let it bubble up and crash the bot
+  if (!overwrite) {
+    const existing = (await rest.get(route)) as RegisteredCommand[];
+    commandArr = [...existing, ...commandArr];
+  }
+  const response = (await rest.put(route, {
+    body: commandArr,
+  })) as RegisteredCommand[];
+
+  for (const command of response) {
+    let guildCache = GuildCommandIDs.get(guild_id);
+    if (!guildCache) {
+      GuildCommandIDs.set(guild_id, new Collection<string, string>());
+      guildCache = GuildCommandIDs.get(guild_id);
+    }
+
+    guildCache?.set(command.name, command.id);
+  }
+
+  logger.info(`Registered ${commandArr.length} commands in guild ${guild_id}`);
+};
+
+/**
+ * NOTE: This will also clear the permissions for the guild!
+ * @param guild_id the id of the guild to clear commands in
+ */
+export const GuildClearCommands = async (guild_id: string) => {
+  // reset cache
+  GuildCommandIDs.get(guild_id)?.clear();
+
+  let r = new REST({version: Config.api_version}).setToken(Config.api_token);
+  await r.put(Routes.applicationGuildCommands(Config.api_client_id, guild_id), {
+    body: [],
+  });
 };
 
 export const GuildRegisterPermissions = async (
-  permissions: Collection<string, PermissionType[]>, // command name -> permissions
+  permissions: Collection<string, PermissionType[]>,
   guild_id: string,
   client: Client
 ) => {
-  const guild = await client.guilds.fetch(guild_id);
+  const guild = client.guilds.cache.get(guild_id);
   if (!guild) return;
 
-  const permArr = [];
-  const clientId = Config.api_client_id;
-  for (const [cmdName, cmdPerms] of permissions.entries()) {
-    const cmdId = ResolveGuildCommandId(guild, cmdName);
-    permArr.push(JSON.stringify({id: cmdId, permissions: cmdPerms}));
+  let fullPermissions: {id: string; permissions: PermissionType[]}[] = [];
+  for (const [commandName, cmdPermissions] of permissions.entries()) {
+    let commandId = ResolveGuildCommandId(guild, commandName);
+    if (!commandId) continue;
+
+    fullPermissions.push({id: commandId, permissions: cmdPermissions});
   }
 
-  const rest = new REST({version: Config.api_version});
-  rest.setToken(clientId);
-  logger.debug(permArr);
+  console.log(fullPermissions);
+  console.log(JSON.stringify(fullPermissions));
 
-  // may throw error, let it bubble up and crash the bot
-  const route = Routes.guildApplicationCommandsPermissions(clientId, guild_id);
-  await rest.put(route, {body: permArr});
+  await guild.commands.permissions.set({fullPermissions});
+  logger.info(`Registered ${fullPermissions.length} commands' permissions`);
 };

@@ -9,7 +9,6 @@ import {
 
 interface CommandType {
   allowGlobal: boolean;
-  allowGuilded: boolean;
   data:
     | SlashCommandBuilder // normal slash command builder instance
     | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">; // slash command without any subcommands
@@ -27,14 +26,14 @@ interface ClientType extends Client {
 }
 
 type PermissionType = {
-  type: "ROLE" | "USER";
   id: string;
+  type: "ROLE" | "USER";
   permission: boolean;
 };
 
 enum BotModes {
-  production,
-  development,
+  production = "production",
+  development = "development",
 }
 
 export {CommandType, PermissionType, EventType, ClientType, BotModes};

@@ -12,9 +12,11 @@ import {
 } from "discord.js";
 
 const purgeModule: CommandType = {
+  allowGlobal: false,
   data: new SlashCommandBuilder()
     .setName("purge")
-    .setDescription("Purges the last N messages where 1 <= n <= 100")
+    .setDescription("Purges the last N messages where 1 <= n <= 99")
+    .setDefaultPermission(false)
     .addIntegerOption((option: SlashCommandIntegerOption) =>
       option
         .setName("n")
@@ -24,16 +26,13 @@ const purgeModule: CommandType = {
   execute: async (interaction: CommandInteraction<CacheType>) => {
     let n = interaction.options.getInteger("n");
     logger.debug(`Purge was called with ${n}`);
-    if (!n) {
-      await interaction.reply("**ERROR**n has to be 1 <= n <= 100");
-      return;
-    }
-    if (n < 1 || n > 100) {
-      await interaction.reply("**ERROR:**n has to be 1 <= n <= 100");
+    if (!n || n < 1 || n > 99) {
+      await interaction.reply("**ERROR** `n` must be 1 <= n <= 99");
       return;
     }
 
     // if no guild then in DM
+    // NOTE: this should never actually be true, as long as allowGlobal = false
     if (!interaction.guild) {
       await interaction.reply("**ERROR:** command only works in servers");
       return;
@@ -43,6 +42,7 @@ const purgeModule: CommandType = {
     const channel = interaction.channel as TextChannel | ThreadChannel;
 
     // bulk delete (n + 1) number of messages
+    await interaction.reply(`Purging ${n} messages...`);
     await channel?.bulkDelete(n + 1);
   },
 };
