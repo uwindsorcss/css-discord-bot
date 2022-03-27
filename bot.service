@@ -1,0 +1,17 @@
+[Unit]
+Description=UWindsor CSS discord bot v1.0.0
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+User=discordadm
+ExecStart="ruby /home/discordadm/uwindsor-discord-bot/main.rb"
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=%n
+
+[Install]
+WantedBy=multi-user.target
