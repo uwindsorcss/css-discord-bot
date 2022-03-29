@@ -1,6 +1,7 @@
-import {CommandType} from "../types";
-import {logger} from "../logger";
+import { CommandType } from "../types";
+import { logger } from "../logger";
 import {
+  inlineCode,
   SlashCommandBuilder,
   SlashCommandIntegerOption,
 } from "@discordjs/builders";
@@ -9,6 +10,10 @@ import {
   CacheType,
   TextChannel,
   ThreadChannel,
+  Permissions,
+  Message,
+  Collection,
+  MessageEmbed
 } from "discord.js";
 
 const purgeModule: CommandType = {
@@ -22,29 +27,44 @@ const purgeModule: CommandType = {
         .setRequired(true)
     ),
   execute: async (interaction: CommandInteraction<CacheType>) => {
-    let n = interaction.options.getInteger("n");
-    logger.debug(`Purge was called with ${n}`);
-    if (!n) {
-      await interaction.reply("**ERROR**n has to be 1 <= n <= 100");
-      return;
-    }
-    if (n < 1 || n > 100) {
-      await interaction.reply("**ERROR:**n has to be 1 <= n <= 100");
-      return;
-    }
 
-    // if no guild then in DM
-    if (!interaction.guild) {
-      await interaction.reply("**ERROR:** command only works in servers");
-      return;
-    }
+    const ephemeral = true;
 
-    // cast channel to either TextChannel or ThreadChannel
-    const channel = interaction.channel as TextChannel | ThreadChannel;
+		try {
+			if (!interaction.memberPermissions!.has(['MANAGE_MESSAGES'])) {
+				return interaction.reply({
+					content: 'You need the manage messages permission to run this command',
+					ephemeral
+				});
+			}
+			if (!interaction.guild!.me!.permissions.has(['MANAGE_MESSAGES'])) {
+				return interaction.reply({
+					content: 'I need the manage messages permission to run this command',
+					ephemeral
+				});
+			}
 
-    // bulk delete (n + 1) number of messages
-    await channel?.bulkDelete(n + 1);
+			const amount = interaction.options.getInteger('n')!;
+
+			const channel = interaction.channel as TextChannel | ThreadChannel;
+			const deleted = await channel.bulkDelete(amount);
+
+			const embed = new MessageEmbed()
+				.setColor('DARK_GREEN')
+				.setAuthor({
+					name: interaction.user.tag,
+					iconURL: interaction.user.displayAvatarURL({ dynamic: true })
+				})
+				.setTitle('Successfully Deleted Messages')
+				.setDescription(`Successfully deleted ${inlineCode(deleted.size.toString())} messages!`)
+				.setTimestamp()
+				.setFooter({ text: `Version 9` });
+
+			interaction.reply({ embeds: [embed], ephemeral });
+		} catch (err) {
+			console.error(err);
+		}
   },
 };
 
-export {purgeModule as command};
+export { purgeModule as command };

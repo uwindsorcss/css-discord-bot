@@ -16,11 +16,11 @@ const start = async () => {
   // load in the config
   LoadConfig("config.yaml");
 
-  logger.debug({Config});
+  //logger.debug({Config});
 
   // create client as ClientType
   const client: ClientType = new Client({
-    intents: [Intents.FLAGS.GUILDS],
+    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
   }) as ClientType;
 
   client.commands = new Collection();
@@ -28,11 +28,12 @@ const start = async () => {
   // return a string array of file names
   // where the file name ends in `.ts` and it is enabled
   // in featurization
-  const commandFiles: string[] = fs.readdirSync("./src/commands/").filter(
-    (file: string) =>
-      file.endsWith(".ts") && (Config as any)?.features[file.slice(0, -3)] // slice to get rid of extension
-  );
 
+  // dynamic command loader
+  const commandFiles = fs.readdirSync("./src/commands") //
+  .filter((name) => name.endsWith(".ts"));
+
+  logger
   // dynamically import and load commands
   for (const file of commandFiles) {
     const filePath = path.format({
@@ -41,7 +42,7 @@ const start = async () => {
     });
 
     // actual dynamic import
-    const {command} = await import(filePath.slice(0, -3));
+    const {command} = await import(filePath);
 
     logger.debug(`Load command file ${filePath}`);
     logger.debug({command});
@@ -89,7 +90,7 @@ const start = async () => {
 
   // Bot ready event
   client.once("ready", () => {
-    logger.info("Bot is ready");
+    logger.info("Bot is ready haha haha");
   });
 
   // command dispatcher
@@ -115,6 +116,13 @@ const start = async () => {
     }
   );
 
+  client.on('messageCreate', (mess) =>{
+    if(mess.content == 'ping'){
+      mess.reply({
+        content: 'pong'
+      })
+    }
+  })
   // login the client
   client.login(Config?.api_token);
 };
