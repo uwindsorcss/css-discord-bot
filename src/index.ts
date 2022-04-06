@@ -33,8 +33,7 @@ const start = async () => {
   const commandFiles = fs.readdirSync("./src/commands") //
   .filter((name) => name.endsWith(".ts"));
 
-  logger
-  // dynamically import and load commands
+    // dynamically import and load commands
   for (const file of commandFiles) {
     const filePath = path.format({
       root: "./commands/",
@@ -44,8 +43,8 @@ const start = async () => {
     // actual dynamic import
     const {command} = await import(filePath);
 
-    logger.debug(`Load command file ${filePath}`);
-    logger.debug({command});
+    //logger.debug(`Load command file ${filePath}`);
+    //logger.debug({command});
 
     // load into commands map
     client.commands.set(command.data.name, command as CommandType);
@@ -59,6 +58,7 @@ const start = async () => {
     await GlobalRegisterSlashCommands(client.commands);
   } else {
     // register the slash command with the dev server(guild)
+
     await GuildRegisterSlashCommands(
       client.commands,
       Config?.development_guild_id as string
@@ -116,13 +116,13 @@ const start = async () => {
     }
   );
 
-  client.on('messageCreate', (mess) =>{
-    if(mess.content == 'ping'){
-      mess.reply({
-        content: 'pong'
-      })
-    }
-  })
+  // client.on('messageCreate', (mess) =>{
+  //   if(mess.content == 'ping'){
+  //     mess.reply({
+  //       content: 'pong'
+  //     })
+  //   }
+  // })
   // login the client
   client.login(Config?.api_token);
 };

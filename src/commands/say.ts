@@ -1,7 +1,9 @@
 import { logger } from "../logger";
-import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
-import { CommandInteraction, CacheType, MessageEmbed } from "discord.js";
-import { CommandType } from "../types";
+import { inlineCode, SlashCommandBuilder, SlashCommandChannelOption, SlashCommandStringOption } from "@discordjs/builders";
+import { CommandInteraction, CacheType, MessageEmbed, Client, TextChannel, Intents, Message, GuildMemberRoleManager, GuildMember } from "discord.js";
+import { ClientType, CommandType } from "../types";
+import { important_roles } from "../config";
+import { CheckUserRole } from "../helpers/userRoles";
 
 const sayModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -9,45 +11,60 @@ const sayModule: CommandType = {
     .setDescription("Say something?")
     .addStringOption((opt: SlashCommandStringOption) =>
       opt
-        .setName('input')
+        .setName('message')
         .setDescription('The text you want me to say')
         .setRequired(true)
     )
-  ,
-  execute: async (interaction: CommandInteraction<CacheType>) => {
-    logger.info("hello from say");
-    // await interaction.reply("hello from say");
-    if (interaction.isCommand()) {
-      try {
-        if (!interaction.memberPermissions!.has(['MANAGE_CHANNELS'])) {
-          return interaction.reply({
-            content:
-              'You need the manage channels permission to run this command',
-            ephemeral: true
-          });
-        }
+    .addChannelOption((option: SlashCommandChannelOption) =>
+      option
+        .setName('destination')
+        .setDescription('Select a channel')
+        .setRequired(true)
+        .addChannelType(0) //text channel
+    ),
+  execute: async (interaction: CommandInteraction<CacheType>, message: Message | null | undefined) => {
 
-        const input = interaction.options.getString('input')!;
+    const ephemeral = true;
+    try {
 
-        await interaction.reply({ content: 'Sending...', ephemeral: true });
+      let check = await CheckUserRole(interaction.member! as GuildMember)
+      
+      if (check) {
+        let channelId = interaction.options.getChannel('destination') as TextChannel;
+
+        let message = interaction.options.getString('message')!;
+        logger.debug(`channelId is: ${channelId}`);
+
+        channelId?.send({ content: message })
+
 
         const embed = new MessageEmbed()
-          .setColor('BLURPLE')
-          .setAuthor(
-            interaction.user.tag,
-            interaction.user.displayAvatarURL({ dynamic: true })
-          )
-          .setDescription(input)
+          .setColor('DARK_GREEN')
+          .setAuthor({
+            name: interaction.user.tag,
+            iconURL: interaction.user.displayAvatarURL({ dynamic: true })
+          })
+          .setTitle('Successfully Say Messages')
+          .setDescription(`Successfully say ${inlineCode(message)} in ${inlineCode(channelId.name)}!`)
           .setTimestamp()
-          .setFooter(`Sent using the send command`);
+          .setFooter({ text: `Version 9` });
 
-        await interaction.channel?.send({ embeds: [embed] });
-
-        interaction.editReply({ content: 'Sent!' });
-      } catch (err) {
-        console.error(err);
+        interaction.reply({ embeds: [embed], ephemeral });
       }
+      else {
+        return interaction.reply({
+          content: 'You need the admin role to run this command',
+          ephemeral
+        });
+      }
+
+
+    } catch (error) {
+      console.error(error);
     }
+
+
+
   },
 
 };
