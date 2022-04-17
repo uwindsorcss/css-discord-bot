@@ -18,7 +18,7 @@ const GlobalRegisterSlashCommands = async (
     Config?.api_token as string
   );
 
-  logger.debug(commandArr);
+  //logger.debug(commandArr);
   // this can throw an error
   // if it does, let it bubble up and crash the bot
   await rest.put(Routes.applicationCommands(Config?.api_client_id as string), {
@@ -38,7 +38,7 @@ const GuildRegisterSlashCommands = async (
     Config?.api_token as string
   );
 
-  logger.debug(commandArr);
+  //logger.debug(commandArr);
   // this can throw an error
   // if it does, let it bubble up and crash the bot
   await rest.put(
