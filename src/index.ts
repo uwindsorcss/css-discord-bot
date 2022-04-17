@@ -41,7 +41,7 @@ const start = async () => {
     });
 
     // actual dynamic import
-    const {command} = await import(filePath);
+    const {command} = await import(filePath.slice(0, -3));
 
     //logger.debug(`Load command file ${filePath}`);
     //logger.debug({command});
