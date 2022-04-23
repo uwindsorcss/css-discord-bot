@@ -7,10 +7,8 @@ export const AddUserRole = async (
     role: RoleResolvable
 ): Promise<string> => {
     try {
-        // console.log({member})
-        // console.log({role})
         await member.roles.add(role);
-        return "";
+        return "success";
     } catch (err) {
         return `${err}`;
     }
