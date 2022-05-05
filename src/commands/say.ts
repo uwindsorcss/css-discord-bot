@@ -1,8 +1,7 @@
 import { logger } from "../logger";
 import { inlineCode, SlashCommandBuilder, SlashCommandChannelOption, SlashCommandStringOption } from "@discordjs/builders";
-import { CommandInteraction, CacheType, MessageEmbed, Client, TextChannel, Intents, Message, GuildMemberRoleManager, GuildMember } from "discord.js";
-import { ClientType, CommandType } from "../types";
-import { important_roles } from "../config";
+import { CommandInteraction, CacheType, MessageEmbed, TextChannel, GuildMember } from "discord.js";
+import { CommandType } from "../types";
 import { CheckUserRole } from "../helpers/userRoles";
 
 const sayModule: CommandType = {
@@ -22,14 +21,15 @@ const sayModule: CommandType = {
         .setRequired(true)
         .addChannelType(0) //text channel
     ),
-  execute: async (interaction: CommandInteraction<CacheType>, message: Message | null | undefined) => {
+  execute: async (interaction: CommandInteraction<CacheType>) => {
 
     const ephemeral = true;
     try {
 
-      let check = await CheckUserRole(interaction.member! as GuildMember)
-      
-      if (check) {
+      let checkImpRoles: boolean = await CheckUserRole(interaction.member! as GuildMember)
+
+      // If the user's role is in the important roles
+      if (checkImpRoles) {
         let channelId = interaction.options.getChannel('destination') as TextChannel;
 
         let message = interaction.options.getString('message')!;
@@ -39,15 +39,9 @@ const sayModule: CommandType = {
 
 
         const embed = new MessageEmbed()
-          .setColor('DARK_GREEN')
-          .setAuthor({
-            name: interaction.user.tag,
-            iconURL: interaction.user.displayAvatarURL({ dynamic: true })
-          })
           .setTitle('Successfully Say Messages')
-          .setDescription(`Successfully say ${inlineCode(message)} in ${inlineCode(channelId.name)}!`)
-          .setTimestamp()
-          .setFooter({ text: `Version 9` });
+          .setDescription(`Successfully say ${inlineCode(message)} in ${inlineCode(channelId.name)}!`);
+
 
         interaction.reply({ embeds: [embed], ephemeral });
       }
@@ -57,14 +51,9 @@ const sayModule: CommandType = {
           ephemeral
         });
       }
-
-
     } catch (error) {
-      console.error(error);
+      logger.error(`Say command failed: ${error}`);
     }
-
-
-
   },
 
 };

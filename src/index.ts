@@ -97,7 +97,7 @@ const start = async () => {
   client.on(
     "interactionCreate",
     async (interaction: Interaction<CacheType>) => {
-      logger.debug({interaction});
+      //logger.debug({interaction});
       if (!interaction.isCommand()) return;
 
       const command = client.commands.get(interaction.commandName);
