@@ -38,9 +38,11 @@ const start = async () => {
    */
   let promises: Promise<any>[] = [];
   promises.push(GlobalClearCommands());
-  if (Config.guilds)
-    for (const guildId of Config.guilds?.keys())
+  if (Config.guilds) {
+    for (const guildId of Config.guilds?.keys()) {
       promises.push(GuildClearCommands(guildId));
+    }
+  }
 
   await Promise.allSettled(promises);
 
@@ -51,7 +53,7 @@ const start = async () => {
   const commandFiles = fs
     .readdirSync("./src/commands")
     .filter((file) => file.endsWith(".ts"))
-    .map((file) => file.slice(0, -3));
+    .map((file) => file.slice(0, -3)); // remove `.ts` from the end
 
   // load any that are enabled
   let globalCmds = new Collection<string, CommandType>();

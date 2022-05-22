@@ -2,26 +2,23 @@ import {Client, Guild} from "discord.js";
 import path from "path";
 import {GlobalCommandIDs, GuildCommandIDs} from "./commandIdCache";
 
-export const ResolveCommandPath = (name: string) =>
+const ResolveCommandPath = (name: string) =>
   path.format({
     root: "./commands/",
     name: name,
   });
 
-export const ResolveEventPath = (name: string) =>
+const ResolveEventPath = (name: string) =>
   path.format({
     root: "./events/",
     name: name,
   });
 
-export const ResolveRoleId = (
-  guild: Guild,
-  name: string
-): string | undefined => {
+const ResolveRoleId = (guild: Guild, name: string): string | undefined => {
   return guild.roles.cache.findKey((role) => role.name === name);
 };
 
-export const ResolveGlobalCommandId = (
+const ResolveGlobalCommandId = (
   client: Client,
   name: string
 ): string | undefined => {
@@ -31,7 +28,7 @@ export const ResolveGlobalCommandId = (
   return client.application?.commands.cache.findKey((cmd) => cmd.name === name);
 };
 
-export const ResolveGuildCommandId = (
+const ResolveGuildCommandId = (
   guild: Guild,
   name: string
 ): string | undefined => {
@@ -39,4 +36,12 @@ export const ResolveGuildCommandId = (
   if (cached) return cached;
 
   return guild.commands.cache.findKey((cmd) => cmd.name === name);
+};
+
+export {
+  ResolveCommandPath,
+  ResolveEventPath,
+  ResolveRoleId,
+  ResolveGlobalCommandId,
+  ResolveGuildCommandId,
 };

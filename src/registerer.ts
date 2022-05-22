@@ -9,7 +9,7 @@ import {GlobalCommandIDs, GuildCommandIDs} from "./helpers/commandIdCache";
 
 type RegisteredCommand = {id: string; name: string};
 
-export const GlobalRegisterSlashCommands = async (
+const GlobalRegisterSlashCommands = async (
   commands: Collection<string, CommandType>
 ) => {
   const commandArr = [];
@@ -33,14 +33,14 @@ export const GlobalRegisterSlashCommands = async (
   logger.info(`Registered ${commandArr.length} global commands`);
 };
 
-export const GlobalClearCommands = async () => {
+const GlobalClearCommands = async () => {
   GlobalCommandIDs.clear();
 
   let r = new REST({version: Config.api_version}).setToken(Config.api_token);
   await r.put(Routes.applicationCommands(Config.api_client_id), {body: []});
 };
 
-export const GuildRegisterSlashCommands = async (
+const GuildRegisterSlashCommands = async (
   commands: Collection<string, CommandType>,
   guild_id: string,
   overwrite: boolean = false
@@ -82,7 +82,7 @@ export const GuildRegisterSlashCommands = async (
  * NOTE: This will also clear the permissions for the guild!
  * @param guild_id the id of the guild to clear commands in
  */
-export const GuildClearCommands = async (guild_id: string) => {
+const GuildClearCommands = async (guild_id: string) => {
   // reset cache
   GuildCommandIDs.get(guild_id)?.clear();
 
@@ -92,7 +92,7 @@ export const GuildClearCommands = async (guild_id: string) => {
   });
 };
 
-export const GuildRegisterPermissions = async (
+const GuildRegisterPermissions = async (
   permissions: Collection<string, PermissionType[]>,
   guild_id: string,
   client: Client
@@ -108,9 +108,17 @@ export const GuildRegisterPermissions = async (
     fullPermissions.push({id: commandId, permissions: cmdPermissions});
   }
 
-  console.log(fullPermissions);
-  console.log(JSON.stringify(fullPermissions));
+  logger.debug({fullPermissions});
+  logger.debug(JSON.stringify(fullPermissions));
 
   await guild.commands.permissions.set({fullPermissions});
   logger.info(`Registered ${fullPermissions.length} commands' permissions`);
+};
+
+export {
+  GlobalRegisterSlashCommands,
+  GlobalClearCommands,
+  GuildRegisterSlashCommands,
+  GuildClearCommands,
+  GuildRegisterPermissions,
 };
