@@ -24,9 +24,10 @@ const start = async () => {
   LoadConfig("config.yaml");
   logger.debug({Config});
 
+
   // create client as ClientType, then establish connection with Discord
   const client: ClientType = new Client({
-    intents: [Intents.FLAGS.GUILDS],
+    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
   }) as ClientType;
   client.commands = new Collection<string, CommandType>();
 
@@ -141,12 +142,14 @@ const start = async () => {
         guildPermissions.set(commandName, commandPermissions);
       }
 
+
       logger.debug(`Registering commands for ${guildId}`);
       await GuildRegisterSlashCommands(guildCmds, guildId);
 
       logger.debug(`Registering permissions for ${guildId}`);
       await GuildRegisterPermissions(guildPermissions, guildId, client);
     }
+
   }
 
   /*
@@ -187,10 +190,12 @@ const start = async () => {
         content: "There was an error while executing this command.",
         ephemeral: true,
       });
+
     }
   });
 
   logger.info("Bot setup has finished");
+
 };
 
 // start bot

@@ -22,6 +22,7 @@ const GlobalRegisterSlashCommands = async (
   // may throw error, let it bubble up and crash the bot
   const route = Routes.applicationCommands(Config.api_client_id);
   const res = (await rest.put(route, {
+
     body: commandArr,
   })) as RegisteredCommand[];
 
@@ -70,6 +71,7 @@ const GuildRegisterSlashCommands = async (
     if (!guildCache) {
       GuildCommandIDs.set(guild_id, new Collection<string, string>());
       guildCache = GuildCommandIDs.get(guild_id);
+
     }
 
     guildCache?.set(command.name, command.id);
