@@ -9,7 +9,10 @@ api_version: 9
 # Switches the bot between "development" and "production" modes.
 # In development mode, if devguild is set, global commands will be
 # redirected to the specified guild instead.
+#
+# Debug mode is either on with "debug" set to true or "mode" be "development"
 mode: "production"
+debug: false
 devguild: ""
 
 # list of global features
@@ -22,6 +25,7 @@ devguild: ""
 # CANNOT be revoked.
 global_features:
   - pong
+
 # Here you configure each server. Label is the server's ID.
 # Commands are disbaled for @everyone by default.
 # name: Friendly name for reference, not used by the bot

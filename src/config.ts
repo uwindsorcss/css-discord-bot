@@ -19,6 +19,7 @@ type ConfigType = {
 
   // bot mode config
   mode: BotModes;
+  debug: boolean;
   devguild?: string;
 
   // featurization
@@ -56,7 +57,8 @@ const LoadConfig = (file: string) => {
   }
 
   // if bot in dev mode, then set log level to debug, if naw then info
-  logger.level = Config.mode === BotModes.development ? "debug" : "info";
+  logger.level =
+    Config.mode === BotModes.development || Config.debug ? "debug" : "info";
 };
 
 export {LoadConfig, Config, ConfigType};
