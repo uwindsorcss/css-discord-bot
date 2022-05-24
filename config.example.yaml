@@ -1,23 +1,57 @@
 # See README.md for extra documentation on the specifics of an element.
+# TODO: rewrite config documentation
 ---
 api_token: ""
 api_client_id: ""
 bot_user_id: 8
 api_version: 9
 
-# can either be "development" or "production"
-mode: "development"
+# Switches the bot between "development" and "production" modes.
+# In development mode, if devguild is set, global commands will be
+# redirected to the specified guild instead.
+#
+# Debug mode is either on with "debug" set to true or "mode" be "development"
+mode: "production"
+debug: false
+devguild: ""
 
-# in "development" mode, this is required to be set
-development_guild_id: ""
+# list of global features
+# for commands, everyone can use them (no permissions possible)
+# and they may be run in DMs. If a feature appears here, it will
+# be global, even if specified in a guild. Features may not
+# be available as global features (such as `purge`)
+# NOTE: these features may take up to an hour to be registered
+# NOTE: global features are enabled for @everyone, and that permission
+# CANNOT be revoked.
+global_features:
+  - pong
 
-# debug message on or off
-debug: true
+# Here you configure each server. Label is the server's ID.
+# Commands are disbaled for @everyone by default.
+# name: Friendly name for reference, not used by the bot
+# features: which features should be enabled, on top of any
+#           global features
+# role_perms: a list of roles and which commands they can use
+# example config:
+# guilds:
+#   "your_guild_id_here":
+#     name: "your amazing server"
+#     features:
+#       - purge
+#     role_perms:
+#       "Admin":
+#         - purge
+guilds:
+  "your_guild_id_here":
+    name: "your amazing server"
+    features:
+      - purge
+    role_perms:
+      "Admin":
+        - purge
 
+# Self-roles feature config
 self_roles_channel: "self-roles"
-
-urls:
-  mc_address_url: ""
 
 # anything related to the community prompt
 prompt:
@@ -30,14 +64,6 @@ prompt:
   top_text: ""
   bottom_text: ""
 
-# featurization
-features:
-  year: false
-  purge: false
-  equation: false
-  whereis: false
-  selfRoles: false
-  say: false
-  prompt: false
-  jail: false
-  train: false
+# URLs used by various features
+urls:
+  mc_address_url: ""

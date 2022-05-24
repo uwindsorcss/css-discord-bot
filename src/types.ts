@@ -9,6 +9,7 @@ import {
 } from "discord.js";
 
 interface CommandType {
+  allowGlobal: boolean;
   data:
   | SlashCommandBuilder // normal slash command builder instance
   | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">; // slash command without any subcommands
@@ -25,9 +26,16 @@ interface ClientType extends Client {
   commands: Collection<string, CommandType>;
 }
 
+type PermissionType = {
+  id: string;
+  type: "ROLE" | "USER";
+  permission: boolean;
+};
+
 enum BotModes {
-  production,
-  development,
+  production = "production",
+  development = "development",
 }
 
-export { CommandType, EventType, ClientType, BotModes };
+export {CommandType, PermissionType, EventType, ClientType, BotModes};
+
