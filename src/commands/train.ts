@@ -4,7 +4,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction, CacheType } from "discord.js";
 import { dog, goat, train } from "../helpers/ASCIIArts";
 
-const pongModule: CommandType = {
+const trainModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("train")
     .setDescription("Train?"),
