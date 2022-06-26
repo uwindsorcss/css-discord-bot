@@ -2,27 +2,36 @@ import { CommandType } from "../types";
 import { logger } from "../logger";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction, CacheType } from "discord.js";
-import { dog, goat, train } from "../helpers/ASCIIArts";
+import { ASCIIArts } from "../helpers/ASCIIArts";
 
-const pongModule: CommandType = {
+const artModule: CommandType = {
   data: new SlashCommandBuilder()
-    .setName("train")
-    .setDescription("Train?"),
+    .setName("art")
+    .setDescription("Try out some cool ASCII Arts?")
+    .addStringOption(option => {
+      option
+        .setName('name')
+        .setDescription('Choose your SCII Art')
+        .setRequired(true)
+      for (var i = 0; i < Object.keys(ASCIIArts).length; i++) {
+        option.addChoice(Object.keys(ASCIIArts)[i], Object.keys(ASCIIArts)[i])
+      }
+      return option
+    }
+    ),
   execute: async (interaction: CommandInteraction<CacheType>) => {
     try {
+      const args:string = interaction.options.getString("name", true) as string;
 
-      let codeBlockAdded = "```" + train + "```"
-      // let codeBlockAdded2 = "```" + goat + "```"
-      // let codeBlockAdded3 = "```" + dog + "```"
+      let codeBlockAdded = "```" + ASCIIArts[args] + "```"
+     
+      await interaction.reply(codeBlockAdded);
 
-      // await interaction.reply(codeBlockAdded2 + '\n\n' + codeBlockAdded + '\n\n' + codeBlockAdded3);
-       await interaction.reply(codeBlockAdded);
     } catch (error) {
-
+      logger.error(`Art command failed: ${error}`);
     }
-    // logger.info("PONG PONG PONG");
-
+   
   },
 };
 
-export { pongModule as command };
+export { artModule as command };
