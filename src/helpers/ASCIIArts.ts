@@ -2,10 +2,6 @@
 
 
 
-// let dogArr = [
- 
-// ];
-// export const dog = dogArr.join('\n');
 
 
 type ASCIIArt = {
