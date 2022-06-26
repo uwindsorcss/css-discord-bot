@@ -44,7 +44,7 @@ const start = async () => {
     const {command} = await import(filePath.slice(0, -3));
 
     //logger.debug(`Load command file ${filePath}`);
-    //logger.debug({command});
+    // logger.info({command});
 
     // load into commands map
     client.commands.set(command.data.name, command as CommandType);
