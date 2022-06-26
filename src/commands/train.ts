@@ -11,7 +11,7 @@ const artModule: CommandType = {
     .addStringOption(option => {
       option
         .setName('name')
-        .setDescription('Choose your SCII Art')
+        .setDescription('Choose your ASCII Art')
         .setRequired(true)
       for (var i = 0; i < Object.keys(ASCIIArts).length; i++) {
         option.addChoice(Object.keys(ASCIIArts)[i], Object.keys(ASCIIArts)[i])
