@@ -22,7 +22,7 @@ const freeModule: CommandType = {
 
             if (!memberDisplayName) {
                 return interaction.reply({
-                    content: 'Cannot put this member in jail. Not sure why',
+                    content: 'Cannot let this member out of jail',
                     ephemeral: true
                 });
             }
