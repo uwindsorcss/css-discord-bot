@@ -41,16 +41,6 @@ const LoadConfig = (file: string) => {
   logger.level = Config.debug ? "debug" : "info";
 };
 
-export const important_roles = [
-  "Bot",
-  "Admin",
-  "Moderator",
-  "CSS President",
-  "CSS Board Executive",
-  "CSS Board Head",
-  "CSS Board Member",
-];
-
 type buildingType = {
   code: string;
   name: string;

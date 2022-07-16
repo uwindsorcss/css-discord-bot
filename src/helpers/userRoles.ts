@@ -1,6 +1,4 @@
-import {GuildMember, GuildMemberRoleManager, RoleResolvable} from "discord.js";
-import {important_roles} from "../config";
-import {logger} from "../logger";
+import {GuildMember, RoleResolvable} from "discord.js";
 
 export const AddUserRole = async (
   member: GuildMember,
@@ -23,18 +21,5 @@ export const RemoveUserRole = async (
     return "";
   } catch (err) {
     return `${err}`;
-  }
-};
-
-export const CheckUserRole = async (member: GuildMember): Promise<boolean> => {
-  try {
-    let roles = (member.roles as GuildMemberRoleManager).cache;
-    let check: boolean = roles.some((role) =>
-      important_roles.includes(role.name)
-    );
-    return check;
-  } catch (err) {
-    logger.error({err});
-    return false;
   }
 };

@@ -13,7 +13,6 @@ import {
   GuildMember,
 } from "discord.js";
 import {CommandType} from "../types";
-import {CheckUserRole} from "../helpers/userRoles";
 
 const sayModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -36,36 +35,24 @@ const sayModule: CommandType = {
   execute: async (interaction: CommandInteraction<CacheType>) => {
     const ephemeral = true;
     try {
-      let checkImpRoles: boolean = await CheckUserRole(
-        interaction.member! as GuildMember
-      );
+      let channelId = interaction.options.getChannel(
+        "destination"
+      ) as TextChannel;
 
-      // If the user's role is in the important roles
-      if (checkImpRoles) {
-        let channelId = interaction.options.getChannel(
-          "destination"
-        ) as TextChannel;
+      let message = interaction.options.getString("message")!;
+      logger.debug(`channelId is: ${channelId}`);
 
-        let message = interaction.options.getString("message")!;
-        logger.debug(`channelId is: ${channelId}`);
+      channelId?.send({content: message});
 
-        channelId?.send({content: message});
+      const embed = new MessageEmbed()
+        .setTitle("Successfully Say Messages")
+        .setDescription(
+          `Successfully say ${inlineCode(message)} in ${inlineCode(
+            channelId.name
+          )}!`
+        );
 
-        const embed = new MessageEmbed()
-          .setTitle("Successfully Say Messages")
-          .setDescription(
-            `Successfully say ${inlineCode(message)} in ${inlineCode(
-              channelId.name
-            )}!`
-          );
-
-        interaction.reply({embeds: [embed], ephemeral});
-      } else {
-        return interaction.reply({
-          content: "You need the admin role to run this command",
-          ephemeral,
-        });
-      }
+      interaction.reply({embeds: [embed], ephemeral});
     } catch (error) {
       logger.error(`Say command failed: ${error}`);
     }
