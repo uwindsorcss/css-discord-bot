@@ -26,7 +26,7 @@ export const FindBuildingByName = (pattern: string) => {
   const options = {
     includeScore: true,
     shouldSort: true,
-    threshold: 0.6,
+    threshold: 0.4,
     distance: 100,
     keys: ["name"],
   };
