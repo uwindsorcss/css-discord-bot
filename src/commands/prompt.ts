@@ -9,7 +9,6 @@ const promptModule: CommandType = {
     logger.info("hello from prompt");
     await interaction.reply("hello from prompt");
   },
-  
 };
 
 export {promptModule as command};

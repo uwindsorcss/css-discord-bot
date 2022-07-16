@@ -30,10 +30,11 @@ const start = async () => {
   // in featurization
 
   // dynamic command loader
-  const commandFiles = fs.readdirSync("./src/commands") //
-  .filter((name) => name.endsWith(".ts"));
+  const commandFiles = fs
+    .readdirSync("./src/commands") //
+    .filter((name) => name.endsWith(".ts"));
 
-    // dynamically import and load commands
+  // dynamically import and load commands
   for (const file of commandFiles) {
     const filePath = path.format({
       root: "./commands/",
