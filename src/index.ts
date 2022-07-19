@@ -16,7 +16,7 @@ const start = async () => {
   // load in the config
   LoadConfig("config.yaml");
 
-  //logger.debug({Config});
+  logger.debug({Config});
 
   // create client as ClientType
   const client: ClientType = new Client({
@@ -30,10 +30,11 @@ const start = async () => {
   // in featurization
 
   // dynamic command loader
-  const commandFiles = fs.readdirSync("./src/commands") //
-  .filter((name) => name.endsWith(".ts"));
+  const commandFiles = fs
+    .readdirSync("./src/commands")
+    .filter((name) => name.endsWith(".ts"));
 
-    // dynamically import and load commands
+  // dynamically import and load commands
   for (const file of commandFiles) {
     const filePath = path.format({
       root: "./commands/",
@@ -43,8 +44,8 @@ const start = async () => {
     // actual dynamic import
     const {command} = await import(filePath.slice(0, -3));
 
-    //logger.debug(`Load command file ${filePath}`);
-    // logger.info({command});
+    logger.debug(`Load command file ${filePath}`);
+    logger.info({command});
 
     // load into commands map
     client.commands.set(command.data.name, command as CommandType);
@@ -116,13 +117,6 @@ const start = async () => {
     }
   );
 
-  // client.on('messageCreate', (mess) =>{
-  //   if(mess.content == 'ping'){
-  //     mess.reply({
-  //       content: 'pong'
-  //     })
-  //   }
-  // })
   // login the client
   client.login(Config?.api_token);
 };

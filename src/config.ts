@@ -1,7 +1,7 @@
-import { readFileSync } from "fs";
+import {readFileSync} from "fs";
 import yaml from "js-yaml";
-import { logger } from "./logger";
-import { BotModes } from "./types";
+import {logger} from "./logger";
+import {BotModes} from "./types";
 
 type ConfigType = {
   api_token: string;
@@ -12,7 +12,7 @@ type ConfigType = {
   development_guild_id: string;
   debug: boolean;
   self_roles_channel: string;
-  urls: { mc_address_url: string };
+  urls: {mc_address_url: string};
   prompt: {
     channel: string;
     top_text: string;
@@ -41,20 +41,10 @@ const LoadConfig = (file: string) => {
   logger.level = Config.debug ? "debug" : "info";
 };
 
-export const important_roles = [
-  "Bot",
-  "Admin",
-  "Moderator",
-  "CSS President",
-  "CSS Board Executive",
-  "CSS Board Head",
-  "CSS Board Member",
-]
-
 type buildingType = {
-  code: string,
-  name: string
-}
+  code: string;
+  name: string;
+};
 export const buildings: buildingType[] = [
   {
     code: "AC",
@@ -127,7 +117,8 @@ export const buildings: buildingType[] = [
   {
     code: "MC",
     name: "Macdonald Hall",
-  }, {
+  },
+  {
     code: "MH",
     name: "Memorial Hall",
   },
@@ -146,18 +137,21 @@ export const buildings: buildingType[] = [
   {
     code: "UC",
     name: "C.A.W. Student Centre",
-  }, {
+  },
+  {
     code: "VH",
     name: "Vanier Hall",
-  }, {
+  },
+  {
     code: "WC",
     name: "Welcome Centre",
-  }, {
+  },
+  {
     code: "WL",
     name: "West Library",
   },
 ];
 
-export const IMAGE_DIRECTORY_URL = "https://uwindsorcss.github.io/files/dir/images/buildings"
-export { LoadConfig, Config, ConfigType };
-
+export const IMAGE_DIRECTORY_URL =
+  "https://uwindsorcss.github.io/files/dir/images/buildings";
+export {LoadConfig, Config, ConfigType};

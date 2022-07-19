@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "Bot for UWindsor CSS discord",
   "main": "index.ts",
-    "scripts": {
+  "scripts": {
     "start": "ts-node ./src/index.ts"
   },
   "author": "CSS Software Devs css@uwindsor.ca",

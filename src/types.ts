@@ -1,4 +1,7 @@
-import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
+import {
+  SlashCommandBuilder,
+  SlashCommandSubcommandsOnlyBuilder,
+} from "@discordjs/builders";
 import {
   Client,
   Collection,
@@ -10,9 +13,12 @@ import {
 
 interface CommandType {
   data:
-  | SlashCommandBuilder // normal slash command builder instance
-  | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">; // slash command without any subcommands
-  execute: (interaction: CommandInteraction<CacheType>, message?: Message | null) => Promise<any>;
+    | SlashCommandBuilder // normal slash command builder instance
+    | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">; // slash command without any subcommands
+  execute: (
+    interaction: CommandInteraction<CacheType>,
+    message?: Message | null
+  ) => Promise<any>;
 }
 
 interface EventType {
@@ -30,4 +36,4 @@ enum BotModes {
   development,
 }
 
-export { CommandType, EventType, ClientType, BotModes };
+export {CommandType, EventType, ClientType, BotModes};

@@ -1,10 +1,16 @@
-import { logger } from "../logger";
-import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
-import { CommandInteraction, CacheType, MessageEmbed } from "discord.js";
-import { CommandType } from "../types";
-import { FindBuildingByCode, FindBuildingByName, ListAllBuildings } from "../helpers/buildings";
-import { IMAGE_DIRECTORY_URL } from "../config";
-
+import {logger} from "../logger";
+import {
+  SlashCommandBuilder,
+  SlashCommandStringOption,
+} from "@discordjs/builders";
+import {CommandInteraction, CacheType, MessageEmbed} from "discord.js";
+import {CommandType} from "../types";
+import {
+  FindBuildingByCode,
+  FindBuildingByName,
+  ListAllBuildings,
+} from "../helpers/buildings";
+import {IMAGE_DIRECTORY_URL} from "../config";
 
 const whereIsModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -14,9 +20,9 @@ const whereIsModule: CommandType = {
       option
         .setName("building")
         .setDescription("Choose building")
-        .setRequired(true)
+        .setRequired(true);
 
-      return option
+      return option;
     }),
 
   execute: async (interaction: CommandInteraction<CacheType>) => {
@@ -29,18 +35,17 @@ const whereIsModule: CommandType = {
         const embed = new MessageEmbed()
           .setTitle("Building List")
           .addFields(
-            { name: "Code", value: buildingList.codes, inline: true },
-            { name: "Full Names", value: buildingList.names, inline: true }
+            {name: "Code", value: buildingList.codes, inline: true},
+            {name: "Full Names", value: buildingList.names, inline: true}
           );
 
-        await interaction.reply({ embeds: [embed] });
+        await interaction.reply({embeds: [embed]});
 
         return;
-      }
-      else {
+      } else {
         let buildingCode = args.toUpperCase();
 
-        // Check if the "args" string is a building's code 
+        // Check if the "args" string is a building's code
         let buildingFound = FindBuildingByCode(buildingCode);
 
         if (buildingFound.length !== 0) {
@@ -49,11 +54,10 @@ const whereIsModule: CommandType = {
             .setDescription(`${buildingFound} (#${buildingCode}) `)
             .setImage(`${IMAGE_DIRECTORY_URL}/${buildingCode}.png`);
 
-          await interaction.reply({ embeds: [embed] });
+          await interaction.reply({embeds: [embed]});
 
           return;
-        }
-        else {
+        } else {
           // If the argument matches a building name
           let resArr = FindBuildingByName(args);
           if (resArr.length > 0) {
@@ -64,24 +68,20 @@ const whereIsModule: CommandType = {
               .setDescription(`${bestRes.item.name} (${bestRes.item.code}) `)
               .setImage(`${IMAGE_DIRECTORY_URL}/${bestRes.item.code}.png`);
 
-            await interaction.reply({ embeds: [embed] });
+            await interaction.reply({embeds: [embed]});
 
             return;
-          }
-          else {
+          } else {
             return interaction.reply({
               content: "Building or command could not be found.",
             });
           }
-
         }
       }
-    } 
-    catch (error) {
+    } catch (error) {
       logger.error(`Whereis command failed: ${error}`);
     }
   },
-
 };
 
-export { whereIsModule as command };
+export {whereIsModule as command};
