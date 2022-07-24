@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "Bot for UWindsor CSS discord",
   "main": "index.ts",
-    "scripts": {
+  "scripts": {
     "start": "ts-node ./src/index.ts"
   },
   "author": "CSS Software Devs css@uwindsor.ca",
@@ -12,14 +12,19 @@
     "@discordjs/builders": "^0.11.0",
     "@discordjs/rest": "^0.2.0-canary.0",
     "@types/js-yaml": "^4.0.5",
+    "@types/katex": "^0.14.0",
     "@types/node": "^16.11.12",
     "axios": "^0.27.2",
     "bufferutil": "^4.0.5",
     "discord-api-types": "^0.26.0",
     "discord.js": "^13.5.0",
     "fuse.js": "^6.5.3",
+    "html-to-image": "^1.9.0",
+    "html2canvas": "^1.4.1",
     "js-yaml": "^4.1.0",
+    "katex": "^0.16.0",
     "node-fetch": "^3.2.4",
+    "node-html-to-image": "^3.2.4",
     "pino": "^7.5.1",
     "utf-8-validate": "^5.0.7"
   },
