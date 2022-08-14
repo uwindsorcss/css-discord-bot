@@ -10,19 +10,19 @@ import {
 import { CommandType } from "../types";
 import { EquationRender, Santinize } from "../helpers/LatexHelpers";
 
-const equationnModule: CommandType = {
+const equationModule: CommandType = {
   data: new SlashCommandBuilder()
-    .setName("equationn")
+    .setName("equation")
     .setDescription("Say something?")
     .addStringOption((opt: SlashCommandStringOption) =>
       opt
-        .setName("equationn")
-        .setDescription("The equationn you want me to say")
+        .setName("equation")
+        .setDescription("The equation you want me to say")
         .setRequired(true)
     ),
   execute: async (interaction: CommandInteraction<CacheType>) => {
     try {
-      let message = interaction.options.getString("equationn")!;
+      let message = interaction.options.getString("equation")!;
       let cleanedMessage = Santinize(message)
 
       EquationRender(cleanedMessage, interaction)
@@ -33,4 +33,4 @@ const equationnModule: CommandType = {
   },
 };
 
-export { equationnModule as command };
+export { equationModule as command };

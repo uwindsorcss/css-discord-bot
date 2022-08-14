@@ -18,22 +18,14 @@ export const Santinize = (message: string): string => {
     return cleanedMessage
 
 }
-
-export const EquationRender = async (cleanedMessage: string, interaction: CommandInteraction<CacheType>) => {
-    mjAPI.config({
-        MathJax: {
-            SVG: {
-                // scale: 70,
-                //font: "STIX-Web",
-            },
-        }
-    });
+export const initMathJax = async () => {
     mjAPI.start();
-
+}
+export const EquationRender = async (cleanedMessage: string, interaction: CommandInteraction<CacheType>) => {
     mjAPI.typeset({
         math: cleanedMessage,
-        format: "inline-TeX", // or "Tex", "MathML"
-        svg: true, // or html:true
+        format: "inline-TeX", 
+        svg: true,
     }, async function (data: any) {
         if (!data.errors) {
             await interaction.deferReply()
