@@ -6,47 +6,47 @@ import {
 import { CommandInteraction, CacheType, AutocompleteInteraction } from "discord.js";
 import { CommandType } from "../types";
 import { Link } from "../schemas/link";
-import { FindLinkByName, GetAllShortenLinks } from "../helpers/linkQueries";
+import { FilterLinkByName, FindLinkByName, GetAllLinks } from "../helpers/linkQueries";
 
 const linkModule: CommandType = {
     data: new SlashCommandBuilder()
         .setName("link")
         .setDescription("Which link do you want to send")
-        .addStringOption((option: SlashCommandStringOption) => {
+        .addStringOption((option: SlashCommandStringOption) =>
             option
                 .setName("link")
-                .setDescription("Choose Link")
+                .setDescription("Select a link")
                 .setRequired(true)
-                .setAutocomplete(true);
-                
-                
-            return option;
-        }),
+                .setAutocomplete(true)
+        ),
     execute: async (interaction: CommandInteraction<CacheType>) => {
         try {
             const choice = interaction.options.getString("link", true);
-
-            await interaction.reply({
-                content: `Your request for ${choice}`
-            })
-            
+            let res = FindLinkByName(choice);
+            if (res) {
+                await interaction.reply({
+                    content: `Your request for ${res.name}: ${res.url}`
+                })
+            } else {
+                await interaction.reply({
+                    content: `Cannot find any link match with your request.`
+                })
+            }
         } catch (error) {
             logger.error(`Link command failed: ${error}`);
         }
     },
     autoComplete: async (interaction: AutocompleteInteraction) => {
         let searchString = interaction.options.getString("link", true) ?? "";
-
-        let res: Link[];
-        if(searchString.length == 0){
-            res = await GetAllShortenLinks()
+        let res: Link[] = [];
+        if (searchString.length == 0) {
+            res = await GetAllLinks()
         } else {
-            res = FindLinkByName(searchString)
+            res = FilterLinkByName(searchString)
         }
-        
         interaction.respond(res.map(link => ({
             name: link.name,
-            value: `${link.name}: ${link.url}`
+            value: link.name
         })))
     }
 };

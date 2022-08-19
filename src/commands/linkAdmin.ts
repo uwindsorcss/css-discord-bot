@@ -3,15 +3,11 @@ import {
   inlineCode,
   SlashCommandBuilder,
   SlashCommandStringOption,
-  SlashCommandSubcommandBuilder,
 } from "@discordjs/builders";
-import { CommandInteraction, CacheType, AutocompleteInteraction, MessageActionRow, MessageSelectMenu } from "discord.js";
+import { CommandInteraction, CacheType, AutocompleteInteraction, MessageActionRow, MessageSelectMenu, MessageEmbed } from "discord.js";
 import { CommandType } from "../types";
-import fs from "fs";
 import { Link, linkModel } from "../schemas/link";
-import path from "path";
-import { CreateNewLink, FindLinkByName, GetAllShortenLinks } from "../helpers/linkQueries";
-
+import { CreateNewLink, FilterLinkByName, GetAllLinks } from "../helpers/linkQueries";
 
 const linkAdminModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -20,7 +16,7 @@ const linkAdminModule: CommandType = {
     .addSubcommand(subcommand =>
       subcommand
         .setName("create")
-        .setDescription("Add new link?")
+        .setDescription("Add a new link")
         .addStringOption(option =>
           option
             .setName("shorten_link")
@@ -37,37 +33,28 @@ const linkAdminModule: CommandType = {
     .addSubcommand(subcommand =>
       subcommand
         .setName("delete")
-        .setDescription("delete link?")
-        .addStringOption((option: SlashCommandStringOption) => {
+        .setDescription("Delete a link")
+        .addStringOption((option: SlashCommandStringOption) =>
           option
             .setName("link")
-            .setDescription("Choose Link")
+            .setDescription("Select a link to delete")
             .setRequired(true)
-            .setAutocomplete(true);
-
-          return option;
-        })
+            .setAutocomplete(true)
+        )
     ),
   execute: async (interaction: CommandInteraction<CacheType>) => {
     try {
       if (!interaction.isCommand()) return;
-
       const subcommand = interaction.options.getSubcommand()
-
       if (subcommand === "create") {
         let shorten_link = interaction.options.getString("shorten_link", true)
-
         let url = interaction.options.getString("url", true)
-
         await CreateNewLink(shorten_link, url)
-
         await interaction.reply({
           content: `Complete creating ${inlineCode(shorten_link)}`
         })
       } else if (subcommand === "delete") {
-
         let searchString = interaction.options.getString("link", true) ?? "";
-
         const row = new MessageActionRow()
           .addComponents(
             new MessageSelectMenu()
@@ -87,7 +74,11 @@ const linkAdminModule: CommandType = {
 
         let link = await linkModel.findById(searchString)
         if (link) {
-          await interaction.reply({ content: `Do you want to delete ${inlineCode(link?.name)} (${link.url})?`, components: [row] })
+          const embed = new MessageEmbed()
+            .setColor(0x0099FF)
+            .setTitle(link?.name)
+            .setDescription(link.url);
+          await interaction.reply({ content: `Do you want to delete ${inlineCode(link?.name)} (${link.url})?`, components: [row], embeds: [embed] })
         }
       }
       //what about 'update'?
@@ -98,15 +89,12 @@ const linkAdminModule: CommandType = {
   autoComplete: async (interaction: AutocompleteInteraction) => {
     const subcommand = interaction.options.getSubcommand()
     let searchString = interaction.options.getString("link", true) ?? "";
-
     let res: Link[];
     if (searchString.length == 0) {
-      res = await GetAllShortenLinks()
+      res = await GetAllLinks()
     } else {
-      res = FindLinkByName(searchString)
+      res = FilterLinkByName(searchString)
     }
-
-
     if (subcommand === "create") {
       interaction.respond(res.map(link => ({
         name: link.name,
@@ -118,10 +106,6 @@ const linkAdminModule: CommandType = {
         value: link._id.toString()
       })))
     }
-
-
-
-
   }
 };
 

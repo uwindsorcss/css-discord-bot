@@ -9,8 +9,8 @@ import {
 } from "./registerer";
 import {BotModes, ClientType, CommandType} from "./types";
 import {connectDatabase} from "./helpers/database";
-import {HandleSelectMenu} from "./helpers/linkQueries";
-import { initMathJax } from "./helpers/LatexHelpers";
+import {initMathJax} from "./helpers/LatexHelpers";
+import {HandleAutoComplete, HandleCommandInteraction, HandleSelectMenu} from "./helpers/interactionHandler";
 
 // start bot async function
 // needs to be async so we can `await` inside
@@ -106,28 +106,10 @@ const start = async () => {
     async (interaction: Interaction<CacheType>) => {
       //logger.debug({interaction});
       if (interaction.isCommand()) {
-        const command = client.commands.get(interaction.commandName);
-        if (!command) return;
-
-        try {
-          await command.execute(interaction);
-        } catch (error) {
-          logger.error(error);
-          return interaction.reply({
-            content: "There was an error while executing this command!",
-            ephemeral: true,
-          });
-        }
+        HandleCommandInteraction(client, interaction)
       } else if (interaction.isAutocomplete()) {
-        const command = client.commands.get(interaction.commandName);
-        if (!command?.autoComplete) return;
-
-        try {
-          await command.autoComplete(interaction);
-        } catch (error) {
-          console.error("Autocomplete Error:", error);
-        }
-      } else if (interaction.isSelectMenu()){
+        HandleAutoComplete(client, interaction)
+      } else if (interaction.isSelectMenu()) {
         HandleSelectMenu(interaction)
       }
     }
