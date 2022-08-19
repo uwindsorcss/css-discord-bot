@@ -8,6 +8,7 @@ import {
   GuildRegisterSlashCommands,
 } from "./registerer";
 import {BotModes, ClientType, CommandType} from "./types";
+import { initMathJax } from "./helpers/LatexHelpers";
 
 // start bot async function
 // needs to be async so we can `await` inside
@@ -64,6 +65,8 @@ const start = async () => {
       client.commands,
       Config?.development_guild_id as string
     );
+
+    await initMathJax()
   }
 
   // array of event files
