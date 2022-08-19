@@ -10,6 +10,7 @@ import {
 import {BotModes, ClientType, CommandType} from "./types";
 import {connectDatabase} from "./helpers/database";
 import {HandleSelectMenu} from "./helpers/linkQueries";
+import { initMathJax } from "./helpers/LatexHelpers";
 
 // start bot async function
 // needs to be async so we can `await` inside
@@ -67,6 +68,8 @@ const start = async () => {
       Config?.development_guild_id as string
     );
     await connectDatabase()
+
+    await initMathJax()
   }
 
   // array of event files
