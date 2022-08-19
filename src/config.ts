@@ -29,6 +29,7 @@ type ConfigType = {
     jail: boolean;
     train: boolean;
   };
+  database_url: string
 };
 
 let Config: null | ConfigType = null;

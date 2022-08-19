@@ -8,6 +8,8 @@ import {
   GuildRegisterSlashCommands,
 } from "./registerer";
 import {BotModes, ClientType, CommandType} from "./types";
+import {connectDatabase} from "./helpers/database";
+import {HandleSelectMenu} from "./helpers/linkQueries";
 
 // start bot async function
 // needs to be async so we can `await` inside
@@ -64,6 +66,7 @@ const start = async () => {
       client.commands,
       Config?.development_guild_id as string
     );
+    await connectDatabase()
   }
 
   // array of event files
@@ -99,20 +102,30 @@ const start = async () => {
     "interactionCreate",
     async (interaction: Interaction<CacheType>) => {
       //logger.debug({interaction});
-      if (!interaction.isCommand()) return;
+      if (interaction.isCommand()) {
+        const command = client.commands.get(interaction.commandName);
+        if (!command) return;
 
-      const command = client.commands.get(interaction.commandName);
+        try {
+          await command.execute(interaction);
+        } catch (error) {
+          logger.error(error);
+          return interaction.reply({
+            content: "There was an error while executing this command!",
+            ephemeral: true,
+          });
+        }
+      } else if (interaction.isAutocomplete()) {
+        const command = client.commands.get(interaction.commandName);
+        if (!command?.autoComplete) return;
 
-      if (!command) return;
-
-      try {
-        await command.execute(interaction);
-      } catch (error) {
-        logger.error(error);
-        return interaction.reply({
-          content: "There was an error while executing this command!",
-          ephemeral: true,
-        });
+        try {
+          await command.autoComplete(interaction);
+        } catch (error) {
+          console.error("Autocomplete Error:", error);
+        }
+      } else if (interaction.isSelectMenu()){
+        HandleSelectMenu(interaction)
       }
     }
   );
