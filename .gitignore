@@ -1,3 +1,4 @@
-config.yaml
+.vscode/
 node_modules/
+config.yaml
 yarn-error.log
