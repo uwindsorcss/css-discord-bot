@@ -17,35 +17,26 @@ const promptModule: CommandType = {
   execute: async (interaction: CommandInteraction<CacheType>) => {
 
     let configChannel = Config?.prompt.channel
-    if (configChannel && configChannel?.length === 0) {
-      await interaction.reply({ content: "We are missing channel name in config file" })
-      
-    } else {
-      let channelId = interaction.guild?.channels.cache.find(channel => channel.name === configChannel) as TextChannel
+    let channelId = interaction.guild?.channels.cache.find(channel => channel.name === configChannel) as TextChannel
 
-      if(channelId === undefined){
-        await interaction.reply({ content: `Channel ${inlineCode(configChannel!.toString())} does not exist in this guild`})
-        
-      } else {
-        let question = interaction.options.getString("question")!;
-
-        let promptMess = Config?.prompt.top_text + question + Config?.prompt.bottom_text
-  
-        channelId?.send({ content: promptMess });
-  
-        const embed = new MessageEmbed()
-          .setTitle("Successfully asked Question")
-          .setDescription(
-            `Successfully ask ${inlineCode(question)} in ${inlineCode(
-              channelId.name
-            )}!`
-          );
-        interaction.reply({ embeds: [embed], ephemeral: true });
-      }
-      
-      
+    if (channelId === undefined) {
+      await interaction.reply({ content: `Channel ${inlineCode(configChannel!.toString())} does not exist in this guild` })
+      return;
     }
+    let question = interaction.options.getString("question")!;
 
+    let promptMess = Config?.prompt.top_text + question + Config?.prompt.bottom_text
+
+    channelId?.send({ content: promptMess });
+
+    const embed = new MessageEmbed()
+      .setTitle("Successfully asked Question")
+      .setDescription(
+        `Successfully ask ${inlineCode(question)} in ${inlineCode(
+          channelId.name
+        )}!`
+      );
+    interaction.reply({ embeds: [embed], ephemeral: true });
   },
 };
 
