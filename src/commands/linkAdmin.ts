@@ -6,8 +6,8 @@ import {
 } from "@discordjs/builders";
 import { CommandInteraction, CacheType, AutocompleteInteraction, MessageActionRow, MessageSelectMenu, MessageEmbed } from "discord.js";
 import { CommandType } from "../types";
-import { Link, linkModel } from "../schemas/link";
-import { CreateNewLink, FilterLinkByName, GetAllLinks } from "../helpers/linkQueries";
+import { Link } from "../helpers/linkQueries";
+import { CreateNewLink, FilterLinkByName, FindLinkById, GetAllLinks } from "../helpers/linkQueries";
 
 const linkAdminModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -49,12 +49,18 @@ const linkAdminModule: CommandType = {
       if (subcommand === "create") {
         let shorten_link = interaction.options.getString("shorten_link", true)
         let url = interaction.options.getString("url", true)
-        await CreateNewLink(shorten_link, url)
+        let createdLink = await CreateNewLink(shorten_link, url)
+        if(createdLink === undefined){
+          await interaction.reply({
+            content: `Sorry but something went wrong when I tried creating a new link`
+          })
+          return;
+        }
         await interaction.reply({
-          content: `Complete creating ${inlineCode(shorten_link)}`
+          content: `Complete creating ${inlineCode(createdLink!.shorten_link)}`
         })
       } else if (subcommand === "delete") {
-        let searchString = interaction.options.getString("link", true) ?? "";
+        let searchString = interaction.options.getString("link", true);
         const row = new MessageActionRow()
           .addComponents(
             new MessageSelectMenu()
@@ -72,14 +78,16 @@ const linkAdminModule: CommandType = {
               ),
           );
 
-        let link = await linkModel.findById(searchString)
-        if (link) {
-          const embed = new MessageEmbed()
-            .setColor(0x0099FF)
-            .setTitle(link?.name)
-            .setDescription(link.url);
-          await interaction.reply({ content: `Do you want to delete ${inlineCode(link?.name)} (${link.url})?`, components: [row], embeds: [embed] })
+        let link = await FindLinkById(searchString)
+        if (link === undefined) {
+          await interaction.reply({ content: "Hey boss, it's either your link does not exist or you are teasing me :/" });
+          return;
         }
+        const embed = new MessageEmbed()
+          .setColor(0x0099FF)
+          .setTitle(link?.shorten_link)
+          .setDescription(link.url);
+        await interaction.reply({ content: `Do you want to delete ${inlineCode(link?.shorten_link)} (${link.url})?`, components: [row], embeds: [embed] })
       }
       //what about 'update'?
     } catch (error) {
@@ -97,13 +105,13 @@ const linkAdminModule: CommandType = {
     }
     if (subcommand === "create") {
       interaction.respond(res.map(link => ({
-        name: link.name,
+        name: link.shorten_link,
         value: link.url
       })))
     } else if (subcommand === "delete") {
       interaction.respond(res.map(link => ({
-        name: link.name,
-        value: link._id.toString()
+        name: link.shorten_link,
+        value: link.id
       })))
     }
   }

@@ -5,8 +5,7 @@ import {
 } from "@discordjs/builders";
 import { CommandInteraction, CacheType, AutocompleteInteraction } from "discord.js";
 import { CommandType } from "../types";
-import { Link } from "../schemas/link";
-import { FilterLinkByName, FindLinkByName, GetAllLinks } from "../helpers/linkQueries";
+import { FilterLinkByName, FindLinkByName, GetAllLinks, Link } from "../helpers/linkQueries";
 
 const linkModule: CommandType = {
     data: new SlashCommandBuilder()
@@ -25,7 +24,7 @@ const linkModule: CommandType = {
             let res = FindLinkByName(choice);
             if (res) {
                 await interaction.reply({
-                    content: `Your request for ${res.name}: ${res.url}`
+                    content: `Your request for ${res.shorten_link}: ${res.url}`
                 })
             } else {
                 await interaction.reply({
@@ -45,8 +44,8 @@ const linkModule: CommandType = {
             res = FilterLinkByName(searchString)
         }
         interaction.respond(res.map(link => ({
-            name: link.name,
-            value: link.name
+            name: link.shorten_link,
+            value: link.shorten_link
         })))
     }
 };

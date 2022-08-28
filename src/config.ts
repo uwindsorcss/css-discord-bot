@@ -29,7 +29,11 @@ type ConfigType = {
     jail: boolean;
     train: boolean;
   };
-  database_url: string
+  db_user: string
+  db_host: string
+  db_name: string
+  db_password: string
+  db_port: number
 };
 
 let Config: null | ConfigType = null;

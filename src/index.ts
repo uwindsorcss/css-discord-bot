@@ -8,9 +8,9 @@ import {
   GuildRegisterSlashCommands,
 } from "./registerer";
 import {BotModes, ClientType, CommandType} from "./types";
-import {connectDatabase} from "./helpers/database";
 import {initMathJax} from "./helpers/LatexHelpers";
 import {HandleAutoComplete, HandleCommandInteraction, HandleSelectMenu} from "./helpers/interactionHandler";
+import { ConnectToDB, SeedingData } from "./helpers/linkQueries";
 
 // start bot async function
 // needs to be async so we can `await` inside
@@ -67,7 +67,7 @@ const start = async () => {
       client.commands,
       Config?.development_guild_id as string
     );
-    await connectDatabase()
+    await ConnectToDB()
 
     await initMathJax()
   }
