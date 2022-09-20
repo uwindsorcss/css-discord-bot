@@ -21,7 +21,7 @@ const HandleAutoComplete = async (client: ClientType, interaction: AutocompleteI
     try {
         await command.autoComplete(interaction);
     } catch (error) {
-        logger.debug("Autocomplete Error:", error);
+        logger.error("Autocomplete Error:", error);
     }
 }
 
