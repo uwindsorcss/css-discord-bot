@@ -7,7 +7,7 @@ import {
 import { CommandInteraction, CacheType, AutocompleteInteraction, MessageActionRow, MessageSelectMenu, MessageEmbed } from "discord.js";
 import { CommandType } from "../types";
 import { Link } from "../helpers/linkQueries";
-import { CreateNewLink, FilterLinkByName, FindLinkById, GetAllLinks } from "../helpers/linkQueries";
+import { CreateNewLink, FilterLinkByName, FindLinkByName, GetAllLinks } from "../helpers/linkQueries";
 
 const linkAdminModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -78,7 +78,7 @@ const linkAdminModule: CommandType = {
               ),
           );
 
-        let link = await FindLinkById(searchString)
+        let link = FindLinkByName(searchString)
         if (link === undefined) {
           await interaction.reply({ content: "Hey boss, it's either your link does not exist or you are teasing me :/" });
           return;
@@ -111,7 +111,7 @@ const linkAdminModule: CommandType = {
     } else if (subcommand === "delete") {
       interaction.respond(res.map(link => ({
         name: link.shorten_link,
-        value: link.id
+        value: link.shorten_link
       })))
     }
   }

@@ -1,15 +1,15 @@
 import { AutocompleteInteraction, CommandInteraction, SelectMenuInteraction } from "discord.js"
 import { logger } from "../logger"
 import { ClientType } from "../types"
-import { DeleteLinkById } from "./linkQueries"
+import { DeleteLinkByName } from "./linkQueries"
 
 const HandleSelectMenu = async (interaction: SelectMenuInteraction) => {
-    if (interaction.customId === 'delete-confirmation') {
+    if (interaction.customId === 'delete-confirmation' && interaction.values[0]) {
         let answer = interaction.values[0]
         if (answer == "No") {
             await interaction.update({ content: "Good call, boss! Your link is safe.", components: [] });
         } else {
-            await DeleteLinkById(answer)
+            await DeleteLinkByName(answer)
             await interaction.update({ content: "Deleted! You're welcome :)", components: [] });
         }
     }

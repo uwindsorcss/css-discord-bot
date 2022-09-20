@@ -4,7 +4,6 @@ import { Config } from "../config";
 import { logger } from "../logger";
 
 export interface Link {
-  id: number,
   shorten_link: string,
   url: string,
 }
@@ -29,9 +28,9 @@ const ConnectToDB = async () => {
 
 const SeedingData = async () => {
   try {
-    await pool.query('CREATE TABLE IF NOT EXISTS links (id bigserial primary key, shorten_link text, url text);')
+    await pool.query('CREATE TABLE IF NOT EXISTS links (shorten_link text primary key, url text);')
   } catch (err) {
-    logger.debug({ err })
+    logger.fatal({ err })
   }
 }
 const GetAllLinks = async (): Promise<Link[]> => {
@@ -62,49 +61,37 @@ const FindLinkByName = (searchString: string): Link | undefined => {
 const CreateNewLink = async (shorten_link: string, url: string): Promise<Link | undefined> => {
   let shortenLinkTrim = shorten_link.trim().replace(/\s\s+/g, ' ')
   let urlTrim = url.trim()
-  
-  const result = await pool.query<Link>(
-    'INSERT INTO links(shorten_link, url) VALUES ($1, $2) RETURNING *',
-    [shortenLinkTrim, urlTrim]
-  );
-  if (result.rows.length === 0) {
-    return undefined;
-  }
-  return result.rows[0]
-}
-
-const DeleteLinkById = async (id: string): Promise<Link | undefined> => {
-  if (!isNumber(id)) {
-    return undefined;
-  }
-  let parsedId = parseInt(id)
-  const result = await pool.query("DELETE FROM links WHERE id = $1 RETURNING *",
-    [parsedId])
-  if (result.rows.length === 0) {
-    return undefined;
-  }
-  return result.rows[0]
-}
-
-const FindLinkById = async (id: string): Promise<Link | undefined> => {
-  if (!isNumber(id)) {
-    return undefined;
-  }
-  let parsedId = parseInt(id)
-  const result = await pool.query<Link>("SELECT * FROM links WHERE id = $1",
-    [parsedId]
+  const linkExistsQuery = await pool.query(
+    'SELECT exists(SELECT 1 FROM links where shorten_link=$1)',
+    [shortenLinkTrim]
   )
+  let linkExistsValue = linkExistsQuery.rows[0].exists;
+  let result;
+  
+  if (linkExistsValue) { //update
+    result = await pool.query<Link>(
+      'UPDATE links SET url = $1 WHERE shorten_link = $2 RETURNING *',
+      [urlTrim, shortenLinkTrim]
+    );
+  } else { //create
+    result = await pool.query<Link>(
+      'INSERT INTO links(shorten_link, url) VALUES ($1, $2) RETURNING *',
+      [shortenLinkTrim, urlTrim]
+    );
+  }
   if (result.rows.length === 0) {
     return undefined;
   }
   return result.rows[0]
 }
 
-const isNumber = (str: string): boolean => {
-  if (str.trim() === '') {
-    return false;
+const DeleteLinkByName = async (shorten_link: string): Promise<Link | undefined> => {
+  const result = await pool.query("DELETE FROM links WHERE shorten_link = $1 RETURNING *",
+    [shorten_link])
+  if (result.rows.length === 0) {
+    return undefined;
   }
-  return !Number.isNaN(Number(str));
+  return result.rows[0]
 }
 
-export { ConnectToDB, SeedingData, GetAllLinks, FilterLinkByName, CreateNewLink, FindLinkByName, DeleteLinkById, FindLinkById };
+export { ConnectToDB, SeedingData, GetAllLinks, FilterLinkByName, CreateNewLink, DeleteLinkByName, FindLinkByName };

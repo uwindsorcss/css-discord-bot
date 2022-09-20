@@ -24,7 +24,7 @@ const linkModule: CommandType = {
             let res = FindLinkByName(choice);
             if (res) {
                 await interaction.reply({
-                    content: `Your request for ${res.shorten_link}: ${res.url}`
+                    content: res.url
                 })
             } else {
                 await interaction.reply({
