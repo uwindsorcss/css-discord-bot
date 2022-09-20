@@ -8,7 +8,9 @@ import {
   GuildRegisterSlashCommands,
 } from "./registerer";
 import {BotModes, ClientType, CommandType} from "./types";
-import { initMathJax } from "./helpers/LatexHelpers";
+import {initMathJax} from "./helpers/LatexHelpers";
+import {HandleAutoComplete, HandleCommandInteraction, HandleSelectMenu} from "./helpers/interactionHandler";
+import { ConnectToDB, SeedingData } from "./helpers/linkQueries";
 
 // start bot async function
 // needs to be async so we can `await` inside
@@ -65,6 +67,7 @@ const start = async () => {
       client.commands,
       Config?.development_guild_id as string
     );
+    await ConnectToDB()
 
     await initMathJax()
   }
@@ -102,20 +105,12 @@ const start = async () => {
     "interactionCreate",
     async (interaction: Interaction<CacheType>) => {
       //logger.debug({interaction});
-      if (!interaction.isCommand()) return;
-
-      const command = client.commands.get(interaction.commandName);
-
-      if (!command) return;
-
-      try {
-        await command.execute(interaction);
-      } catch (error) {
-        logger.error(error);
-        return interaction.reply({
-          content: "There was an error while executing this command!",
-          ephemeral: true,
-        });
+      if (interaction.isCommand()) {
+        HandleCommandInteraction(client, interaction)
+      } else if (interaction.isAutocomplete()) {
+        HandleAutoComplete(client, interaction)
+      } else if (interaction.isSelectMenu()) {
+        HandleSelectMenu(interaction)
       }
     }
   );
