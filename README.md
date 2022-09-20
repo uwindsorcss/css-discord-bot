@@ -42,26 +42,22 @@ Once you've copied your config, you'll need to configure it to work with the Dis
 - yarn latest version
 - node.js v16.13.1
 
-## Developing Locally
-
-In development you don't need to [build and run a docker image](#build-and-run-with-docker) if you have all the dependencies: 
-
-1. `yarn` to install packages
-2. `yarn start` to run the bot
-
 ## Build and Run with Docker
 
-1. Build a docker image: `docker build -t CssBot .`
-2. You can choose to run the bot detached (in the background) or not.
-   - **Detached**: `docker run -d CssBot`
-   - **Not Detached**: `docker run CssBot`
-
+1. Start a postgres instance: `docker run --name postgres-docker -p 5432:5432 -e POSTGRES_PASSWORD=passwrd -e POSTGRES_USER=root -e POSTGRES_DB=discord_db -d postgres`
+This will pull [Postgres image](https://hub.docker.com/_/postgres) from Docker hub and start an instance,
+    - `postgres-docker` is the name of the container, 
+    - `-p 5432:5432` the first `5432` is the exposed port, the second `5432` is the internal port which the app is running on. 
+    - `-e POSTGRES_PASSWORD=passwrd` is the environment variable that sets username to the Postgres database.
+    - `-e POSTGRES_PASSWORD=root` is the environment variable that sets the password of the Postgres database.
+    - `-e POSTGRES_DB=discord_db` is the environment variable that sets the name to the database in Postgres
+* If you change any of these variables, you will need to change them in `docker-compose.yml` as well.
+2. Build or rebuild the service: `docker compose build`
+3. Create and start containers: `docker compose up`
 
 ### Stopping a Detached Bot
 
-You need the container ID, which can be found with `docker ps`, under the first column.
-
-You can then stop the bot with `docker stop <container id>`.
+You can then stop the bot with `docker compose stop`.
 
 ## Further Documentation
 
