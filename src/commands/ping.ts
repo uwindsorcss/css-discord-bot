@@ -4,10 +4,12 @@ import {SlashCommandBuilder} from "@discordjs/builders";
 import {CommandInteraction, CacheType} from "discord.js";
 
 const pongModule: CommandType = {
-  data: new SlashCommandBuilder().setName("pong").setDescription("Ping. Pong?"),
+  data: new SlashCommandBuilder()
+    .setName("ping")
+    .setDescription("Check if bot is alive"),
   execute: async (interaction: CommandInteraction<CacheType>) => {
-    logger.info("PONG PONG PONG");
-    await interaction.reply("PONG");
+    logger.info("Pong");
+    await interaction.reply("Pong");
   },
 };
 
