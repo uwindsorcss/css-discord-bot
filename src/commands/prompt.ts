@@ -1,13 +1,21 @@
-import { logger } from "../logger";
-import { inlineCode, SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
-import { CommandInteraction, CacheType, TextChannel, MessageEmbed } from "discord.js";
-import { CommandType } from "../types";
-import { Config } from "../config";
+import {
+  inlineCode,
+  SlashCommandBuilder,
+  SlashCommandStringOption,
+} from "@discordjs/builders";
+import {
+  CommandInteraction,
+  CacheType,
+  TextChannel,
+  MessageEmbed,
+} from "discord.js";
+import {CommandType} from "../types";
+import {Config} from "../config";
 
 const promptModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("prompt")
-    .setDescription("Ask something?")
+    .setDescription("Ask a question to the community")
     .addStringOption((opt: SlashCommandStringOption) =>
       opt
         .setName("question")
@@ -15,29 +23,38 @@ const promptModule: CommandType = {
         .setRequired(true)
     ),
   execute: async (interaction: CommandInteraction<CacheType>) => {
+    const configChannel = Config?.prompt.channel;
+    const channelId = interaction.guild?.channels.cache.find(
+      (channel) => channel.id === configChannel
+    ) as TextChannel | undefined;
 
-    let configChannel = Config?.prompt.channel
-    let channelId = interaction.guild?.channels.cache.find(channel => channel.name === configChannel) as TextChannel
-
-    if (channelId === undefined) {
-      await interaction.reply({ content: `Channel ${inlineCode(configChannel!.toString())} does not exist in this guild` })
+    if (!channelId) {
+      await interaction.reply({
+        content: `Error: Channel ${inlineCode(
+          configChannel!.toString()
+        )} does not exist in this guild`,
+      });
       return;
     }
-    let question = interaction.options.getString("question")!;
 
-    let promptMess = Config?.prompt.top_text + question + Config?.prompt.bottom_text
+    const question = interaction.options.getString("question")!;
+    const promptMsg =
+      Config?.prompt.top_text +
+      "## :loudspeaker: Community Prompt\n" +
+      question +
+      Config?.prompt.bottom_text;
+    const promptMessage = await channelId.send(promptMsg);
 
-    channelId?.send({ content: promptMess });
+    await promptMessage.startThread({
+      name: question,
+      autoArchiveDuration: 10080,
+    });
 
-    const embed = new MessageEmbed()
-      .setTitle("Successfully asked Question")
-      .setDescription(
-        `Successfully ask ${inlineCode(question)} in ${inlineCode(
-          channelId.name
-        )}!`
-      );
-    interaction.reply({ embeds: [embed], ephemeral: true });
+    const feedbackEmbed = new MessageEmbed()
+      .setTitle("Successful :white_check_mark:")
+      .setDescription(`Asked ${inlineCode(question)} in <#${configChannel}>`);
+    interaction.reply({embeds: [feedbackEmbed], ephemeral: true});
   },
 };
 
-export { promptModule as command };
+export {promptModule as command};
