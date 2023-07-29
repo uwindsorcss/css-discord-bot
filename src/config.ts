@@ -13,6 +13,9 @@ type ConfigType = {
   debug: boolean;
   self_roles_channel: string;
   urls: {mc_address_url: string};
+  year_roles: {
+    [key: string]: string;
+  };
   prompt: {
     channel: string;
     top_text: string;
@@ -29,11 +32,11 @@ type ConfigType = {
     jail: boolean;
     train: boolean;
   };
-  db_user: string
-  db_host: string
-  db_name: string
-  db_password: string
-  db_port: number
+  db_user: string;
+  db_host: string;
+  db_name: string;
+  db_password: string;
+  db_port: number;
 };
 
 let Config: null | ConfigType = null;
@@ -50,6 +53,7 @@ type buildingType = {
   code: string;
   name: string;
 };
+
 export const buildings: buildingType[] = [
   {
     code: "AC",

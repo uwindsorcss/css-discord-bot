@@ -19,6 +19,15 @@ self_roles_channel: "self-roles"
 urls:
   mc_address_url: ""
 
+# year roles IDs
+year_roles:
+1: ""
+2: ""
+3: ""
+4: ""
+4+: ""
+Masters: ""
+
 # anything related to the community prompt
 prompt:
   channel: "community-prompts"
