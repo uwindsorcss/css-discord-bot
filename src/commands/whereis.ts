@@ -1,52 +1,78 @@
 import {logger} from "../logger";
+import Fuse from "fuse.js";
 import {
   SlashCommandBuilder,
   SlashCommandStringOption,
 } from "@discordjs/builders";
-import {CommandInteraction, CacheType, MessageEmbed} from "discord.js";
+import {
+  CommandInteraction,
+  CacheType,
+  MessageEmbed,
+  AutocompleteInteraction,
+} from "discord.js";
 import {CommandType} from "../types";
 import {
   FindBuildingByCode,
   FindBuildingByName,
   ListAllBuildings,
+  fuseOptions,
 } from "../helpers/buildings";
-import {IMAGE_DIRECTORY_URL} from "../config";
+import {IMAGE_DIRECTORY_URL, buildings} from "../config";
 
 const whereIsModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("whereis")
-    .setDescription("Where do u wanna go?")
-    .addStringOption((option: SlashCommandStringOption) => {
-      option
-        .setName("building")
-        .setDescription("Choose building")
-        .setRequired(true);
+    .setDescription("Show the location of a building on campus")
+    .addSubcommand((subcommand) =>
+      subcommand.setName("list").setDescription("List all buildings")
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("search")
+        .setDescription("Search for a building")
+        .addStringOption((opt: SlashCommandStringOption) =>
+          opt
+            .setName("building")
+            .setDescription("Building name or code")
+            .setRequired(true)
+            .setAutocomplete(true)
+        )
+    ),
+  autoComplete: async (interaction: AutocompleteInteraction) => {
+    const argValue = interaction.options.getString("building", true);
+    const fuse = new Fuse(buildings, fuseOptions);
+    let filtered = buildings.map((building) => building.name);
 
-      return option;
-    }),
+    // Limit the number of results to 25 to prevent Discord API errors
+    if (filtered.length > 25) filtered = filtered.slice(0, 25);
 
+    if (argValue.length > 0)
+      filtered = fuse.search(argValue).map((result) => result.item.name);
+
+    await interaction.respond(
+      filtered.map((choice) => ({name: choice, value: choice}))
+    );
+  },
   execute: async (interaction: CommandInteraction<CacheType>) => {
     try {
-      //get "args" from option
-      const args = interaction.options.getString("building", true);
+      const subcommand = interaction.options.getSubcommand();
 
-      if (args === "list") {
-        let buildingList = ListAllBuildings();
+      if (subcommand === "list") {
+        const buildingsList = ListAllBuildings();
         const embed = new MessageEmbed()
           .setTitle("Building List")
           .addFields(
-            {name: "Code", value: buildingList.codes, inline: true},
-            {name: "Full Names", value: buildingList.names, inline: true}
+            {name: "Code", value: buildingsList.codes, inline: true},
+            {name: "Full Names", value: buildingsList.names, inline: true}
           );
 
-        await interaction.reply({embeds: [embed]});
-
-        return;
-      } else {
-        let buildingCode = args.toUpperCase();
+        return await interaction.reply({embeds: [embed]});
+      } else if (subcommand === "search") {
+        const args = interaction.options.getString("building", true);
+        const buildingCode = args.toUpperCase();
 
         // Check if the "args" string is a building's code
-        let buildingFound = FindBuildingByCode(buildingCode);
+        const buildingFound = FindBuildingByCode(buildingCode);
 
         if (buildingFound.length !== 0) {
           const embed = new MessageEmbed()
@@ -54,9 +80,7 @@ const whereIsModule: CommandType = {
             .setDescription(`${buildingFound} (#${buildingCode}) `)
             .setImage(`${IMAGE_DIRECTORY_URL}/${buildingCode}.png`);
 
-          await interaction.reply({embeds: [embed]});
-
-          return;
+          return await interaction.reply({embeds: [embed]});
         } else {
           // If the argument matches a building name
           let resArr = FindBuildingByName(args);
@@ -68,15 +92,17 @@ const whereIsModule: CommandType = {
               .setDescription(`${bestRes.item.name} (${bestRes.item.code}) `)
               .setImage(`${IMAGE_DIRECTORY_URL}/${bestRes.item.code}.png`);
 
-            await interaction.reply({embeds: [embed]});
-
-            return;
+            return await interaction.reply({embeds: [embed]});
           } else {
             return interaction.reply({
-              content: "Building or command could not be found.",
+              content: "Building could not be found.",
             });
           }
         }
+      } else {
+        return interaction.reply({
+          content: "Invalid subcommand.",
+        });
       }
     } catch (error) {
       logger.error(`Whereis command failed: ${error}`);

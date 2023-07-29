@@ -1,6 +1,14 @@
 import {buildings} from "../config";
 import Fuse from "fuse.js";
 
+export const fuseOptions = {
+  shouldSort: true,
+  threshold: 0.1,
+  distance: 100,
+  isCaseSensitive: false,
+  keys: ["name"],
+};
+
 export const FindBuildingByCode = (buildingCode: string): string => {
   for (let i = 0; i < buildings.length; i++) {
     if (buildings[i].code === buildingCode) return buildings[i].name;
@@ -23,15 +31,7 @@ export const ListAllBuildings = (): {codes: string; names: string} => {
 };
 
 export const FindBuildingByName = (pattern: string) => {
-  const options = {
-    includeScore: true,
-    shouldSort: true,
-    threshold: 0.4,
-    distance: 100,
-    keys: ["name"],
-  };
-
-  const fuse = new Fuse(buildings, options);
+  const fuse = new Fuse(buildings, fuseOptions);
 
   let res = fuse.search(pattern);
 
