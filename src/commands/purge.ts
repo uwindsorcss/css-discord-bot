@@ -25,7 +25,7 @@ const purgeModule: CommandType = {
     ),
   execute: async (interaction: CommandInteraction<CacheType>) => {
     try {
-      const amount = interaction.options.get("n")?.value as number;
+      const amount = interaction.options.getInteger("n");
       logger.debug(`Purge was called with ${amount}`);
       if (!amount || amount < 1 || amount > 99) {
         const embed = new MessageEmbed()
