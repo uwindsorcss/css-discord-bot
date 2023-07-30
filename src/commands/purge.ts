@@ -24,36 +24,49 @@ const purgeModule: CommandType = {
         .setRequired(true)
     ),
   execute: async (interaction: CommandInteraction<CacheType>) => {
-    const ephemeral = true;
-
     try {
-      const amount = interaction.options.getInteger("n")!;
-
+      const amount = interaction.options.get("n")?.value as number;
       logger.debug(`Purge was called with ${amount}`);
       if (!amount || amount < 1 || amount > 99) {
-        await interaction.reply("**ERROR** `n` must be 1 <= n <= 99");
-        return;
+        const embed = new MessageEmbed()
+          .setColor("RED")
+          .setTitle(":x: Error")
+          .setDescription("`n` must be 1 <= n <= 99");
+        return interaction.reply({embeds: [embed], ephemeral: true});
       }
 
       const channel = interaction.channel as TextChannel | ThreadChannel;
-      const deleted = await channel.bulkDelete(amount);
+      const messages = await channel.messages.fetch({limit: amount});
+      if (messages.size === 0) {
+        const embed = new MessageEmbed()
+          .setColor("RED")
+          .setTitle(":x: Error")
+          .setDescription("There are no messages to delete.");
+        return interaction.reply({embeds: [embed], ephemeral: true});
+      } else if (messages.size < amount) {
+        const embed = new MessageEmbed()
+          .setColor("RED")
+          .setTitle(":x: Error")
+          .setDescription(
+            `There are only ${inlineCode(
+              messages.size.toString()
+            )} messages in this channel.`
+          );
+        return interaction.reply({embeds: [embed], ephemeral: true});
+      }
+
+      const deleted = await channel.bulkDelete(messages, true);
 
       const embed = new MessageEmbed()
-        .setColor("DARK_GREEN")
-        .setAuthor({
-          name: interaction.user.tag,
-          iconURL: interaction.user.displayAvatarURL({dynamic: true}),
-        })
-        .setTitle("Successfully Deleted Messages")
+        .setColor("GREEN")
+        .setTitle(":white_check_mark: Success")
         .setDescription(
-          `Successfully deleted ${inlineCode(
-            deleted.size.toString()
-          )} messages!`
-        )
-        .setTimestamp()
-        .setFooter({text: `Version 9`});
+          `Deleted ${
+            amount === 1 ? "`1` message" : `\`${deleted.size}\` messages`
+          }.`
+        );
 
-      interaction.reply({embeds: [embed], ephemeral});
+      interaction.reply({embeds: [embed], ephemeral: true});
     } catch (err) {
       console.error(err);
     }
