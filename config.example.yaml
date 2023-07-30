@@ -30,8 +30,6 @@ Masters: ""
 
 # anything related to the community prompt
 prompt:
-  channel: "community-prompts"
-
   # top and bottom text to the prompt message
   # the prompt text given will be inbetween those
   # if you want to reference a channel or user, you need to follow
