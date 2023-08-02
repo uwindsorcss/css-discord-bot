@@ -1,15 +1,13 @@
-import {logger} from "../logger";
+import {logger} from "@/config";
 import {
+  CacheType,
   inlineCode,
   SlashCommandBuilder,
   SlashCommandChannelOption,
   SlashCommandStringOption,
-} from "@discordjs/builders";
-import {
-  CommandInteraction,
-  CacheType,
-  MessageEmbed,
+  EmbedBuilder,
   TextChannel,
+  ChatInputCommandInteraction,
 } from "discord.js";
 import {CommandType} from "../types";
 
@@ -22,7 +20,7 @@ const sayModule: CommandType = {
         .setName("destination")
         .setDescription("Select a channel")
         .setRequired(true)
-        .addChannelType(0)
+        .addChannelTypes(0)
     )
     .addStringOption((opt: SlashCommandStringOption) =>
       opt
@@ -30,7 +28,7 @@ const sayModule: CommandType = {
         .setDescription("The text that you would like to announce")
         .setRequired(true)
     ),
-  execute: async (interaction: CommandInteraction<CacheType>) => {
+  execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     try {
       const channelID = interaction.options.getChannel(
         "destination"
@@ -39,7 +37,7 @@ const sayModule: CommandType = {
       const message = interaction.options.getString("message")!;
       channelID?.send({content: message});
 
-      const embed = new MessageEmbed()
+      const embed = new EmbedBuilder()
         .setTitle("Successfully Say Messages")
         .setDescription(
           `Successfully say ${inlineCode(message)} in ${inlineCode(

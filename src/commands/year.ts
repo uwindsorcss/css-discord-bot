@@ -1,18 +1,21 @@
 import {CommandType} from "../types";
+import {Config, logger} from "@/config";
 import {
   SlashCommandBuilder,
   SlashCommandStringOption,
-} from "@discordjs/builders";
-import {
-  CommandInteraction,
   CacheType,
   GuildMemberRoleManager,
-  MessageEmbed,
+  EmbedBuilder,
+  ChatInputCommandInteraction,
 } from "discord.js";
-import {logger} from "../logger";
-import {Config} from "../config";
 
-const rolesMap = new Map(Object.entries(Config!.year_roles));
+const rolesMap = new Map<string, string>(Object.entries(Config!.year_roles));
+const choices: {name: string; value: string}[] = Array.from(rolesMap).map(
+  ([key]) => ({
+    name: key,
+    value: key,
+  })
+);
 
 const yearModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -23,9 +26,9 @@ const yearModule: CommandType = {
         .setName("year")
         .setDescription("Your year")
         .setRequired(true)
-        .addChoices(Array.from(rolesMap).map(([key]) => [key, key]))
+        .addChoices(...choices)
     ),
-  execute: async (interaction: CommandInteraction<CacheType>) => {
+  execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     try {
       const year = interaction.options.getString("year");
       const member = interaction.member;
@@ -40,7 +43,7 @@ const yearModule: CommandType = {
           if (hasRole) {
             // If the user already has the role, remove it.
             await memberRoles?.remove(roleID);
-            const feedbackEmbed = new MessageEmbed()
+            const feedbackEmbed = new EmbedBuilder()
               .setTitle("Successful :white_check_mark:")
               .setDescription(`Removed the \`\`${selectedRole.name}\`\` role.`);
             await interaction.reply({embeds: [feedbackEmbed]});
@@ -54,7 +57,7 @@ const yearModule: CommandType = {
               await memberRoles?.remove(rolesMapValues);
             }
             await memberRoles?.add(roleID);
-            const feedbackEmbed = new MessageEmbed()
+            const feedbackEmbed = new EmbedBuilder()
               .setTitle("Successful :white_check_mark:")
               .setDescription(`Added the \`\`${selectedRole.name}\`\` role.`);
             await interaction.reply({embeds: [feedbackEmbed]});

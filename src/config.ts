@@ -1,7 +1,12 @@
 import {readFileSync} from "fs";
 import yaml from "js-yaml";
-import {logger} from "./logger";
+import pino from "pino";
 import {BotModes} from "./types";
+
+const logger = pino();
+
+export const IMAGE_DIRECTORY_URL =
+  "https://uwindsorcss.github.io/files/dir/images/buildings";
 
 type ConfigType = {
   api_token: string;
@@ -161,6 +166,4 @@ export const buildings: buildingType[] = [
   },
 ];
 
-export const IMAGE_DIRECTORY_URL =
-  "https://uwindsorcss.github.io/files/dir/images/buildings";
-export {LoadConfig, Config, ConfigType};
+export {LoadConfig, Config, ConfigType, logger};

@@ -1,123 +1,24 @@
-import path from "path";
-import fs from "fs";
-import {Client, Intents, Collection, Interaction, CacheType} from "discord.js";
-import {LoadConfig, Config} from "./config";
-import {logger} from "./logger";
-import {
-  GlobalRegisterSlashCommands,
-  GuildRegisterSlashCommands,
-} from "./registerer";
-import {BotModes, ClientType, CommandType} from "./types";
-import {initMathJax} from "./helpers/LatexHelpers";
-import {HandleAutoComplete, HandleCommandInteraction, HandleSelectMenu} from "./helpers/interactionHandler";
-import { ConnectToDB, SeedingData } from "./helpers/linkQueries";
+import {Client, GatewayIntentBits} from "discord.js";
+import {LoadConfig, Config, logger} from "@/config";
+import {ClientType} from "./types";
+import events from "./events";
+import commands from "./commands";
 
-// start bot async function
-// needs to be async so we can `await` inside
-const start = async () => {
-  // even though this is inside `src/`, pretend that it isnt
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+}) as ClientType;
+
+(async () => {
   // load in the config
   LoadConfig("config.yaml");
-
   logger.debug({Config});
 
-  // create client as ClientType
-  const client: ClientType = new Client({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
-  }) as ClientType;
+  // load in the events
+  await events(client);
 
-  client.commands = new Collection();
-
-  // return a string array of file names
-  // where the file name ends in `.ts` and it is enabled
-  // in featurization
-
-  // dynamic command loader
-  const commandFiles = fs
-    .readdirSync("./src/commands")
-    .filter((name) => name.endsWith(".ts"));
-
-  // dynamically import and load commands
-  for (const file of commandFiles) {
-    const filePath = path.format({
-      root: "./commands/",
-      name: file,
-    });
-
-    // actual dynamic import
-    const {command} = await import(filePath.slice(0, -3));
-
-    logger.debug(`Load command file ${filePath}`);
-    logger.info({command});
-
-    // load into commands map
-    client.commands.set(command.data.name, command as CommandType);
-  }
-
-  // if in production mode, register slash commands with all servers
-  // if in development mode, register with specific server
-  if (Config?.mode === BotModes.production) {
-    // register the slash commands to all servers
-    // that the bot is a part of
-    await GlobalRegisterSlashCommands(client.commands);
-  } else {
-    // register the slash command with the dev server(guild)
-
-    await GuildRegisterSlashCommands(
-      client.commands,
-      Config?.development_guild_id as string
-    );
-    await ConnectToDB()
-
-    await initMathJax()
-  }
-
-  // array of event files
-  // where the files end in `.ts` and are enabled in featurization
-  const eventFiles: string[] = fs.readdirSync("./src/events/").filter(
-    (file: string) =>
-      file.endsWith(".ts") && (Config as any)?.features[file.slice(0, -3)] // slice to get rid of extension
-  );
-
-  // event loader
-  for (const file of eventFiles) {
-    const filePath = path.format({
-      root: "./events/",
-      name: file,
-    });
-
-    logger.debug(`Load event file ${filePath}`);
-    const event = await import(filePath.slice(0, -3));
-    if (event.once) {
-      client.once(event.name, (...args) => event.execute(...args));
-    } else {
-      client.on(event.name, (...args) => event.execute(...args));
-    }
-  }
-
-  // Bot ready event
-  client.once("ready", () => {
-    logger.info("Bot is ready haha haha");
-  });
-
-  // command dispatcher
-  client.on(
-    "interactionCreate",
-    async (interaction: Interaction<CacheType>) => {
-      //logger.debug({interaction});
-      if (interaction.isCommand()) {
-        HandleCommandInteraction(client, interaction)
-      } else if (interaction.isAutocomplete()) {
-        HandleAutoComplete(client, interaction)
-      } else if (interaction.isSelectMenu()) {
-        HandleSelectMenu(interaction)
-      }
-    }
-  );
+  // load in the commands
+  await commands(client);
 
   // login the client
-  client.login(Config?.api_token);
-};
-
-// start bot
-start();
+  await client.login(Config?.api_token);
+})();

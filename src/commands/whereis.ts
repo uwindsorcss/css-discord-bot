@@ -1,14 +1,12 @@
-import {logger} from "../logger";
+import {IMAGE_DIRECTORY_URL, buildings, logger} from "@/config";
 import Fuse from "fuse.js";
 import {
+  CacheType,
   SlashCommandBuilder,
   SlashCommandStringOption,
-} from "@discordjs/builders";
-import {
-  CommandInteraction,
-  CacheType,
-  MessageEmbed,
+  EmbedBuilder,
   AutocompleteInteraction,
+  ChatInputCommandInteraction,
 } from "discord.js";
 import {CommandType} from "../types";
 import {
@@ -17,7 +15,6 @@ import {
   ListAllBuildings,
   fuseOptions,
 } from "../helpers/buildings";
-import {IMAGE_DIRECTORY_URL, buildings} from "../config";
 
 const whereIsModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -53,13 +50,13 @@ const whereIsModule: CommandType = {
       filtered.map((choice) => ({name: choice, value: choice}))
     );
   },
-  execute: async (interaction: CommandInteraction<CacheType>) => {
+  execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     try {
       const subcommand = interaction.options.getSubcommand();
 
       if (subcommand === "list") {
         const buildingsList = ListAllBuildings();
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
           .setTitle("Building List")
           .addFields(
             {name: "Code", value: buildingsList.codes, inline: true},
@@ -75,7 +72,7 @@ const whereIsModule: CommandType = {
         const buildingFound = FindBuildingByCode(buildingCode);
 
         if (buildingFound.length !== 0) {
-          const embed = new MessageEmbed()
+          const embed = new EmbedBuilder()
             .setTitle("Building Search")
             .setDescription(`${buildingFound} (#${buildingCode}) `)
             .setImage(`${IMAGE_DIRECTORY_URL}/${buildingCode}.png`);
@@ -87,7 +84,7 @@ const whereIsModule: CommandType = {
           if (resArr.length > 0) {
             let bestRes = resArr[0];
 
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
               .setTitle("Building Search")
               .setDescription(`${bestRes.item.name} (${bestRes.item.code}) `)
               .setImage(`${IMAGE_DIRECTORY_URL}/${bestRes.item.code}.png`);

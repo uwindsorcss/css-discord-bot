@@ -3,15 +3,13 @@ import {
   SlashCommandBuilder,
   SlashCommandChannelOption,
   SlashCommandStringOption,
-} from "@discordjs/builders";
-import {
-  CommandInteraction,
   CacheType,
   TextChannel,
-  MessageEmbed,
+  EmbedBuilder,
+  ChatInputCommandInteraction,
 } from "discord.js";
 import {CommandType} from "../types";
-import {Config} from "../config";
+import {Config} from "@/config";
 
 const promptModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -22,7 +20,7 @@ const promptModule: CommandType = {
         .setName("destination")
         .setDescription("Select a channel")
         .setRequired(true)
-        .addChannelType(0)
+        .addChannelTypes(0)
     )
     .addStringOption((opt: SlashCommandStringOption) =>
       opt
@@ -30,13 +28,13 @@ const promptModule: CommandType = {
         .setDescription("What is the question?")
         .setRequired(true)
     ),
-  execute: async (interaction: CommandInteraction<CacheType>) => {
+  execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     const channelID = interaction.options.getChannel(
       "destination"
     ) as TextChannel;
 
     if (!channelID) {
-      const errorEmbed = new MessageEmbed()
+      const errorEmbed = new EmbedBuilder()
         .setTitle("Error :x:")
         .setDescription(
           `Please select a channel to ask the question in ${inlineCode(
@@ -59,7 +57,7 @@ const promptModule: CommandType = {
       autoArchiveDuration: 10080,
     });
 
-    const feedbackEmbed = new MessageEmbed()
+    const feedbackEmbed = new EmbedBuilder()
       .setTitle("Successful :white_check_mark:")
       .setDescription(`Asked ${inlineCode(question)} in ${channelID}`);
     interaction.reply({embeds: [feedbackEmbed], ephemeral: true});

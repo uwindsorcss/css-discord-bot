@@ -1,4 +1,28 @@
 {
-  "extends": "@tsconfig/node16/tsconfig.json",
-  "include": ["src/**/*"]
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "commonjs",
+    "rootDir": "./src/",
+    "outDir": "./dist/",
+    "strict": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "removeComments": true,
+    "typeRoots": ["node_modules/@types"],
+    "sourceMap": false,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "#/*": ["generated/*"]
+    }
+  },
+  "files": ["src/index.ts"],
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -1,10 +1,11 @@
 import {CommandType} from "../types";
-import {logger} from "../logger";
+import {logger} from "@/config";
 import {
+  ChatInputCommandInteraction,
   SlashCommandBuilder,
-  SlashCommandStringOption,
-} from "@discordjs/builders";
-import {CommandInteraction, CacheType, UserResolvable} from "discord.js";
+  CacheType,
+  UserResolvable,
+} from "discord.js";
 
 const jailModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -16,7 +17,7 @@ const jailModule: CommandType = {
         .setDescription("The user you want to put in jail")
         .setRequired(true)
     ),
-  execute: async (interaction: CommandInteraction<CacheType>) => {
+  execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     try {
       const member = interaction.options.getUser("user") as UserResolvable;
 

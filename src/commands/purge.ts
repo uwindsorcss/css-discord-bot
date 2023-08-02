@@ -1,16 +1,15 @@
 import {CommandType} from "../types";
-import {logger} from "../logger";
+import {logger} from "@/config";
 import {
-  inlineCode,
-  SlashCommandBuilder,
-  SlashCommandIntegerOption,
-} from "@discordjs/builders";
-import {
-  CommandInteraction,
   CacheType,
   TextChannel,
   ThreadChannel,
-  MessageEmbed,
+  inlineCode,
+  SlashCommandBuilder,
+  SlashCommandIntegerOption,
+  EmbedBuilder,
+  ChatInputCommandInteraction,
+  Colors,
 } from "discord.js";
 
 const purgeModule: CommandType = {
@@ -23,13 +22,13 @@ const purgeModule: CommandType = {
         .setDescription("Number of messages to purge")
         .setRequired(true)
     ),
-  execute: async (interaction: CommandInteraction<CacheType>) => {
+  execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     try {
       const amount = interaction.options.getInteger("n");
       logger.debug(`Purge was called with ${amount}`);
       if (!amount || amount < 1 || amount > 99) {
-        const embed = new MessageEmbed()
-          .setColor("RED")
+        const embed = new EmbedBuilder()
+          .setColor(Colors.Red)
           .setTitle(":x: Error")
           .setDescription("`n` must be 1 <= n <= 99");
         return interaction.reply({embeds: [embed], ephemeral: true});
@@ -38,14 +37,14 @@ const purgeModule: CommandType = {
       const channel = interaction.channel as TextChannel | ThreadChannel;
       const messages = await channel.messages.fetch({limit: amount});
       if (messages.size === 0) {
-        const embed = new MessageEmbed()
-          .setColor("RED")
+        const embed = new EmbedBuilder()
+          .setColor(Colors.Red)
           .setTitle(":x: Error")
           .setDescription("There are no messages to delete.");
         return interaction.reply({embeds: [embed], ephemeral: true});
       } else if (messages.size < amount) {
-        const embed = new MessageEmbed()
-          .setColor("RED")
+        const embed = new EmbedBuilder()
+          .setColor(Colors.Red)
           .setTitle(":x: Error")
           .setDescription(
             `There are only ${inlineCode(
@@ -57,8 +56,8 @@ const purgeModule: CommandType = {
 
       const deleted = await channel.bulkDelete(messages, true);
 
-      const embed = new MessageEmbed()
-        .setColor("GREEN")
+      const embed = new EmbedBuilder()
+        .setColor(Colors.Green)
         .setTitle(":white_check_mark: Success")
         .setDescription(
           `Deleted ${

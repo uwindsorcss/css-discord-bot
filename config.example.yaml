@@ -3,7 +3,7 @@
 api_token: ""
 api_client_id: ""
 bot_user_id: 8
-api_version: 9
+api_version: 10
 
 # can either be "development" or "production"
 mode: "development"
@@ -39,6 +39,7 @@ prompt:
 
 # featurization
 features:
+  ping: true
   year: false
   purge: false
   equation: false

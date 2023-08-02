@@ -1,4 +1,4 @@
-import {CacheType, CommandInteraction, MessageAttachment} from "discord.js";
+import {AttachmentBuilder, CacheType, CommandInteraction} from "discord.js";
 import svg2img, {ResvgRenderOptions} from "svg2img";
 var mjAPI = require("mathjax-node");
 
@@ -64,7 +64,7 @@ const svgToImgBuffer = (svg: string): Promise<Buffer> => {
 export const EquationRender = async (
   cleanedMessage: string,
   interaction: CommandInteraction<CacheType>
-): Promise<MessageAttachment> => {
+): Promise<AttachmentBuilder> => {
   return new Promise(async (resolve, reject) => {
     mjAPI.typeset(
       {
@@ -79,10 +79,11 @@ export const EquationRender = async (
 
           try {
             const buffer = await svgToImgBuffer(equationSVG);
-            const attachment = new MessageAttachment(
-              buffer,
-              `equation-${interaction.member?.user.username}-${Date.now()}.jpg`
-            );
+            const attachment = new AttachmentBuilder(buffer, {
+              name: `equation-${
+                interaction.member?.user.username
+              }-${Date.now()}.jpg`,
+            });
             resolve(attachment);
           } catch (error) {
             reject(error);

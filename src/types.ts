@@ -1,16 +1,13 @@
 import {
   SlashCommandBuilder,
-  SlashCommandSubcommandBuilder,
   SlashCommandSubcommandsOnlyBuilder,
-} from "@discordjs/builders";
-import {
   Client,
   Collection,
   Awaitable,
-  CommandInteraction,
   CacheType,
   Message,
-  AutocompleteInteraction
+  AutocompleteInteraction,
+  ChatInputCommandInteraction,
 } from "discord.js";
 
 interface CommandType {
@@ -19,7 +16,7 @@ interface CommandType {
     | SlashCommandSubcommandsOnlyBuilder
     | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">; // slash command without any subcommands
   execute: (
-    interaction: CommandInteraction<CacheType>,
+    interaction: ChatInputCommandInteraction<CacheType>,
     message?: Message | null
   ) => Promise<any>;
   autoComplete?: (interaction: AutocompleteInteraction) => Promise<any>;

@@ -1,8 +1,18 @@
 import {CommandType} from "../types";
-import {logger} from "../logger";
-import {SlashCommandBuilder} from "@discordjs/builders";
-import {CommandInteraction, CacheType} from "discord.js";
+import {logger} from "@/config";
+import {
+  CacheType,
+  ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from "discord.js";
 import {ASCIIArts} from "../helpers/ASCIIArts";
+
+const choices: {name: string; value: string}[] = Object.keys(ASCIIArts).map(
+  (key) => ({
+    name: key,
+    value: key,
+  })
+);
 
 const artModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -12,13 +22,11 @@ const artModule: CommandType = {
       option
         .setName("name")
         .setDescription("Choose your ASCII Art")
-        .setRequired(true);
-      for (var i = 0; i < Object.keys(ASCIIArts).length; i++) {
-        option.addChoice(Object.keys(ASCIIArts)[i], Object.keys(ASCIIArts)[i]);
-      }
+        .setRequired(true)
+        .addChoices(...choices);
       return option;
     }),
-  execute: async (interaction: CommandInteraction<CacheType>) => {
+  execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     try {
       const args: string = interaction.options.getString(
         "name",

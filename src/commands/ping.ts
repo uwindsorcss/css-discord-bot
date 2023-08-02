@@ -1,12 +1,16 @@
 import {CommandType} from "../types";
-import {SlashCommandBuilder} from "@discordjs/builders";
-import {CommandInteraction, CacheType, MessageEmbed} from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  SlashCommandBuilder,
+  CacheType,
+  EmbedBuilder,
+} from "discord.js";
 
 const pongModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("ping")
     .setDescription("Pings the bot and gets the latency"),
-  execute: async (interaction: CommandInteraction<CacheType>) => {
+  execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     const uptime = interaction.client.uptime as number;
 
     const days = Math.floor(uptime / 86400000);
@@ -22,8 +26,8 @@ const pongModule: CommandType = {
     if (seconds) timeComponents.push(`${seconds}s`);
     if (milliseconds) timeComponents.push(`${milliseconds}ms`);
 
-    const responseEmbed = new MessageEmbed()
-      .setColor("BLUE")
+    const responseEmbed = new EmbedBuilder()
+      .setColor("#00BFFF")
       .setTitle("Pong")
       .addFields(
         {

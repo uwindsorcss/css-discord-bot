@@ -1,4 +1,4 @@
-import {buildings} from "../config";
+import {buildings} from "@/config";
 import Fuse from "fuse.js";
 
 export const fuseOptions = {

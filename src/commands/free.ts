@@ -1,10 +1,11 @@
 import {CommandType} from "../types";
-import {logger} from "../logger";
+import {logger} from "@/config";
 import {
+  CacheType,
+  UserResolvable,
   SlashCommandBuilder,
-  SlashCommandStringOption,
-} from "@discordjs/builders";
-import {CommandInteraction, CacheType, UserResolvable} from "discord.js";
+  ChatInputCommandInteraction,
+} from "discord.js";
 
 const freeModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -16,7 +17,7 @@ const freeModule: CommandType = {
         .setDescription("The user you want to free")
         .setRequired(true)
     ),
-  execute: async (interaction: CommandInteraction<CacheType>) => {
+  execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     try {
       const member = interaction.options.getUser("user") as UserResolvable;
 
