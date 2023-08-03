@@ -10,12 +10,14 @@ import {
   EmbedBuilder,
   ChatInputCommandInteraction,
   Colors,
+  PermissionFlagsBits,
 } from "discord.js";
 
 const purgeModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("purge")
     .setDescription("Purges the last N messages where 1 <= n <= 100")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addIntegerOption((option: SlashCommandIntegerOption) =>
       option
         .setName("n")

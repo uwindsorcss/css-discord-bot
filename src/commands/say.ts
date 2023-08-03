@@ -8,6 +8,7 @@ import {
   EmbedBuilder,
   TextChannel,
   ChatInputCommandInteraction,
+  PermissionFlagsBits,
 } from "discord.js";
 import {CommandType} from "../types";
 
@@ -15,6 +16,7 @@ const sayModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("say")
     .setDescription("Say something?")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .addChannelOption((option: SlashCommandChannelOption) =>
       option
         .setName("destination")

@@ -7,6 +7,7 @@ import {
   TextChannel,
   EmbedBuilder,
   ChatInputCommandInteraction,
+  PermissionFlagsBits,
 } from "discord.js";
 import {CommandType} from "../types";
 import {Config} from "@/config";
@@ -15,6 +16,7 @@ const promptModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("prompt")
     .setDescription("Ask a question to the community")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .addChannelOption((option: SlashCommandChannelOption) =>
       option
         .setName("destination")
