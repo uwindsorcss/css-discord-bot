@@ -1,9 +1,14 @@
 import {logger} from "@/config";
 import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  CacheType,
+  ChatInputCommandInteraction,
+  ComponentType,
   SlashCommandBuilder,
   SlashCommandStringOption,
-} from "@discordjs/builders";
-import {CacheType, ChatInputCommandInteraction} from "discord.js";
+} from "discord.js";
 import {CommandType} from "../types";
 import {EquationRender, Santinize} from "../helpers/LatexHelpers";
 
@@ -22,7 +27,36 @@ const equationModule: CommandType = {
       const message = interaction.options.getString("equation")!;
       const cleanedMessage = Santinize(message);
       const img = await EquationRender(cleanedMessage, interaction);
-      return await interaction.editReply({files: [img]});
+
+      const deleteBtn = new ButtonBuilder()
+        .setCustomId("delete")
+        .setLabel("🗑️")
+        .setStyle(ButtonStyle.Secondary);
+
+      const row: any = new ActionRowBuilder().addComponents(deleteBtn);
+
+      const response = await interaction.editReply({
+        files: [img],
+        components: [row],
+      });
+
+      const filter = (i: {user: {id: string}}) =>
+        i.user.id === interaction.user.id;
+
+      try {
+        const componentInteraction = await response.awaitMessageComponent({
+          filter: filter,
+          componentType: ComponentType.Button,
+          time: 60000,
+          dispose: true,
+        });
+
+        if (componentInteraction.customId === "delete") await response.delete();
+      } catch (e) {
+        await interaction.editReply({
+          components: [],
+        });
+      }
     } catch (error) {
       logger.error(`Equation command failed: ${error}`);
     }
