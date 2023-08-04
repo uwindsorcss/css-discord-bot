@@ -4,7 +4,7 @@
   "description": "Bot for UWindsor CSS discord",
   "main": "index.ts",
   "scripts": {
-    "dev": "ts-node-dev -r tsconfig-paths/register src/index.ts",
+    "dev": "ts-node-dev --respawn --exit-child -r tsconfig-paths/register src/index.ts",
     "start": "ts-node -r tsconfig-paths/register src/index.ts"
   },
   "author": "CSS Software Devs css@uwindsor.ca",
