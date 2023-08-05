@@ -1,11 +1,11 @@
 import {CommandType} from "../types";
 import {Config, logger} from "@/config";
+import {handleEmbedResponse} from "@/helpers";
 import {
   SlashCommandBuilder,
   SlashCommandStringOption,
   CacheType,
   GuildMemberRoleManager,
-  EmbedBuilder,
   ChatInputCommandInteraction,
 } from "discord.js";
 
@@ -43,10 +43,10 @@ const yearModule: CommandType = {
           if (hasRole) {
             // If the user already has the role, remove it.
             await memberRoles?.remove(roleID);
-            const feedbackEmbed = new EmbedBuilder()
-              .setTitle("Successful :white_check_mark:")
-              .setDescription(`Removed the \`\`${selectedRole.name}\`\` role.`);
-            await interaction.reply({embeds: [feedbackEmbed]});
+            return await handleEmbedResponse(interaction, false, {
+              message: `Removed the \`\`${selectedRole.name}\`\` role.`,
+              ephemeral: false,
+            });
           } else {
             // Check if the user has any roles in the rolesMap, if so remove it them first.
             const rolesMapValues = Array.from(rolesMap.values());
@@ -57,10 +57,10 @@ const yearModule: CommandType = {
               await memberRoles?.remove(rolesMapValues);
             }
             await memberRoles?.add(roleID);
-            const feedbackEmbed = new EmbedBuilder()
-              .setTitle("Successful :white_check_mark:")
-              .setDescription(`Added the \`\`${selectedRole.name}\`\` role.`);
-            await interaction.reply({embeds: [feedbackEmbed]});
+            return await handleEmbedResponse(interaction, false, {
+              message: `Added the \`\`${selectedRole.name}\`\` role.`,
+              ephemeral: false,
+            });
           }
         }
       };

@@ -14,11 +14,12 @@ import {
 } from "discord.js";
 import {CommandType} from "../types";
 import {Link} from "@prisma/client";
+import {handleEmbedResponse} from "@/helpers";
 
 const linkAdminModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("link-admin")
-    .setDescription("Which link?")
+    .setDescription("Manage links")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addSubcommand((subcommand) =>
       subcommand
@@ -73,8 +74,8 @@ const linkAdminModule: CommandType = {
 
         // check if the link already exists
         if (link !== null) {
-          return await interaction.reply({
-            content: `Sorry but ${inlineCode(
+          return await handleEmbedResponse(interaction, true, {
+            message: `${inlineCode(
               name
             )} already exists, please try another name.`,
           });
@@ -85,10 +86,8 @@ const linkAdminModule: CommandType = {
           /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/
         );
         if (!urlRegex.test(URL)) {
-          return await interaction.reply({
-            content: `Sorry but ${inlineCode(
-              URL
-            )} is not a valid url, please try again.`,
+          return await handleEmbedResponse(interaction, true, {
+            message: `${inlineCode(URL)} is not a valid URL, please try again.`,
           });
         }
 
@@ -104,17 +103,19 @@ const linkAdminModule: CommandType = {
           },
         });
 
-        //check if the link was created
+        //check if the link was created successfully
         if (createdLink === undefined) {
-          await interaction.reply({
-            content: `Sorry but something went wrong when I tried creating a new link`,
+          return await handleEmbedResponse(interaction, true, {
+            message: `${inlineCode(
+              name
+            )} could not be created, please try again.`,
           });
-          return;
         }
 
         //send the response
-        await interaction.reply({
-          content: `Complete creating ${inlineCode(createdLink!.name)}`,
+        return await handleEmbedResponse(interaction, false, {
+          message: `Link ${inlineCode(name)} created successfully.`,
+          ephemeral: false,
         });
       } else if (subcommand === "delete") {
         const searchString = interaction.options.getString("link", true);
@@ -146,11 +147,9 @@ const linkAdminModule: CommandType = {
 
         //check if the link exists
         if (link === undefined || link === null) {
-          await interaction.reply({
-            content:
-              "Sorry but I couldn't find that link, please try again later.",
+          return await handleEmbedResponse(interaction, true, {
+            message: "I couldn't find that link, please try another one.",
           });
-          return;
         }
 
         //Ask for confirmation

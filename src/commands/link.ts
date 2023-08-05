@@ -5,14 +5,16 @@ import {
   SlashCommandStringOption,
   CacheType,
   AutocompleteInteraction,
+  inlineCode,
 } from "discord.js";
 import {CommandType} from "../types";
 import {Link} from "@prisma/client";
+import {handleEmbedResponse} from "@/helpers";
 
 const linkModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("link")
-    .setDescription("Which link do you want to send")
+    .setDescription("Which link would you like to see?")
     .addStringOption((option: SlashCommandStringOption) =>
       option
         .setName("link")
@@ -33,8 +35,10 @@ const linkModule: CommandType = {
           content: res.url,
         });
       } else {
-        await interaction.reply({
-          content: `Cannot find any link match with your request.`,
+        return await handleEmbedResponse(interaction, true, {
+          message: `I couldn't find a link with the name ${inlineCode(
+            choice
+          )}. Please try again.`,
         });
       }
     } catch (error) {

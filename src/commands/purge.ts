@@ -1,5 +1,6 @@
 import {CommandType} from "../types";
 import {logger} from "@/config";
+import {handleEmbedResponse} from "@/helpers";
 import {
   CacheType,
   TextChannel,
@@ -7,9 +8,7 @@ import {
   inlineCode,
   SlashCommandBuilder,
   SlashCommandIntegerOption,
-  EmbedBuilder,
   ChatInputCommandInteraction,
-  Colors,
   PermissionFlagsBits,
 } from "discord.js";
 
@@ -29,45 +28,32 @@ const purgeModule: CommandType = {
       const amount = interaction.options.getInteger("n");
       logger.debug(`Purge was called with ${amount}`);
       if (!amount || amount < 1 || amount > 99) {
-        const embed = new EmbedBuilder()
-          .setColor(Colors.Red)
-          .setTitle(":x: Error")
-          .setDescription("`n` must be 1 <= n <= 99");
-        return interaction.reply({embeds: [embed], ephemeral: true});
+        return await handleEmbedResponse(interaction, true, {
+          message: "`n` must be 1 <= n <= 99",
+        });
       }
 
       const channel = interaction.channel as TextChannel | ThreadChannel;
       const messages = await channel.messages.fetch({limit: amount});
       if (messages.size === 0) {
-        const embed = new EmbedBuilder()
-          .setColor(Colors.Red)
-          .setTitle(":x: Error")
-          .setDescription("There are no messages to delete.");
-        return interaction.reply({embeds: [embed], ephemeral: true});
+        return await handleEmbedResponse(interaction, true, {
+          message: "There are no messages to delete.",
+        });
       } else if (messages.size < amount) {
-        const embed = new EmbedBuilder()
-          .setColor(Colors.Red)
-          .setTitle(":x: Error")
-          .setDescription(
-            `There are only ${inlineCode(
-              messages.size.toString()
-            )} messages in this channel.`
-          );
-        return interaction.reply({embeds: [embed], ephemeral: true});
+        return await handleEmbedResponse(interaction, true, {
+          message: `There are only ${inlineCode(
+            messages.size.toString()
+          )} messages in this channel.`,
+        });
       }
 
       const deleted = await channel.bulkDelete(messages, true);
 
-      const embed = new EmbedBuilder()
-        .setColor(Colors.Green)
-        .setTitle(":white_check_mark: Success")
-        .setDescription(
-          `Deleted ${
-            amount === 1 ? "`1` message" : `\`${deleted.size}\` messages`
-          }.`
-        );
-
-      interaction.reply({embeds: [embed], ephemeral: true});
+      return await handleEmbedResponse(interaction, false, {
+        message: `Deleted ${
+          amount === 1 ? "`1` message" : `\`${deleted.size}\` messages`
+        }.`,
+      });
     } catch (err) {
       console.error(err);
     }

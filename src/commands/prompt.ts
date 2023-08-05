@@ -5,12 +5,12 @@ import {
   SlashCommandStringOption,
   CacheType,
   TextChannel,
-  EmbedBuilder,
   ChatInputCommandInteraction,
   PermissionFlagsBits,
 } from "discord.js";
 import {CommandType} from "../types";
 import {Config} from "@/config";
+import {handleEmbedResponse} from "@/helpers";
 
 const promptModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -36,14 +36,11 @@ const promptModule: CommandType = {
     ) as TextChannel;
 
     if (!channelID) {
-      const errorEmbed = new EmbedBuilder()
-        .setTitle("Error :x:")
-        .setDescription(
-          `Please select a channel to ask the question in ${inlineCode(
-            "/prompt"
-          )}`
-        );
-      return interaction.reply({embeds: [errorEmbed], ephemeral: true});
+      return await handleEmbedResponse(interaction, true, {
+        message: `Please select a channel to ask the question in ${inlineCode(
+          "/prompt"
+        )}`,
+      });
     }
 
     const question = interaction.options.getString("question")!;
@@ -59,10 +56,10 @@ const promptModule: CommandType = {
       autoArchiveDuration: 10080,
     });
 
-    const feedbackEmbed = new EmbedBuilder()
-      .setTitle("Successful :white_check_mark:")
-      .setDescription(`Asked ${inlineCode(question)} in ${channelID}`);
-    interaction.reply({embeds: [feedbackEmbed], ephemeral: true});
+    return await handleEmbedResponse(interaction, false, {
+      message: `Asked ${inlineCode(question)} in ${channelID}`,
+      ephemeral: false,
+    });
   },
 };
 

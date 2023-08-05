@@ -5,12 +5,12 @@ import {
   SlashCommandBuilder,
   SlashCommandChannelOption,
   SlashCommandStringOption,
-  EmbedBuilder,
   TextChannel,
   ChatInputCommandInteraction,
   PermissionFlagsBits,
 } from "discord.js";
 import {CommandType} from "../types";
+import {handleEmbedResponse} from "@/helpers";
 
 const sayModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -39,15 +39,12 @@ const sayModule: CommandType = {
       const message = interaction.options.getString("message")!;
       channelID?.send({content: message});
 
-      const embed = new EmbedBuilder()
-        .setTitle("Successfully Say Messages")
-        .setDescription(
-          `Successfully say ${inlineCode(message)} in ${inlineCode(
-            channelID.name
-          )}!`
-        );
-
-      interaction.reply({embeds: [embed], ephemeral: true});
+      return await handleEmbedResponse(interaction, false, {
+        message: `I have announced your message in ${inlineCode(
+          channelID?.name
+        )}.`,
+        ephemeral: false,
+      });
     } catch (error) {
       logger.error(`Say command failed: ${error}`);
     }
