@@ -5,16 +5,17 @@ import {
   SlashCommandStringOption,
   CacheType,
   AutocompleteInteraction,
-  EmbedBuilder,
   ChatInputCommandInteraction,
   ActionRowBuilder,
-  StringSelectMenuBuilder,
   PermissionFlagsBits,
+  ButtonBuilder,
+  ButtonStyle,
+  Interaction,
   Colors,
 } from "discord.js";
 import {CommandType} from "../types";
 import {Link} from "@prisma/client";
-import {handleEmbedResponse} from "@/helpers";
+import {createEmbed, handleEmbedResponse} from "@/helpers";
 
 const linkAdminModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -106,9 +107,7 @@ const linkAdminModule: CommandType = {
         //check if the link was created successfully
         if (createdLink === undefined) {
           return await handleEmbedResponse(interaction, true, {
-            message: `${inlineCode(
-              name
-            )} could not be created, please try again.`,
+            message: `**${name}** could not be created, please try again.`,
           });
         }
 
@@ -119,24 +118,6 @@ const linkAdminModule: CommandType = {
         });
       } else if (subcommand === "delete") {
         const searchString = interaction.options.getString("link", true);
-
-        //create the action row
-        const row =
-          new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
-            new StringSelectMenuBuilder()
-              .setCustomId("delete-confirmation")
-              .setPlaceholder("Nothing selected")
-              .addOptions(
-                {
-                  label: "Yes",
-                  value: `${searchString}`,
-                },
-                {
-                  label: "No",
-                  value: "No",
-                }
-              )
-          );
 
         //Get the link
         const link = await prisma.link.findUnique({
@@ -152,18 +133,85 @@ const linkAdminModule: CommandType = {
           });
         }
 
-        //Ask for confirmation
-        const embed = new EmbedBuilder()
-          .setColor(Colors.Aqua)
-          .setTitle(link.name)
-          .setDescription(link.url);
-        await interaction.reply({
-          content: `Do you want to delete ${inlineCode(link?.name)} (${
-            link.url
-          })?`,
-          components: [row],
-          embeds: [embed],
+        const deleteBtn = new ButtonBuilder()
+          .setCustomId("delete")
+          .setLabel("Delete")
+          .setStyle(ButtonStyle.Danger);
+
+        const cancelBtn = new ButtonBuilder()
+          .setCustomId("cancel")
+          .setLabel("Cancel")
+          .setStyle(ButtonStyle.Secondary);
+
+        const response = await interaction.reply({
+          embeds: [
+            createEmbed(
+              ":bangbang: Confirm Deletion",
+              `Are you sure you want to delete the following link?\n
+              **name:** ${link.name}\n
+              **description:** ${link.description}\n
+              **url:** ${inlineCode(link.url)}\n
+            `,
+              Colors.Red
+            ),
+          ],
+          components: [
+            new ActionRowBuilder<ButtonBuilder>().addComponents(
+              cancelBtn,
+              deleteBtn
+            ),
+          ],
         });
+
+        const userFilter = (i: Interaction) =>
+          i.user.id === interaction.user.id;
+
+        try {
+          const confirmation = await response.awaitMessageComponent({
+            filter: userFilter,
+            time: 30000,
+          });
+
+          if (confirmation.customId === "delete") {
+            await prisma.link.delete({
+              where: {
+                name: searchString,
+              },
+            });
+            await confirmation.update({
+              embeds: [
+                createEmbed(
+                  ":white_check_mark: Link Deleted",
+                  `Link **${searchString}** was deleted successfully.`,
+                  Colors.Green
+                ),
+              ],
+              components: [],
+            });
+          } else if (confirmation.customId === "cancel") {
+            await confirmation.update({
+              embeds: [
+                createEmbed(
+                  "Deletion Cancelled",
+                  `Link **${searchString}** was not deleted.`,
+                  Colors.Grey
+                ),
+              ],
+              components: [],
+            });
+          }
+        } catch (e) {
+          await interaction.editReply({
+            embeds: [
+              createEmbed(
+                ":x: Deletion Cancelled",
+                "Confirmation not received within 30 seconds, cancelling.",
+                Colors.Red
+              ),
+            ],
+            components: [],
+          });
+        }
       }
     } catch (error) {
       logger.error(`Link command failed: ${error}`);
@@ -171,20 +219,20 @@ const linkAdminModule: CommandType = {
   },
   autoComplete: async (interaction: AutocompleteInteraction) => {
     const subcommand = interaction.options.getSubcommand();
-    const searchString = interaction.options.getString("link", true) ?? "";
-    let res: Link[];
-    if (searchString.length == 0) {
-      res = await prisma.link.findMany();
-    } else {
-      res = await prisma.link.findMany({
-        where: {
-          name: {
-            contains: searchString,
-          },
-        },
-      });
-    }
     if (subcommand === "delete") {
+      const searchString = interaction.options.getString("link", true) ?? "";
+      let res: Link[];
+      if (searchString.length == 0) {
+        res = await prisma.link.findMany();
+      } else {
+        res = await prisma.link.findMany({
+          where: {
+            name: {
+              contains: searchString,
+            },
+          },
+        });
+      }
       interaction.respond(
         res.map((link) => ({
           name: link.name,

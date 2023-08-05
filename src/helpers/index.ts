@@ -18,28 +18,30 @@ export const handleEmbedResponse = async (
 ) => {
   let {embed, title, message, color, ephemeral} = options ?? {};
 
-  //If no embed is provided, create one
   if (!embed) {
-    embed = new EmbedBuilder();
-
-    if (message) embed.setDescription(message);
-    else {
-      embed.setDescription(
-        error
+    embed = createEmbed(
+      title ?? (error ? ":x: Error" : ":white_check_mark: Success"),
+      message ??
+        (error
           ? "An error occurred, please try again later."
-          : "Command successful."
-      );
-    }
-
-    if (title) embed.setTitle(title);
-    else embed.setTitle(error ? ":x: Error" : ":white_check_mark: Success");
-
-    if (color) embed.setColor(color);
-    else embed.setColor(error ? Colors.Red : Colors.Green);
+          : "Command successful."),
+      color ?? (error ? Colors.Red : Colors.Green)
+    );
   }
 
   return await interaction.reply({
     embeds: [embed],
     ephemeral: ephemeral ?? true,
   });
+};
+
+export const createEmbed = (
+  title: string,
+  description: string,
+  color: ColorResolvable
+) => {
+  return new EmbedBuilder()
+    .setTitle(title)
+    .setDescription(description)
+    .setColor(color);
 };

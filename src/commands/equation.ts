@@ -6,6 +6,7 @@ import {
   CacheType,
   ChatInputCommandInteraction,
   ComponentType,
+  Interaction,
   SlashCommandBuilder,
   SlashCommandStringOption,
 } from "discord.js";
@@ -42,8 +43,7 @@ const equationModule: CommandType = {
         components: [row],
       });
 
-      const filter = (i: {user: {id: string}}) =>
-        i.user.id === interaction.user.id;
+      const filter = (i: Interaction) => i.user.id === interaction.user.id;
 
       try {
         const componentInteraction = await response.awaitMessageComponent({

@@ -1,4 +1,4 @@
-import {logger, prisma} from "@/config";
+import {logger} from "@/config";
 import {ClientType} from "@/types";
 import {
   AutocompleteInteraction,
@@ -6,7 +6,6 @@ import {
   ChatInputCommandInteraction,
   Events,
   Interaction,
-  StringSelectMenuInteraction,
 } from "discord.js";
 
 module.exports = {
@@ -16,8 +15,6 @@ module.exports = {
       HandleCommandInteraction(client, interaction);
     } else if (interaction.isAutocomplete()) {
       HandleAutoComplete(client, interaction);
-    } else if (interaction.isStringSelectMenu()) {
-      HandleSelectMenu(interaction);
     }
   },
 };
@@ -40,28 +37,6 @@ const HandleCommandInteraction = async (
       content: "There was an error while executing this command!",
       ephemeral: true,
     });
-  }
-};
-
-const HandleSelectMenu = async (interaction: StringSelectMenuInteraction) => {
-  if (interaction.customId === "delete-confirmation" && interaction.values[0]) {
-    let answer = interaction.values[0];
-    if (answer == "No") {
-      await interaction.update({
-        content: "Good call, boss! Your link is safe.",
-        components: [],
-      });
-    } else {
-      await prisma.link.delete({
-        where: {
-          name: answer,
-        },
-      });
-      await interaction.update({
-        content: "Deleted! You're welcome :)",
-        components: [],
-      });
-    }
   }
 };
 
