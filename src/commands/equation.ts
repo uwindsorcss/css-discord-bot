@@ -10,7 +10,7 @@ import {
   SlashCommandStringOption,
 } from "discord.js";
 import {CommandType} from "../types";
-import {EquationRender, Santinize} from "../helpers/LatexHelpers";
+import {EquationRender, Sanitize} from "../helpers/LatexHelpers";
 
 const equationModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -25,7 +25,7 @@ const equationModule: CommandType = {
   execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     try {
       const message = interaction.options.getString("equation")!;
-      const cleanedMessage = Santinize(message);
+      const cleanedMessage = Sanitize(message);
       const img = await EquationRender(cleanedMessage, interaction);
 
       const deleteBtn = new ButtonBuilder()

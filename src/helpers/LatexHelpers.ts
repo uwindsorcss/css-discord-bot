@@ -2,7 +2,7 @@ import {AttachmentBuilder, CacheType, CommandInteraction} from "discord.js";
 import svg2img, {ResvgRenderOptions} from "svg2img";
 var mjAPI = require("mathjax-node");
 
-export const Santinize = (message: string): string => {
+export const Sanitize = (message: string): string => {
   const res_commands = [
     [`\text{`, `\\backslash text~{`],
     ["$", `\\$`],
