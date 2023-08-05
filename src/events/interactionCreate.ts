@@ -1,5 +1,4 @@
-import {logger} from "@/config";
-import {DeleteLinkByName} from "@/helpers/linkQueries";
+import {logger, prisma} from "@/config";
 import {ClientType} from "@/types";
 import {
   AutocompleteInteraction,
@@ -53,7 +52,11 @@ const HandleSelectMenu = async (interaction: StringSelectMenuInteraction) => {
         components: [],
       });
     } else {
-      await DeleteLinkByName(answer);
+      await prisma.link.delete({
+        where: {
+          name: answer,
+        },
+      });
       await interaction.update({
         content: "Deleted! You're welcome :)",
         components: [],

@@ -16,9 +16,6 @@ debug: true
 
 self_roles_channel: "self-roles"
 
-urls:
-  mc_address_url: ""
-
 # year roles IDs
 year_roles:
 1: ""
@@ -39,20 +36,15 @@ prompt:
 
 # featurization
 features:
+  art: true
+  equation: true
+  free: true
+  jail: true
+  link: true
+  linkAdmin: true
   ping: true
-  year: false
-  purge: false
-  equation: false
-  whereis: false
-  selfRoles: false
-  say: false
-  prompt: false
-  jail: false
-  train: false
-
-#database
-db_user: ""
-db_host: ""
-db_name: ""
-db_password: ""
-db_port: 5432
+  prompt: true
+  purge: true
+  say: true
+  whereis: true
+  year: true

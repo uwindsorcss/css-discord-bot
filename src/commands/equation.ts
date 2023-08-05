@@ -33,7 +33,9 @@ const equationModule: CommandType = {
         .setLabel("🗑️")
         .setStyle(ButtonStyle.Secondary);
 
-      const row: any = new ActionRowBuilder().addComponents(deleteBtn);
+      const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        deleteBtn
+      );
 
       const response = await interaction.editReply({
         files: [img],

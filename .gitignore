@@ -1,5 +1,6 @@
 .vscode/
 node_modules/
 yarn-error.log
+.env
 config.yaml
 /.data

@@ -1,6 +1,4 @@
-type ASCIIArt = {
-  [key: string]: string;
-};
+import {ASCIIArt} from "@/types";
 
 export const ASCIIArts: ASCIIArt = {
   goat: `

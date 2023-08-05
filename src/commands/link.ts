@@ -1,4 +1,4 @@
-import {logger} from "@/config";
+import {logger, prisma} from "@/config";
 import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -7,12 +7,7 @@ import {
   AutocompleteInteraction,
 } from "discord.js";
 import {CommandType} from "../types";
-import {
-  FilterLinkByName,
-  FindLinkByName,
-  GetAllLinks,
-  Link,
-} from "../helpers/linkQueries";
+import {Link} from "@prisma/client";
 
 const linkModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -28,7 +23,11 @@ const linkModule: CommandType = {
   execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     try {
       const choice = interaction.options.getString("link", true);
-      let res = FindLinkByName(choice);
+      const res = await prisma.link.findUnique({
+        where: {
+          name: choice,
+        },
+      });
       if (res) {
         await interaction.reply({
           content: res.url,
@@ -44,16 +43,26 @@ const linkModule: CommandType = {
   },
   autoComplete: async (interaction: AutocompleteInteraction) => {
     let searchString = interaction.options.getString("link", true) ?? "";
-    let res: Link[] = [];
+    let res: Link[];
     if (searchString.length == 0) {
-      res = await GetAllLinks();
+      res = await prisma.link.findMany({
+        take: 25,
+      });
     } else {
-      res = FilterLinkByName(searchString);
+      //FilterLinkByName
+      res = await prisma.link.findMany({
+        where: {
+          name: {
+            contains: searchString,
+          },
+        },
+        take: 25,
+      });
     }
     interaction.respond(
       res.map((link) => ({
-        name: link.shorten_link,
-        value: link.shorten_link,
+        name: link.name,
+        value: link.name,
       }))
     );
   },

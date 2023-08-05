@@ -1,4 +1,4 @@
-import {IMAGE_DIRECTORY_URL, buildings, logger} from "@/config";
+import {IMAGE_DIRECTORY_URL, logger} from "@/config";
 import Fuse from "fuse.js";
 import {
   CacheType,
@@ -13,6 +13,7 @@ import {
   FindBuildingByCode,
   FindBuildingByName,
   ListAllBuildings,
+  buildings,
   fuseOptions,
 } from "../helpers/buildings";
 

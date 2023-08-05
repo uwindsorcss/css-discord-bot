@@ -1,5 +1,5 @@
 import {Client, GatewayIntentBits} from "discord.js";
-import {LoadConfig, Config, logger} from "@/config";
+import {Config, logger, prisma} from "@/config";
 import {ClientType} from "./types";
 import events from "./events";
 import commands from "./commands";
@@ -7,6 +7,7 @@ import process from "process";
 
 const shutDown = async () => {
   await client.destroy();
+  await prisma.$disconnect();
   logger.info("Gracefully shutting down...");
   process.exit(0);
 };
@@ -20,10 +21,6 @@ const client = new Client({
 }) as ClientType;
 
 (async () => {
-  // load in the config
-  LoadConfig("config.yaml");
-  logger.debug({Config});
-
   // load in the events
   await events(client);
 

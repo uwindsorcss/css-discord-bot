@@ -1,7 +1,5 @@
-import {Config, logger} from "@/config";
+import {logger} from "@/config";
 import {initMathJax} from "@/helpers/LatexHelpers";
-import {ConnectToDB} from "@/helpers/linkQueries";
-import {BotModes} from "@/types";
 import {Client, Events} from "discord.js";
 
 module.exports = {
@@ -13,10 +11,6 @@ module.exports = {
     }
 
     await initMathJax();
-    if (Config?.mode !== BotModes.production) {
-      await ConnectToDB();
-    }
-
     logger.info(`${client.user.username} is online.`);
   },
 };
