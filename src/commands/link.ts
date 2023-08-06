@@ -143,7 +143,7 @@ const linkModule: CommandType = {
         const collector = response.createMessageComponentCollector({
           filter,
           componentType: ComponentType.Button,
-          time: 60000,
+          time: 120000,
         });
         collector.on("collect", async (i) => {
           i.customId === backId ? (page -= 1) : (page += 1);
@@ -155,6 +155,13 @@ const linkModule: CommandType = {
           await i.update({
             embeds: [linkListEmbed()],
             components: [row],
+          });
+        });
+
+        collector.on("end", async () => {
+          await interaction.editReply({
+            embeds: [linkListEmbed()],
+            components: [],
           });
         });
       }
