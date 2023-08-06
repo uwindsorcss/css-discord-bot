@@ -119,7 +119,7 @@ const linkModule: CommandType = {
             .addFields(
               pageContent.map((link, i) => ({
                 name: `${(page - 1) * linksPerPage + i + 1}. ${link.name}`,
-                value: `**description**: ${link.description}\n [Link](${link.url})`,
+                value: `**description**: ${link.description}\n [Link](${link.url})\n`,
               }))
             )
             .setColor(Colors.Blue)
@@ -140,6 +140,7 @@ const linkModule: CommandType = {
         });
 
         const filter = (i: Interaction) => i.user.id === interaction.user.id;
+
         const collector = response.createMessageComponentCollector({
           filter,
           componentType: ComponentType.Button,
@@ -158,11 +159,13 @@ const linkModule: CommandType = {
           });
         });
 
-        collector.on("end", async () => {
-          await interaction.editReply({
-            embeds: [linkListEmbed()],
-            components: [],
-          });
+        collector.once("end", async () => {
+          try {
+            await response.edit({
+              embeds: [linkListEmbed()],
+              components: [],
+            });
+          } catch (error) {}
         });
       }
     } catch (error) {
