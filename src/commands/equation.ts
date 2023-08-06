@@ -31,7 +31,7 @@ const equationModule: CommandType = {
 
       const deleteBtn = new ButtonBuilder()
         .setCustomId("delete")
-        .setLabel("🗑️")
+        .setEmoji("🗑️")
         .setStyle(ButtonStyle.Secondary);
 
       const row = new ActionRowBuilder<ButtonBuilder>().addComponents(

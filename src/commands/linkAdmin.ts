@@ -30,12 +30,16 @@ const linkAdminModule: CommandType = {
           option
             .setName("name")
             .setDescription("What is the name of the link?")
+            .setMaxLength(20)
+            .setMinLength(3)
             .setRequired(true)
         )
         .addStringOption((option) =>
           option
             .setName("description")
             .setDescription("What's this link for?")
+            .setMaxLength(100)
+            .setMinLength(3)
             .setRequired(true)
         )
         .addStringOption((option) =>
@@ -84,11 +88,13 @@ const linkAdminModule: CommandType = {
 
         //URL validation
         const urlRegex = new RegExp(
-          /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/
+          /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
         );
         if (!urlRegex.test(URL)) {
           return await handleEmbedResponse(interaction, true, {
-            message: `${inlineCode(URL)} is not a valid URL, please try again.`,
+            message: `${inlineCode(
+              URL
+            )} is not a valid URL, please make sure it starts with http:// or https:// and ends with a domain.`,
           });
         }
 
