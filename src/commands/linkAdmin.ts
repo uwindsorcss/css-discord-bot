@@ -219,7 +219,9 @@ const linkAdminModule: CommandType = {
           });
         }
       }
-    } catch (error) {
+    } catch (error: any) {
+      // Don't log if the message is not being found due to being deleted
+      if (error.code === 10008) return;
       logger.error(`Link command failed: ${error}`);
     }
   },

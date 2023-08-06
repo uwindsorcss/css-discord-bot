@@ -119,7 +119,7 @@ const linkModule: CommandType = {
             .addFields(
               pageContent.map((link, i) => ({
                 name: `${(page - 1) * linksPerPage + i + 1}. ${link.name}`,
-                value: `**description**: ${link.description}\n [Link](${link.url})\n`,
+                value: `► [Link](${link.url})\n**description**: ${link.description}\n‎ `,
               }))
             )
             .setColor(Colors.Blue)
