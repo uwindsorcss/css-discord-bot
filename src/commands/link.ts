@@ -78,7 +78,7 @@ const linkModule: CommandType = {
             message: "There are no links yet.",
           });
 
-        const linksPerPage = 10;
+        const linksPerPage = 5;
         const pages = Math.ceil(n / linksPerPage);
         let page = interaction.options.getInteger("page") ?? 1;
 
@@ -107,6 +107,11 @@ const linkModule: CommandType = {
           customId: forwardId,
         });
 
+        const handleButtonsUpdate = () => {
+          backButton.setDisabled(page === 1);
+          forwardButton.setDisabled(page === pages);
+        };
+
         const linkListEmbed = () => {
           return new EmbedBuilder()
             .setTitle(":link: Links List")
@@ -123,16 +128,15 @@ const linkModule: CommandType = {
             });
         };
 
-        const createActionRow = () => {
-          const row = new ActionRowBuilder<ButtonBuilder>();
-          if (page > 1) row.addComponents(backButton);
-          if (page < pages) row.addComponents(forwardButton);
-          return row;
-        };
+        const row = new ActionRowBuilder<ButtonBuilder>().setComponents([
+          backButton,
+          forwardButton,
+        ]);
 
+        handleButtonsUpdate();
         const response = await interaction.reply({
           embeds: [linkListEmbed()],
-          components: [createActionRow()],
+          components: [row],
         });
 
         const filter = (i: Interaction) => i.user.id === interaction.user.id;
@@ -147,9 +151,10 @@ const linkModule: CommandType = {
             skip: (page - 1) * linksPerPage,
             take: linksPerPage,
           });
+          handleButtonsUpdate();
           await i.update({
             embeds: [linkListEmbed()],
-            components: [createActionRow()],
+            components: [row],
           });
         });
       }
