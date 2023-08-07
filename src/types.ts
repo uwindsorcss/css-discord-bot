@@ -19,6 +19,7 @@ interface ConfigType {
   development_guild_id: string;
   debug: boolean;
   self_roles_channel: string;
+  image_directory_url: string;
   year_roles: {
     [key: string]: string;
   };

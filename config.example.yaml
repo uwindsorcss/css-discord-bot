@@ -16,6 +16,8 @@ debug: true
 
 self_roles_channel: "self-roles"
 
+image_directory_url: "https://uwindsorcss.github.io/files/dir/images/buildings"
+
 # year roles IDs
 year_roles:
 1: ""

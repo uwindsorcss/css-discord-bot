@@ -1,4 +1,4 @@
-import {IMAGE_DIRECTORY_URL, logger} from "@/config";
+import {Config, logger} from "@/config";
 import Fuse from "fuse.js";
 import {
   CacheType,
@@ -54,6 +54,7 @@ const whereIsModule: CommandType = {
   execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     try {
       const subcommand = interaction.options.getSubcommand();
+      const imageDirectoryURL = Config.image_directory_url;
 
       if (subcommand === "list") {
         const buildingsList = ListAllBuildings();
@@ -76,7 +77,7 @@ const whereIsModule: CommandType = {
           const embed = new EmbedBuilder()
             .setTitle("Building Search")
             .setDescription(`${buildingFound} (#${buildingCode}) `)
-            .setImage(`${IMAGE_DIRECTORY_URL}/${buildingCode}.png`);
+            .setImage(`${imageDirectoryURL}/${buildingCode}.png`);
 
           return await interaction.reply({embeds: [embed]});
         } else {
@@ -88,7 +89,7 @@ const whereIsModule: CommandType = {
             const embed = new EmbedBuilder()
               .setTitle("Building Search")
               .setDescription(`${bestRes.item.name} (${bestRes.item.code}) `)
-              .setImage(`${IMAGE_DIRECTORY_URL}/${bestRes.item.code}.png`);
+              .setImage(`${imageDirectoryURL}/${bestRes.item.code}.png`);
 
             return await interaction.reply({embeds: [embed]});
           } else {
