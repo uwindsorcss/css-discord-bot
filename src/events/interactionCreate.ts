@@ -1,6 +1,7 @@
 import {logger} from "@/config";
 import {ClientType} from "@/types";
 import {
+  ApplicationCommandOptionType,
   AutocompleteInteraction,
   CacheType,
   ChatInputCommandInteraction,
@@ -30,6 +31,21 @@ const HandleCommandInteraction = async (
   }
 
   try {
+    logger.info(
+      `${interaction.user.displayName} (${interaction.user.username}) ran: /${
+        interaction.commandName
+      }${interaction.options.data.map((option) => {
+        if (option.type === ApplicationCommandOptionType.Subcommand) {
+          return ` ${option.name} ${option.options?.map((o) => o.value)}`;
+        } else if (
+          option.type === ApplicationCommandOptionType.SubcommandGroup
+        ) {
+          return ` ${option.name} ${option.options?.map((o) => o.value)}`;
+        }
+        return ` ${option.value}`;
+      })}`
+    );
+
     await command.execute(interaction);
   } catch (error) {
     logger.error(error);
