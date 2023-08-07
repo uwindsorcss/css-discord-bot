@@ -39,6 +39,7 @@ features:
   art: true
   equation: true
   free: true
+  help: true
   jail: true
   link: true
   linkAdmin: true

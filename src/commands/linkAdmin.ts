@@ -20,7 +20,7 @@ import {createEmbed, handleEmbedResponse} from "@/helpers";
 const linkAdminModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("link-admin")
-    .setDescription("Manage links")
+    .setDescription("Manage the links")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addSubcommand((subcommand) =>
       subcommand

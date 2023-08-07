@@ -6,7 +6,6 @@ import {
   CacheType,
   ChatInputCommandInteraction,
   ComponentType,
-  DiscordErrorData,
   Interaction,
   SlashCommandBuilder,
   SlashCommandStringOption,

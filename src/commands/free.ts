@@ -10,7 +10,7 @@ import {
 const freeModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("free")
-    .setDescription("Free them all !!!")
+    .setDescription("Free a user from jail (fun command)")
     .addUserOption((option) =>
       option
         .setName("user")

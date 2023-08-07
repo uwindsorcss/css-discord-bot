@@ -17,7 +17,7 @@ const choices: {name: string; value: string}[] = Object.keys(ASCIIArts).map(
 const artModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("art")
-    .setDescription("Try out some cool ASCII Arts?")
+    .setDescription("Some cool ASCII Art")
     .addStringOption((option) => {
       option
         .setName("name")

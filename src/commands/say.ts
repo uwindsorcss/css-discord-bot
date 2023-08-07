@@ -15,7 +15,7 @@ import {handleEmbedResponse} from "@/helpers";
 const sayModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("say")
-    .setDescription("Say something?")
+    .setDescription("Announce a message in a channel")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .addChannelOption((option: SlashCommandChannelOption) =>
       option

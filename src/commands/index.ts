@@ -2,7 +2,14 @@ import {promises as fs} from "fs";
 import path from "path";
 import {BotModes, ClientType, CommandType} from "@/types";
 import {Config, logger} from "@/config";
-import {Collection, REST, Routes} from "discord.js";
+import {
+  Collection,
+  REST,
+  RESTPostAPIChatInputApplicationCommandsJSONBody,
+  Routes,
+} from "discord.js";
+
+export const commandArr: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
 
 export default async (client: ClientType) => {
   client.commands = new Collection();
@@ -28,7 +35,6 @@ export default async (client: ClientType) => {
   }
 
   // register slash commands
-  const commandArr = [];
   for (const command of client.commands.values()) {
     commandArr.push(command.data.toJSON());
   }

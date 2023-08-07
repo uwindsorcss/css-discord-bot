@@ -10,7 +10,7 @@ import {
 const jailModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("jail")
-    .setDescription("Who to put in the jail?")
+    .setDescription("Put a user in jail for misbehaving (fun command)")
     .addUserOption((option) =>
       option
         .setName("user")
