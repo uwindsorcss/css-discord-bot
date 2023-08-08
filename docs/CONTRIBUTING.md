@@ -6,7 +6,7 @@
 
 **2. Make your changes**
 
-  - You can add yourself to the contributors list in [README.md](README.md), if you desire.
+  - You can add yourself to the contributors list in [README.md](../README.md), if you desire.
 
 **3. Create a pull request**
 
@@ -22,7 +22,7 @@
 
   - It's also imperative that you:
     - Never commit `config.yaml` or any other configuration to source control. `config.example.yaml` is the only configuration-like file that should be committed, as it is a template for other people to get up and running quickly
-    - Don't add dependencies that are not able to be used our current [license (MIT)](license)
+    - Don't add dependencies that are not able to be used our current [license (MIT)](../license)
     - Avoid adding dependencies for simple tasks - there's no need to include [`string-reverse`](https://www.npmjs.com/package/string-reverse), just write the code yourself.
 
 ## Commit Message Conventions
