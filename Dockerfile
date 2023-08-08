@@ -28,4 +28,4 @@ COPY prisma /app/prisma
 RUN yarn prisma generate
 
 # start by waiting for the database to be ready, then push the schema and start the app
-CMD ./wait-for-it.sh db:5432 -- yarn prisma migrate deploy; yarn start
+CMD ./wait-for-it.sh db:5432 -- yarn prisma db push; yarn start
