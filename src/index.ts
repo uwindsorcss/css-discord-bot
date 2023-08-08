@@ -29,5 +29,6 @@ const client = new Client({
   await commands(client);
 
   // login the client
+  logger.debug("Logging in...");
   await client.login(process.env.DISCORD_API_TOKEN);
 })();

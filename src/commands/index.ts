@@ -13,6 +13,7 @@ import {
 export const commandArr: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
 
 export default async (client: ClientType) => {
+  logger.debug("Loading commands...");
   client.commands = new Collection();
 
   // all command files except index.ts
@@ -47,6 +48,7 @@ export default async (client: ClientType) => {
   // if in production mode, register globally, can take up to an hour to show up
   // else register in development guild
   if (Config?.mode === BotModes.production) {
+    logger.debug("Registering commands globally...");
     await rest.put(
       Routes.applicationCommands(process.env.DISCORD_CLIENT_ID as string),
       {
@@ -54,6 +56,7 @@ export default async (client: ClientType) => {
       }
     );
   } else {
+    logger.debug("Registering commands in development guild...");
     await rest.put(
       Routes.applicationGuildCommands(
         process.env.DISCORD_CLIENT_ID as string,

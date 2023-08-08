@@ -25,7 +25,7 @@ const transport = pino.transport({
     {
       target: "pino-pretty",
       options: {colorize: true, translateTime: "yyyy-mm-dd hh:MM:ss"},
-      level: "info",
+      level: Config.debug ? "debug" : "info",
     },
   ],
 });
