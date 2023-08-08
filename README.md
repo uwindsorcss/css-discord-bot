@@ -4,7 +4,7 @@ A multi-purpose Discord bot built for the University of Windsor CS program's Dis
 
 ## Getting Started
 
-_**Warning**: This bot was designed to work on Unix-based OS. We strongly recommend installing with docker._
+_**Warning**: This bot was designed to work on a Unix-based OS. We strongly recommend installing with docker._
 
 To get the bot up and running, you need to set up two configuration files: `.env` and `config.yaml`.
 
@@ -52,6 +52,7 @@ Finally, there's a section controlling the bot's features:
 
 ## Build and Run with Docker Compose
 
+Docker Compose simplifies the process of setting up the bot by creating and managing containers for both the Node.js application and the accompanying PostgreSQL database. It utilizes the variables from the `.env` file for configuration.
 
 1. **Build or rebuild the service:**    
 ```sh
