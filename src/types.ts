@@ -13,7 +13,6 @@ import {
 interface ConfigType {
   mode: BotModes;
   debug: boolean;
-  self_roles_channel: string;
   image_directory_url: string;
   year_roles: {
     [key: string]: string;

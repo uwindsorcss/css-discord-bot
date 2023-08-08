@@ -15,7 +15,7 @@ import {
 const purgeModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("purge")
-    .setDescription("Purges the last N messages where 1 <= n <= 100")
+    .setDescription("Purges the last N messages where 1 <= n <= 99")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addIntegerOption((option: SlashCommandIntegerOption) =>
       option
