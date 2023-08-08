@@ -18,9 +18,13 @@ The bot works on an event loop. At boot up it reads from the config module to de
 
 `<folder name>/<file name>` for a file within a folder
 
+### `/src/index.ts`
+
+This file is the main entry point for the bot. It defines how the bot starts.
+
 ### `/src/commands/`
 
-This directory contains command features. It is scanned at startup, and each `.ts` file is loaded as a [`CommandType`](./src/types.ts). Each command is then registered with Discord, globably in production and only in a configured developer guild in development mode.
+This directory contains the command features of the bot. During startup, each `.ts` file is loaded as a [`CommandType`](./src/types.ts). Commands are registered with Discord, globally in production, and only within a configured developer guild in development mode.
 
 See [FEATURES.md](FEATURES.md) for a breakdown of what each command does.
 
@@ -28,20 +32,14 @@ See [FEATURES.md](FEATURES.md) for a breakdown of what each command does.
 
 This directory contains event features. Unlike a command feature, events do not necessarily need a user to trigger them. Like the `/src/commands/` directory, it is scanned at startup, and each `.ts` file is loaded as an [`EventType`](./src/types.ts). Each event is then registered on the appropriate listener.
 
-See [FEATURES.md](FEATURES.md) for a breakdown of what each event does.
-
 ### `/src/helpers/`
 
-This directory is for modules that contain frequently used helper functions, such as managing user roles.
-
-### `/src/index.ts`
-
-This is the main entrypoint. It defines how the bot starts.
+This directory is for modules that contain frequently used helper functions.
 
 ### `/src/config.ts`
 
-This defines the `ConfigType` type and a function to load it from a file.
+This file loads configuration values from `config.yaml` and defines a logger object for application-wide usage.
 
 ### `/src/types.ts`
 
-This is where shared type definitions are located, except the `ConfigType` type.
+This file contains essential type definitions for the project.
