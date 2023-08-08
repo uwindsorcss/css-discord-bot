@@ -5,12 +5,21 @@ import {
   SlashCommandBuilder,
   CacheType,
   EmbedBuilder,
+  Colors,
 } from "discord.js";
+
+const getDiscordApiPing = async () => {
+  const start = Date.now();
+  await fetch(
+    `https://discord.com/api/v${process.env.DISCORD_API_VERSION}/gateway`
+  );
+  return Date.now() - start;
+};
 
 const pongModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("ping")
-    .setDescription("Pings the bot and gets the latency"),
+    .setDescription("Pings the bot to check its latency and uptime"),
   execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     try {
       const uptime = interaction.client.uptime as number;
@@ -28,25 +37,42 @@ const pongModule: CommandType = {
       if (seconds) timeComponents.push(`${seconds}s`);
       if (milliseconds) timeComponents.push(`${milliseconds}ms`);
 
-      const responseEmbed = new EmbedBuilder()
-        .setColor("#00BFFF")
-        .setTitle("Pong")
-        .addFields(
-          {
-            name: ":signal_strength: API Latency",
-            value: `${Math.round(interaction.client.ws.ping)}ms`,
-          },
-          {
-            name: ":signal_strength: Bot Latency",
-            value: `${Math.round(Date.now() - interaction.createdTimestamp)}ms`,
-          },
-          {
-            name: ":arrow_up: Bot Uptime",
-            value: timeComponents.join(", "),
-          }
-        );
+      const pingEmbed = new EmbedBuilder()
+        .setColor(Colors.Blue)
+        .setTitle("Pinging...");
 
-      return interaction.reply({embeds: [responseEmbed]});
+      const interactionStartTime = interaction.createdTimestamp;
+      const preResponseTime = Date.now();
+
+      // Send the initial response and wait for a reply
+      const response = await interaction.reply({
+        embeds: [pingEmbed],
+        fetchReply: true,
+      });
+
+      const postResponseTime = Date.now();
+      const discordApiPing = await getDiscordApiPing();
+      const apiOffset =
+        discordApiPing - (preResponseTime - interactionStartTime);
+
+      pingEmbed.setTitle("Pong").addFields(
+        {
+          name: ":signal_strength: API Latency",
+          value: `${preResponseTime - interactionStartTime + apiOffset}ms`,
+        },
+        {
+          name: ":signal_strength: Round Trip",
+          value: `${postResponseTime - interactionStartTime + apiOffset}ms`,
+        },
+        {
+          name: ":arrow_up: Bot Uptime",
+          value: timeComponents.join(", "),
+        }
+      );
+
+      return await response.edit({
+        embeds: [pingEmbed],
+      });
     } catch (error) {
       logger.error(error);
     }
