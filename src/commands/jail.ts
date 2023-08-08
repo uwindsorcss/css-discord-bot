@@ -21,7 +21,7 @@ const jailModule: CommandType = {
     try {
       const member = interaction.options.getUser("user") as UserResolvable;
 
-      let memberDisplayName = (await interaction.guild?.members.fetch(member))
+      const memberDisplayName = (await interaction.guild?.members.fetch(member))
         ?.displayName;
 
       if (!memberDisplayName) {
@@ -30,14 +30,20 @@ const jailModule: CommandType = {
           ephemeral: true,
         });
       }
-      let line = "-".repeat(12 + memberDisplayName?.length);
 
-      let resp = "```\n" + line + "\n";
-      resp += "|||   " + memberDisplayName + "   |||\n";
+      const line = "-".repeat(12 + memberDisplayName?.length);
+      const response =
+        "If you can't do the time, don't do the crime ヽ(ಠ_ಠ)ノ\n" +
+        "```\n" +
+        line +
+        "\n" +
+        "|||   " +
+        memberDisplayName +
+        "   |||\n" +
+        line +
+        "\n```";
 
-      resp += line + "\n```";
-
-      await interaction.reply(resp);
+      await interaction.reply(response);
     } catch (error) {
       logger.error(`Jail command failed: ${error}`);
     }
