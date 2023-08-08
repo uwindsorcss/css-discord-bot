@@ -29,18 +29,24 @@ const promptModule: CommandType = {
         .setName("question")
         .setDescription("What is the question?")
         .setRequired(true)
+    )
+    .addBooleanOption((opt) =>
+      opt
+        .setName("thread")
+        .setDescription("Create a thread for the prompt?")
+        .setRequired(false)
     ),
   execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     try {
+      const isThread = interaction.options.getBoolean("thread") ?? true;
       const channelID = interaction.options.getChannel(
-        "destination"
+        "destination",
+        true
       ) as TextChannel;
 
       if (!channelID) {
         return await handleEmbedResponse(interaction, true, {
-          message: `Please select a channel to ask the question in ${inlineCode(
-            "/prompt"
-          )}`,
+          message: `Please select a channel to ask the question in.`,
         });
       }
 
@@ -48,10 +54,12 @@ const promptModule: CommandType = {
       const promptMsg = "## :loudspeaker: Community Prompt\n" + question;
       const promptMessage = await channelID.send(promptMsg);
 
-      await promptMessage.startThread({
-        name: question,
-        autoArchiveDuration: 10080,
-      });
+      if (isThread) {
+        await promptMessage.startThread({
+          name: question,
+          autoArchiveDuration: 10080,
+        });
+      }
 
       return await handleEmbedResponse(interaction, false, {
         message: `Asked ${inlineCode(question)} in ${channelID}`,
