@@ -32,7 +32,7 @@ cp .env.example .env
 
 The `config.yaml` file contains settings specific to the bot's functionality.
 
-To set up the `.env` file, you can copy the provided `.env.example` file:
+To set up the `config.yaml` file, you can copy the provided `config.example.yaml` file:
 
 ```sh
 cp config.example.yaml config.yaml
