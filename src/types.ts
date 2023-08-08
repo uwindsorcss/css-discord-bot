@@ -67,7 +67,10 @@ enum BotModes {
 }
 
 interface ASCIIArt {
-  [key: string]: string;
+  [key: string]: {
+    art: string;
+    defaultString: string;
+  };
 }
 
 export {
