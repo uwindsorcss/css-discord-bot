@@ -2,6 +2,7 @@ import {promises as fs} from "fs";
 import path from "path";
 import {BotModes, ClientType, CommandType} from "@/types";
 import {Config, logger} from "@/config";
+import "dotenv/config";
 import {
   Collection,
   REST,
@@ -39,15 +40,15 @@ export default async (client: ClientType) => {
     commandArr.push(command.data.toJSON());
   }
 
-  const rest = new REST({version: Config?.api_version}).setToken(
-    Config?.api_token as string
-  );
+  const rest = new REST({
+    version: process.env.DISCORD_API_VERSION as string,
+  }).setToken(process.env.DISCORD_API_TOKEN as string);
 
   // if in production mode, register globally, can take up to an hour to show up
   // else register in development guild
   if (Config?.mode === BotModes.production) {
     await rest.put(
-      Routes.applicationCommands(Config?.api_client_id as string),
+      Routes.applicationCommands(process.env.DISCORD_CLIENT_ID as string),
       {
         body: commandArr,
       }
@@ -55,8 +56,8 @@ export default async (client: ClientType) => {
   } else {
     await rest.put(
       Routes.applicationGuildCommands(
-        Config?.api_client_id as string,
-        Config?.development_guild_id as string
+        process.env.DISCORD_CLIENT_ID as string,
+        process.env.DISCORD_GUILD_ID as string
       ),
       {
         body: commandArr,

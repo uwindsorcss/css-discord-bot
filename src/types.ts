@@ -11,36 +11,27 @@ import {
 } from "discord.js";
 
 interface ConfigType {
-  api_token: string;
-  api_client_id: string;
-  bot_user_id: number;
-  api_version: string;
   mode: BotModes;
-  development_guild_id: string;
   debug: boolean;
   self_roles_channel: string;
   image_directory_url: string;
   year_roles: {
     [key: string]: string;
   };
-  prompt: {
-    channel: string;
-    top_text: string;
-    bottom_text: string;
-  };
   features: {
-    linkAdmin: boolean;
-    link: boolean;
-    ping: boolean;
-    year: boolean;
-    purge: boolean;
+    art: boolean;
     equation: boolean;
-    whereis: boolean;
-    selfRoles: boolean;
-    say: boolean;
-    prompt: boolean;
+    free: boolean;
+    help: boolean;
     jail: boolean;
-    train: boolean;
+    link: boolean;
+    linkAdmin: boolean;
+    ping: boolean;
+    prompt: boolean;
+    purge: boolean;
+    say: boolean;
+    whereis: boolean;
+    year: boolean;
   };
 }
 

@@ -1,42 +1,19 @@
 # See README.md for extra documentation on the specifics of an element.
 ---
-api_token: ""
-api_client_id: ""
-bot_user_id: 8
-api_version: 10
-
-# can either be "development" or "production"
-mode: "development"
-
-# in "development" mode, this is required to be set
-development_guild_id: ""
-
-# debug message on or off
-debug: true
-
+mode: "development" # can either be "development" or "production"
+debug: false # enable debug messages
 self_roles_channel: "self-roles"
-
 image_directory_url: "https://uwindsorcss.github.io/files/dir/images/buildings"
 
-# year roles IDs
 year_roles:
-1: ""
-2: ""
-3: ""
-4: ""
-4+: ""
-Masters: ""
+  1: ""
+  2: ""
+  3: ""
+  4: ""
+  4+: ""
+  Masters: ""
 
-# anything related to the community prompt
-prompt:
-  # top and bottom text to the prompt message
-  # the prompt text given will be inbetween those
-  # if you want to reference a channel or user, you need to follow
-  # the proper way to reference things with their encoded IDs
-  top_text: ""
-  bottom_text: ""
-
-# featurization
+# featurization - if you want to disable a feature, set it to false
 features:
   art: true
   equation: true

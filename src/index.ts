@@ -1,9 +1,10 @@
 import {Client, GatewayIntentBits} from "discord.js";
-import {Config, logger, prisma} from "@/config";
+import {logger, prisma} from "@/config";
 import {ClientType} from "./types";
 import events from "./events";
 import commands from "./commands";
 import process from "process";
+import "dotenv/config";
 
 const shutDown = async () => {
   await client.destroy();
@@ -28,5 +29,5 @@ const client = new Client({
   await commands(client);
 
   // login the client
-  await client.login(Config?.api_token);
+  await client.login(process.env.DISCORD_API_TOKEN);
 })();

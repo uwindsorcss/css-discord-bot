@@ -9,7 +9,6 @@ import {
   PermissionFlagsBits,
 } from "discord.js";
 import {CommandType} from "../types";
-import {Config} from "@/config";
 import {handleEmbedResponse} from "@/helpers";
 
 const promptModule: CommandType = {
@@ -44,11 +43,7 @@ const promptModule: CommandType = {
     }
 
     const question = interaction.options.getString("question")!;
-    const promptMsg =
-      Config?.prompt.top_text +
-      "## :loudspeaker: Community Prompt\n" +
-      question +
-      Config?.prompt.bottom_text;
+    const promptMsg = "## :loudspeaker: Community Prompt\n" + question;
     const promptMessage = await channelID.send(promptMsg);
 
     await promptMessage.startThread({
