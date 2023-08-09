@@ -124,6 +124,10 @@ export const buildings: buildingType[] = [
     name: "Odette Building",
   },
   {
+    code: "PA",
+    name: "Parking Around Campus",
+  },
+  {
     code: "TC",
     name: "Toldo Health Education Centre",
   },
