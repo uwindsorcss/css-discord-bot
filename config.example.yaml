@@ -15,6 +15,7 @@ year_roles:
 # featurization - if you want to disable a feature, set it to false
 features:
   art: true
+  edit: true
   equation: true
   free: true
   help: true
