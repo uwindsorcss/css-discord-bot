@@ -36,7 +36,16 @@ const sayModule: CommandType = {
         "destination"
       ) as TextChannel;
 
-      const message = interaction.options.getString("message")!;
+      const message = interaction.options
+        .getString("message", true)
+        .replaceAll("\\n", "\n");
+
+      if (!channelID) {
+        return await handleEmbedResponse(interaction, true, {
+          message: `Please select a channel to announce the message in.`,
+        });
+      }
+
       channelID?.send({content: message});
 
       return await handleEmbedResponse(interaction, false, {
