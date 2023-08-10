@@ -12,7 +12,7 @@ import {
   ButtonStyle,
   ActionRowBuilder,
   ComponentType,
-  Interaction,
+  ButtonInteraction,
 } from "discord.js";
 import {CommandType} from "../types";
 import {Link} from "@prisma/client";
@@ -139,10 +139,19 @@ const linkModule: CommandType = {
           components: [row],
         });
 
-        const filter = (i: Interaction) => i.user.id === interaction.user.id;
+        const buttonFilter = (i: ButtonInteraction) => {
+          if (i.user.id !== interaction.user.id) {
+            i.reply({
+              content: "You are not allowed to interact with this message!",
+              ephemeral: true,
+            });
+            return false;
+          }
+          return true;
+        };
 
         const collector = response.createMessageComponentCollector({
-          filter,
+          filter: buttonFilter,
           componentType: ComponentType.Button,
           time: 120000,
         });

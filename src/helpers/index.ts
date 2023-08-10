@@ -1,4 +1,5 @@
 import {
+  ButtonInteraction,
   ChatInputCommandInteraction,
   ColorResolvable,
   Colors,

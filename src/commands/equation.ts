@@ -2,6 +2,7 @@ import {logger} from "@/config";
 import {
   ActionRowBuilder,
   ButtonBuilder,
+  ButtonInteraction,
   ButtonStyle,
   CacheType,
   ChatInputCommandInteraction,
@@ -43,11 +44,20 @@ const equationModule: CommandType = {
         components: [row],
       });
 
-      const filter = (i: Interaction) => i.user.id === interaction.user.id;
+      const buttonFilter = (i: ButtonInteraction) => {
+        if (i.user.id !== interaction.user.id) {
+          i.reply({
+            content: "You are not allowed to interact with this message!",
+            ephemeral: true,
+          });
+          return false;
+        }
+        return true;
+      };
 
       try {
         const componentInteraction = await response.awaitMessageComponent({
-          filter: filter,
+          filter: buttonFilter,
           componentType: ComponentType.Button,
           time: 60000,
           dispose: true,

@@ -10,8 +10,8 @@ import {
   PermissionFlagsBits,
   ButtonBuilder,
   ButtonStyle,
-  Interaction,
   Colors,
+  ButtonInteraction,
 } from "discord.js";
 import {CommandType} from "../types";
 import {Link} from "@prisma/client";
@@ -169,12 +169,20 @@ const linkAdminModule: CommandType = {
           ],
         });
 
-        const userFilter = (i: Interaction) =>
-          i.user.id === interaction.user.id;
+        const buttonFilter = (i: any) => {
+          if (i.user.id !== interaction.user.id) {
+            i.reply({
+              content: "You are not allowed to interact with this message!",
+              ephemeral: true,
+            });
+            return false;
+          }
+          return true;
+        };
 
         try {
           const confirmation = await response.awaitMessageComponent({
-            filter: userFilter,
+            filter: buttonFilter,
             time: 30000,
           });
 
