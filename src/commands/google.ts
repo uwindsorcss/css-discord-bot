@@ -1,5 +1,6 @@
 import {CommandType} from "../types";
 import {logger} from "@/config";
+import process from "process";
 
 import {
   CacheType,
@@ -35,8 +36,8 @@ const googleModule: CommandType = {
       })
       .setTimestamp();
 
-    const search_key = "insert custom search api token";
-    const search_id = "insert custom search engine id";
+    const search_key = process.env.GOOGLE_SEARCH_KEY;
+    const search_id = process.env.GOOGLE_SEARCH_ID;
     const url = `https://www.googleapis.com/customsearch/v1?key=${search_key}&cx=${search_id}&q=${query}`;
 
     // Interfaces for getting specific entries.
@@ -57,9 +58,9 @@ const googleModule: CommandType = {
     })
       .then(async (response: Response) => {
         if (!response.ok) {
-          logger.info("No response.");
+          logger.info("No response from Google");
           interaction.reply({
-            content: "Unable to return any queries.",
+            content: "Google was unable to return any results.",
             ephemeral: true,
           });
         }
@@ -68,9 +69,14 @@ const googleModule: CommandType = {
       })
       .then((data: Results) => {
         let i: number = 0;
-        data.items.forEach((element: SearchResult) => {
-          links.push(`${++i}. [${element.title}](${element.link})`);
-        });
+
+        if (data.items.length == 0) {
+          links.push("No results.");
+        } else {
+          data.items.forEach((element: SearchResult) => {
+            links.push(`${++i}. [${element.title}](${element.link})`);
+          });
+        }
       });
 
     embed.setDescription(`**Query: ${query}**\n${links.join("\n")}`);
