@@ -73,7 +73,7 @@ const googleModule: CommandType = {
         if (data.items.length == 0) {
           links.push("No results.");
         } else {
-          data.items.forEach((element: SearchResult) => {
+          data.items.map((element: SearchResult) => {
             links.push(`${++i}. [${element.title}](${element.link})`);
           });
         }
