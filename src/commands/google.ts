@@ -71,11 +71,12 @@ const googleModule: CommandType = {
         let i: number = 0;
 
         if (data.items.length == 0) {
-          links.push("No results.");
+          links[0] = "No results.";
         } else {
-          data.items.map((element: SearchResult) => {
-            links.push(`${++i}. [${element.title}](${element.link})`);
-          });
+          links = data.items.map(
+            (element: SearchResult) =>
+              `${++i}. [${element.title}](${element.link})`
+          );
         }
       });
 
