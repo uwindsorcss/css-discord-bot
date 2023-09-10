@@ -4,6 +4,10 @@ mode: "development" # can either be "development" or "production"
 debug: false # enable debug messages
 image_directory_url: "https://uwindsorcss.github.io/files/dir/images/buildings"
 
+# GSCE Creds
+google_search_key: ""
+google_search_id: ""
+
 year_roles:
   1: ""
   2: ""

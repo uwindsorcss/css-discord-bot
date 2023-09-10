@@ -1,6 +1,5 @@
 import {CommandType} from "../types";
-import {logger} from "@/config";
-import process from "process";
+import {logger, Config} from "@/config";
 
 import {
   CacheType,
@@ -36,8 +35,8 @@ const googleModule: CommandType = {
       })
       .setTimestamp();
 
-    const search_key = process.env.GOOGLE_SEARCH_KEY;
-    const search_id = process.env.GOOGLE_SEARCH_ID;
+    const search_key = Config.google_search_key;
+    const search_id = Config.google_search_id;
     const url = `https://www.googleapis.com/customsearch/v1?key=${search_key}&cx=${search_id}&q=${query}`;
 
     // Interfaces for getting specific entries.
@@ -50,7 +49,7 @@ const googleModule: CommandType = {
       items: SearchResult[];
     }
 
-    let links: string[] = [];
+    let response: string = "";
 
     await fetch(url, {
       method: "GET",
@@ -71,16 +70,18 @@ const googleModule: CommandType = {
         let i: number = 0;
 
         if (data.items.length == 0) {
-          links[0] = "No results.";
+          response = "No results.";
         } else {
-          links = data.items.map(
-            (element: SearchResult) =>
-              `${++i}. [${element.title}](${element.link})`
-          );
+          response = data.items
+            .map(
+              (element: SearchResult) =>
+                `${++i}. [${element.title}](${element.link})`
+            )
+            .join("\n");
         }
       });
 
-    embed.setDescription(`**Query: ${query}**\n${links.join("\n")}`);
+    embed.setDescription(`**Query: ${query}**\n${response}`);
 
     if (!toWhom) {
       interaction.reply({embeds: [embed]});
