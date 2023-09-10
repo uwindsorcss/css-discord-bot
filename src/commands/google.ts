@@ -36,8 +36,9 @@ const googleModule: CommandType = {
       })
       .setTimestamp();
 
-    const key = process.env.GOOGLE_SEARCH_API_KEY;
-    const url = `https://www.googleapis.com/customsearch/v1?key=${key}&cx=f57713eb81bbf42de&q=${query}`;
+    const search_key = process.env.GOOGLE_SEARCH_API_KEY;
+    const search_id = process.env.GOOGLE_SEARCH_ID;
+    const url = `https://www.googleapis.com/customsearch/v1?key=${search_key}&cx=${search_id}&q=${query}`;
 
     let links: string[] = [];
 
