@@ -28,3 +28,4 @@ features:
   say: true
   whereis: true
   year: true
+  google: true
