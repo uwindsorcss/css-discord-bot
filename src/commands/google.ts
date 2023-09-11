@@ -9,6 +9,16 @@ import {
   Colors,
 } from "discord.js";
 
+// Interfaces for getting specific entries.
+interface SearchResult {
+  title: string;
+  link: string;
+}
+
+interface Results {
+  items: SearchResult[];
+}
+
 const googleModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("google")
@@ -27,66 +37,60 @@ const googleModule: CommandType = {
   execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     const query = interaction.options.getString("query");
     const toWhom = interaction.options.getUser("to");
-    const embed = new EmbedBuilder()
-      .setColor(Colors.Blue)
-      .setAuthor({
-        name: `Requested by ${interaction.user.displayName}`,
-        iconURL: `${interaction.user?.avatarURL()}`,
-      })
-      .setTimestamp();
+    try {
+      const embed = new EmbedBuilder()
+        .setColor(Colors.Blue)
+        .setAuthor({
+          name: `Requested by ${interaction.user.displayName}`,
+          iconURL: `${interaction.user?.avatarURL()}`,
+        })
+        .setTimestamp();
 
-    const search_key = Config.google_search_key;
-    const search_id = Config.google_search_id;
-    const url = `https://www.googleapis.com/customsearch/v1?key=${search_key}&cx=${search_id}&q=${query}`;
+      if (!Config.google_search_key || !Config.google_search_id) {
+        logger.info("No key or search engine ID.");
+        return;
+      }
 
-    // Interfaces for getting specific entries.
-    interface SearchResult {
-      title: string;
-      link: string;
-    }
+      const search_key = Config.google_search_key;
+      const search_id = Config.google_search_id;
+      const url = `https://www.googleapis.com/customsearch/v1?key=${search_key}&cx=${search_id}&q=${query}`;
 
-    interface Results {
-      items: SearchResult[];
-    }
+      let response: string = "";
 
-    let response: string = "";
-
-    await fetch(url, {
-      method: "GET",
-      headers: {Accept: "*/*"},
-    })
-      .then(async (response: Response) => {
-        if (!response.ok) {
-          logger.info("No response from Google");
-          interaction.reply({
-            content: "Google was unable to return any results.",
-            ephemeral: true,
-          });
-        }
-
-        return (await response.json()) as Results;
-      })
-      .then((data: Results) => {
-        let i: number = 0;
-
-        if (data.items.length == 0) {
-          response = "No results.";
-        } else {
-          response = data.items
-            .map(
-              (element: SearchResult) =>
-                `${++i}. [${element.title}](${element.link})`
-            )
-            .join("\n");
-        }
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {Accept: "*/*"},
       });
 
-    embed.setDescription(`**Query: ${query}**\n${response}`);
+      if (!res.ok) {
+        logger.info("No response from Google");
+        return interaction.reply({
+          content: "Google was unable to return any results.",
+          ephemeral: true,
+        });
+      }
 
-    if (!toWhom) {
-      interaction.reply({embeds: [embed]});
-    } else {
-      interaction.reply({content: `${toWhom}`, embeds: [embed]});
+      const data: Results = await res.json();
+
+      if (data.items.length == 0) {
+        response = "No results.";
+      } else {
+        response = data.items
+          .map(
+            ({title, link}: SearchResult, i: number) =>
+              `${i + 1}. [${title}](${link})`
+          )
+          .join("\n");
+      }
+
+      embed.setDescription(`**Query: ${query}**\n${response}`);
+
+      interaction.reply({
+        content: toWhom?.toString() ?? "",
+        embeds: [embed],
+      });
+    } catch (error: any) {
+      logger.info(error);
     }
   },
 };
