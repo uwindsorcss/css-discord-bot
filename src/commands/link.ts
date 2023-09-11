@@ -55,9 +55,12 @@ const linkModule: CommandType = {
 
       if (subCommand === "get") {
         const choice = interaction.options.getString("link", true);
-        const res = await prisma.link.findUnique({
+        const res = await prisma.link.findFirst({
           where: {
-            name: choice,
+            name: {
+              equals: choice,
+              mode: "insensitive",
+            },
           },
         });
         if (res) {
@@ -193,6 +196,7 @@ const linkModule: CommandType = {
         where: {
           name: {
             contains: searchString,
+            mode: "insensitive",
           },
         },
         take: 25,
