@@ -61,7 +61,10 @@ const googleModule: CommandType = {
 
       const res = await fetch(url, {
         method: "GET",
-        headers: {Accept: "*/*"},
+        headers: {
+          Accept: "*/*",
+          ContentType: "application/json",
+        },
       });
 
       if (!res.ok) {
