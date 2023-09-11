@@ -19,22 +19,7 @@ interface ConfigType {
   };
   google_search_key: "";
   google_search_id: "";
-  features: {
-    art: boolean;
-    equation: boolean;
-    free: boolean;
-    help: boolean;
-    jail: boolean;
-    link: boolean;
-    linkAdmin: boolean;
-    ping: boolean;
-    prompt: boolean;
-    purge: boolean;
-    say: boolean;
-    whereis: boolean;
-    year: boolean;
-    google: boolean;
-  };
+  features: {[keyof: string]: boolean};
 }
 
 interface buildingType {

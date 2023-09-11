@@ -21,7 +21,7 @@ export default async (client: ClientType) => {
     .filter((file: string) => file.endsWith(".ts"))
     .filter(
       (file: string) =>
-        file !== "index.ts" && (Config as any)?.features[file.slice(0, -3)]
+        file !== "index.ts" && Config.features[file.slice(0, -3)]
     );
 
   // command loader
