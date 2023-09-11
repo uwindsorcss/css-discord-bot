@@ -28,6 +28,7 @@ const googleModule: CommandType = {
         .setName("query")
         .setDescription("What you want to Google.")
         .setRequired(true)
+        .setMaxLength(120)
     )
     .addUserOption((option) =>
       option
@@ -35,9 +36,10 @@ const googleModule: CommandType = {
         .setDescription("The user you want to direct this to.")
     ),
   execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
-    const query = interaction.options.getString("query");
-    const toWhom = interaction.options.getUser("to");
+    // Had to include the empty string so I can check the length.
     try {
+      const query = interaction.options.getString("query");
+      const toWhom = interaction.options.getUser("to");
       const embed = new EmbedBuilder()
         .setColor(Colors.Blue)
         .setAuthor({
