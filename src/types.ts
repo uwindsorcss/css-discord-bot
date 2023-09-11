@@ -17,6 +17,8 @@ interface ConfigType {
   year_roles: {
     [key: string]: string;
   };
+  google_search_key: "";
+  google_search_id: "";
   features: {
     art: boolean;
     equation: boolean;
@@ -31,6 +33,7 @@ interface ConfigType {
     say: boolean;
     whereis: boolean;
     year: boolean;
+    google: boolean;
   };
 }
 
