@@ -19,7 +19,7 @@ interface ConfigType {
   };
   google_search_key: "";
   google_search_id: "";
-  features: {[keyof: string]: boolean};
+  features: {[keyof: string]: boolean | undefined};
 }
 
 interface buildingType {
