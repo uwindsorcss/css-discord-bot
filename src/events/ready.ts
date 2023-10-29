@@ -1,6 +1,6 @@
-import {logger} from "@/config";
-import {initMathJax} from "@/helpers/LatexHelpers";
-import {Client, Events} from "discord.js";
+import { logger } from "@/config";
+import { initMathJax } from "@/helpers/LatexHelpers";
+import { Client, Events } from "discord.js";
 
 module.exports = {
   name: Events.ClientReady,
@@ -11,6 +11,7 @@ module.exports = {
     }
 
     await initMathJax();
+    client.user.setActivity(`css.uwindsor.ca`);
     logger.info(`${client.user.username} is online.`);
   },
 };
