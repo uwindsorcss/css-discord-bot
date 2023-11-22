@@ -14,7 +14,7 @@ module.exports = {
     client.user.setActivity({
       name: "status",
       type: 4,
-      state: ":lock: locked in",
+      state: "🔒 locked in",
     });
     client.user.setStatus("dnd");
     logger.info(`${client.user.username} is online.`);
