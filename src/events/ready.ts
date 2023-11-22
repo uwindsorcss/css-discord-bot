@@ -1,6 +1,6 @@
-import { logger } from "@/config";
-import { initMathJax } from "@/helpers/LatexHelpers";
-import { Client, Events } from "discord.js";
+import {logger} from "@/config";
+import {initMathJax} from "@/helpers/LatexHelpers";
+import {Client, Events} from "discord.js";
 
 module.exports = {
   name: Events.ClientReady,
@@ -11,7 +11,11 @@ module.exports = {
     }
 
     await initMathJax();
-    client.user.setActivity("🔒 locked in");
+    client.user.setActivity({
+      name: "status",
+      type: 4,
+      state: ":lock: locked in",
+    });
     client.user.setStatus("dnd");
     logger.info(`${client.user.username} is online.`);
   },
