@@ -11,7 +11,8 @@ module.exports = {
     }
 
     await initMathJax();
-    client.user.setActivity(`css.uwindsor.ca`);
+    client.user.setActivity("🔒 locked in");
+    client.user.setStatus("dnd");
     logger.info(`${client.user.username} is online.`);
   },
 };
