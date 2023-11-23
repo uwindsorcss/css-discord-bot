@@ -52,10 +52,6 @@ export const buildings: buildingType[] = [
     name: "Centre for Engineering Innovation",
   },
   {
-    code: "CEI",
-    name: "Centre for Engineering Innovation",
-  },
-  {
     code: "CH",
     name: "Cartier Hall",
   },
