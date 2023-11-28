@@ -14,9 +14,8 @@ module.exports = {
     client.user.setActivity({
       name: "status",
       type: 4,
-      state: "🔒 locked in",
+      state: "css.uwindsor.ca",
     });
-    client.user.setStatus("dnd");
     logger.info(`${client.user.username} is online.`);
   },
 };
