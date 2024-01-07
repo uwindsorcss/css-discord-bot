@@ -1,24 +1,21 @@
 import {Client, GatewayIntentBits} from "discord.js";
-import {logger, prisma} from "@/config";
+import {logger, prisma, Config} from "@/config";
 import {ClientType} from "./types";
 import events from "./events";
 import commands from "./commands";
 import process from "process";
 import "dotenv/config";
 
-const shutDown = async () => {
+// Gracefully exit on SIGINT
+process.on('SIGINT', async () => {
+  logger.info("Gracefully shutting down...");
   await client.destroy();
   await prisma.$disconnect();
-  logger.info("Gracefully shutting down...");
   process.exit(0);
-};
-
-// Gracefully exit on SIGINT and SIGTERM
-process.on("SIGINT", shutDown);
-process.on("SIGTERM", shutDown);
+});
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
 }) as ClientType;
 
 (async () => {
@@ -29,6 +26,6 @@ const client = new Client({
   await commands(client);
 
   // login the client
-  logger.debug("Logging in...");
-  await client.login(process.env.DISCORD_API_TOKEN);
+  logger.info("Logging in...");
+  await client.login(Config.discord_api_token);
 })();

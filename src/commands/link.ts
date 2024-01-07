@@ -16,7 +16,7 @@ import {
 } from "discord.js";
 import {CommandType} from "../types";
 import {Link} from "@prisma/client";
-import {handleEmbedResponse} from "@/helpers";
+import {handleEmbedResponse, standardizeLinkName} from "@/helpers";
 
 const linkModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -55,12 +55,12 @@ const linkModule: CommandType = {
 
       if (subCommand === "get") {
         const choice = interaction.options.getString("link", true);
+        const id = standardizeLinkName(choice);
         const res = await prisma.link.findFirst({
           where: {
-            name: {
-              equals: choice,
-              mode: "insensitive",
-            },
+            id: {
+              contains: id,
+            }
           },
         });
         if (res) {
@@ -185,7 +185,7 @@ const linkModule: CommandType = {
     }
   },
   autoComplete: async (interaction: AutocompleteInteraction) => {
-    let searchString = interaction.options.getString("link", true) ?? "";
+    let searchString = interaction.options.getString("link", true).toLowerCase() ?? "";
     let res: Link[];
     if (searchString.length == 0) {
       res = await prisma.link.findMany({
@@ -195,8 +195,7 @@ const linkModule: CommandType = {
       res = await prisma.link.findMany({
         where: {
           name: {
-            contains: searchString,
-            mode: "insensitive",
+            contains: searchString
           },
         },
         take: 25,

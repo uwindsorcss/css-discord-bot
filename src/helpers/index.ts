@@ -46,3 +46,7 @@ export const createEmbed = (
     .setDescription(description)
     .setColor(color);
 };
+
+export const standardizeLinkName = (name: string) => {
+  return name.trim().toLowerCase().replace(/ /g, "-");
+}

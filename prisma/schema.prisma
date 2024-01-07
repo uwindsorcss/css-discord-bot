@@ -3,17 +3,17 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:../data/database.sqlite"
 }
 
 model Link {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  description String
-  url         String
-  userID      String
-  userName    String
-  displayName String
-  createdAt   DateTime @default(now())
+  id                String   @id
+  name              String   @unique
+  description       String
+  url               String
+  authorID          String
+  authorUsername    String
+  authorDisplayName String
+  createdAt         DateTime @default(now())
 }

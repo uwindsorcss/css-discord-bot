@@ -1,6 +1,6 @@
 import {promises as fs} from "fs";
 import path from "path";
-import {BotModes, ClientType, CommandType} from "@/types";
+import {ClientType, CommandType} from "@/types";
 import {Config, logger} from "@/config";
 import "dotenv/config";
 import {
@@ -18,10 +18,10 @@ export default async (client: ClientType) => {
 
   // all command files except index.ts
   const commandFiles: string[] = (await fs.readdir(__dirname))
-    .filter((file: string) => file.endsWith(".ts"))
+    .filter((file: string) => (file.endsWith(".ts") || file.endsWith(".js")))
     .filter(
       (file: string) =>
-        file !== "index.ts" && Config.features[file.slice(0, -3)]
+        file !== "index.ts" && file !== "index.js" && Config.features[file.slice(0, -3)]
     );
 
   // command loader
@@ -42,15 +42,15 @@ export default async (client: ClientType) => {
   }
 
   const rest = new REST({
-    version: process.env.DISCORD_API_VERSION as string,
-  }).setToken(process.env.DISCORD_API_TOKEN as string);
+    version: Config.discord_api_version,
+  }).setToken(Config.discord_api_token);
 
   // if in production mode, register globally, can take up to an hour to show up
   // else register in development guild
-  if (Config?.mode === BotModes.production) {
+  if (process.env.NODE_ENV === "production") {
     logger.debug("Registering commands globally...");
     await rest.put(
-      Routes.applicationCommands(process.env.DISCORD_CLIENT_ID as string),
+      Routes.applicationCommands(Config.discord_client_id),
       {
         body: commandArr,
       }
@@ -59,8 +59,8 @@ export default async (client: ClientType) => {
     logger.debug("Registering commands in development guild...");
     await rest.put(
       Routes.applicationGuildCommands(
-        process.env.DISCORD_CLIENT_ID as string,
-        process.env.DISCORD_GUILD_ID as string
+        Config.discord_client_id,
+        Config.discord_guild_id
       ),
       {
         body: commandArr,

@@ -11,11 +11,10 @@ import {
   ButtonBuilder,
   ButtonStyle,
   Colors,
-  ButtonInteraction,
 } from "discord.js";
 import {CommandType} from "../types";
 import {Link} from "@prisma/client";
-import {createEmbed, handleEmbedResponse} from "@/helpers";
+import {createEmbed, handleEmbedResponse, standardizeLinkName} from "@/helpers";
 
 const linkAdminModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -68,12 +67,21 @@ const linkAdminModule: CommandType = {
       if (subcommand === "create") {
         const name = interaction.options.getString("name", true);
         const description = interaction.options.getString("description", true);
-        const URL = interaction.options.getString("url", true);
+        const url = interaction.options.getString("url", true);
+
+        const asciiRegex = new RegExp(/^[\x00-\x7F]*$/);
+        if (!asciiRegex.test(name)) {
+          return await handleEmbedResponse(interaction, true, {
+            message: `**${name}** is not a valid name, please use only ASCII characters.`,
+          });
+        }
+
+        const id = standardizeLinkName(name);
 
         //check if the link already exists in the database
         const link = await prisma.link.findUnique({
           where: {
-            name: name,
+            id,
           },
         });
 
@@ -90,10 +98,10 @@ const linkAdminModule: CommandType = {
         const urlRegex = new RegExp(
           /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
         );
-        if (!urlRegex.test(URL)) {
+        if (!urlRegex.test(url)) {
           return await handleEmbedResponse(interaction, true, {
             message: `${inlineCode(
-              URL
+              url
             )} is not a valid URL, please make sure it starts with http:// or https:// and ends with a domain.`,
           });
         }
@@ -101,12 +109,13 @@ const linkAdminModule: CommandType = {
         //create the link
         const createdLink = await prisma.link.create({
           data: {
-            name: name,
-            description: description,
-            url: URL,
-            userID: interaction.user.id,
-            userName: interaction.user.username,
-            displayName: interaction.user.displayName,
+            id,
+            name,
+            description,
+            url,
+            authorID: interaction.user.id,
+            authorUsername: interaction.user.username,
+            authorDisplayName: interaction.user.displayName,
           },
         });
 
@@ -124,11 +133,12 @@ const linkAdminModule: CommandType = {
         });
       } else if (subcommand === "delete") {
         const searchString = interaction.options.getString("link", true);
+        const id = standardizeLinkName(searchString);
 
         //Get the link
         const link = await prisma.link.findUnique({
           where: {
-            name: searchString,
+            id,
           },
         });
 
@@ -189,7 +199,7 @@ const linkAdminModule: CommandType = {
           if (confirmation.customId === "delete") {
             await prisma.link.delete({
               where: {
-                name: searchString,
+                id,
               },
             });
             await confirmation.update({
@@ -236,7 +246,9 @@ const linkAdminModule: CommandType = {
   autoComplete: async (interaction: AutocompleteInteraction) => {
     const subcommand = interaction.options.getSubcommand();
     if (subcommand === "delete") {
-      const searchString = interaction.options.getString("link", true) ?? "";
+      const searchString =
+        interaction.options.getString("link", true).toLowerCase() ?? "";
+
       let res: Link[];
       if (searchString.length == 0) {
         res = await prisma.link.findMany();

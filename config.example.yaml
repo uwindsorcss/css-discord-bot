@@ -1,10 +1,15 @@
 # See README.md for extra documentation on the specifics of an element.
 ---
-mode: "development" # can either be "development" or "production"
-debug: false # enable debug messages
+debug: false # used for debug messages
 image_directory_url: "https://uwindsorcss.github.io/files/dir/images/buildings"
 
-# GSCE Creds
+# Discord Credentials
+discord_api_version: "10"
+discord_api_token: ""
+discord_client_id: ""
+discord_guild_id: ""
+
+# GSCE Credentials
 google_search_key: ""
 google_search_id: ""
 
