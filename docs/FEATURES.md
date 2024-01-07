@@ -6,6 +6,10 @@ This file contains information about the various features available on our bot.
 
 The `art` command allows users to send pre-created ASCII art. Think of it like a huge sticker.
 
+## Course
+
+The `course details` subcommand fetches and shows the details (name, description, etc.) of a course.
+
 ## Edit
 
 The `edit` command allows staff members to edit the messages sent by the bot using the [`say`](#say) or [`prompt`](#prompt) commands.
