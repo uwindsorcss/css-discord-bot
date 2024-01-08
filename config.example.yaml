@@ -1,5 +1,6 @@
 # See README.md for extra documentation on the specifics of an element.
 ---
+seed: false # Set to false to disable seeding of the database
 debug: false # used for debug messages
 image_directory_url: "https://uwindsorcss.github.io/files/dir/images/buildings"
 

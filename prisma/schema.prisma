@@ -17,3 +17,39 @@ model Link {
   authorDisplayName String
   createdAt         DateTime @default(now())
 }
+
+model Course {
+  code           String          @id
+  name           String
+  description    String
+  notes          String?
+  lectureHours   Decimal?
+  labHours       Decimal?
+  prerequisites  Prerequisite[]
+  corequisites   Corequisite[]
+  antirequisites Antirequisite[]
+}
+
+model Prerequisite {
+  requirement String
+  Course      Course @relation(fields: [courseCode], references: [code], onDelete: Cascade)
+  courseCode  String
+
+  @@id([requirement, courseCode])
+}
+
+model Corequisite {
+  requirement String
+  Course      Course @relation(fields: [courseCode], references: [code], onDelete: Cascade)
+  courseCode  String
+
+  @@id([requirement, courseCode])
+}
+
+model Antirequisite {
+  requirement String
+  Course      Course @relation(fields: [courseCode], references: [code], onDelete: Cascade)
+  courseCode  String
+
+  @@id([requirement, courseCode])
+}

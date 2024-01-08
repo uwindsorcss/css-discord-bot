@@ -1,80 +1,121 @@
-import {logger} from "@/config";
+import {prisma} from "@/config";
 import {
   CacheType,
   SlashCommandBuilder,
   ChatInputCommandInteraction,
   SlashCommandStringOption,
+  AutocompleteInteraction,
 } from "discord.js";
 import {CommandType} from "../types";
 import {handleEmbedResponse} from "@/helpers";
-
-interface CourseDetails {
-  Prerequisites: string[];
-  Corequisites: string[];
-  Antirequisites: string[];
-
-  LabHours: number;
-  LectureHours: number;
-
-  Code: string;
-  Name: string;
-  Description: string;
-
-  Notes: string;
-}
+import {Course} from "@prisma/client";
 
 const courseModule: CommandType = {
   data: new SlashCommandBuilder()
     .setName("course")
-    .setDescription("Get informtion about a course.")
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("details")
-        .setDescription("Get information about a course.")
-        .addStringOption((option: SlashCommandStringOption) =>
-          option
-            .setName("code")
-            .setDescription("The course code to get information about.")
-            .setRequired(true)
-            .setMaxLength(8)
-            .setMinLength(8)
-        )
+    .setDescription("Get information about a course.")
+    .addStringOption((option: SlashCommandStringOption) =>
+      option
+        .setName("code")
+        .setDescription("The course code to get information about.")
+        .setRequired(true)
+        .setMaxLength(8)
+        .setMinLength(8)
+        .setAutocomplete(true)
     ),
   execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
+    const code: string = interaction.options.getString("code", true);
 
-    // default will never be used because of setRequired(true)
-    const code: string = interaction.options.getString("code")?.toUpperCase() || "default";
-
-    if(/[A-Z]{4}[0-9]{4}/.test(code) === false) {
+    const courseCodeRegex = /^[a-zA-Z]{4}[0-9]{4}$/;
+    if (!courseCodeRegex.test(code) || code.length !== 8) {
       return await handleEmbedResponse(interaction, true, {
-        message: "Course code should be in the format of ABCD1234."
-      })
+        message: "Course code should be in the format of ABCD1234.",
+      });
     }
 
-    const endpoint = "https://boratto.ca/winzard/api/details?search=" + code;
-    const fetched = await fetch(endpoint);
-    if(!fetched.ok) {
-      logger.error(`Failed to fetch course details: ${fetched.status} ${fetched.statusText}`)
+    const course = await prisma.course.findFirst({
+      where: {
+        code: code.toLowerCase(),
+      },
+      include: {
+        prerequisites: true,
+        antirequisites: true,
+        corequisites: true,
+      },
+    });
+
+    if (!course || course === null) {
       return await handleEmbedResponse(interaction, true, {
-        message: "Failed to fetch course details."
-      })
+        message: "Course not found, please try another code.",
+      });
     }
-    const details = await fetched.json() as CourseDetails[];
 
-    for(const detail of details) {
-      if(detail.Code === code) {
-        await interaction.reply(`
-**${code}: ${detail.Name.trim()}**
-> ${detail.Description.trim()}
-        `)
-        return;
-      }
+    let embed = {
+      title: `${course.code.toUpperCase()} - ${course.name}`,
+      description: `**Description:** ${course.description}`,
+      color: 0x0099ff,
+    };
+
+    if (course.lectureHours !== null) {
+      embed.description += `\n\n**Lecture Hours:** ${course.lectureHours}`;
     }
-    await handleEmbedResponse(interaction, true, {
-      message: "Course not found."
-    })
-    return;
-  }
-}
 
-export {courseModule as command}
+    if (course.labHours !== null) {
+      embed.description += `\n**Lab Hours:** ${course.labHours}`;
+    }
+
+    if (course.notes) {
+      embed.description += `\n**Notes:** ${course.notes}`;
+    }
+
+    if (course.prerequisites.length > 0) {
+      embed.description += `\n**Prerequisites:** ${course.prerequisites
+        .map((prerequisite) => prerequisite.requirement)
+        .join(", ")}`;
+    }
+
+    if (course.corequisites.length > 0) {
+      embed.description += `\n**Corequisites:** ${course.corequisites
+        .map((corequisite) => corequisite.requirement)
+        .join(", ")}`;
+    }
+
+    if (course.antirequisites.length > 0) {
+      embed.description += `\n**Antirequisites:** ${course.antirequisites
+        .map((antirequisite) => antirequisite.requirement)
+        .join(", ")}`;
+    }
+
+    await interaction.reply({
+      embeds: [embed],
+    });
+  },
+  autoComplete: async (interaction: AutocompleteInteraction) => {
+    let searchString = interaction.options
+      .getString("code", true)
+      .toLowerCase();
+    let res: Course[];
+    if (searchString.length == 0) {
+      res = await prisma.course.findMany({
+        take: 25,
+      });
+    } else {
+      res = await prisma.course.findMany({
+        where: {
+          code: {
+            contains: searchString,
+          },
+        },
+        take: 25,
+      });
+    }
+    interaction.respond(
+      res.map((course) => ({
+        name: course.code.toUpperCase(),
+        value: course.code,
+      }))
+    );
+  },
+};
+
+export {courseModule as command};

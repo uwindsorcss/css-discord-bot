@@ -4,6 +4,7 @@ import pino from "pino";
 import {ConfigType} from "./types";
 import {PrismaClient} from "@prisma/client";
 import {join} from "path";
+import {seedDatabase} from "./helpers/seed";
 
 // load in the config file
 export const Config: ConfigType = yaml.load(
@@ -43,3 +44,4 @@ logger.debug({Config});
 
 // create a new prisma client
 export const prisma = new PrismaClient();
+if (Config.seed) seedDatabase();

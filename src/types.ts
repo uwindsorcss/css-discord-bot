@@ -11,6 +11,7 @@ import {
 } from "discord.js";
 
 interface ConfigType {
+  seed: boolean;
   debug: boolean;
   image_directory_url: string;
   year_roles: {

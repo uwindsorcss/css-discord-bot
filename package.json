@@ -58,8 +58,8 @@
     "discord-api-types": "^0.37.52",
     "nodemon": "^3.0.2",
     "rimraf": "^5.0.5",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.3.3"
   }
 }
