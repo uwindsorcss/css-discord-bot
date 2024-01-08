@@ -8,7 +8,7 @@ The `art` command allows users to send pre-created ASCII art. Think of it like a
 
 ## Course
 
-The `course details` subcommand fetches and shows the details (name, description, etc.) of a course.
+The `course` command fetches and shows the details (name, description, etc.) of a course.
 
 ## Edit
 
