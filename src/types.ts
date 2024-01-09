@@ -21,6 +21,7 @@ interface ConfigType {
   discord_api_token: string;
   discord_client_id: string;
   discord_guild_id: string;
+  discord_status: string;
   google_search_key: "";
   google_search_id: "";
   features: {[keyof: string]: boolean | undefined};

@@ -9,6 +9,7 @@ discord_api_version: "10"
 discord_api_token: ""
 discord_client_id: ""
 discord_guild_id: ""
+discord_status: ""
 
 # GSCE Credentials
 google_search_key: ""

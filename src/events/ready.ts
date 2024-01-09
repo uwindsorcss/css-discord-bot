@@ -1,4 +1,4 @@
-import {logger} from "@/config";
+import {logger, Config} from "@/config";
 import {initMathJax} from "@/helpers/LatexHelpers";
 import {Client, Events} from "discord.js";
 
@@ -11,11 +11,16 @@ module.exports = {
     }
 
     await initMathJax();
-    client.user.setActivity({
-      name: "status",
-      type: 4,
-      state: "css.uwindsor.ca",
-    });
+
+    // Set status
+    if (Config.discord_status && Config.discord_status !== "") {
+      client.user.setActivity({
+        name: "status",
+        type: 4,
+        state: Config.discord_status,
+      });
+    }
+
     logger.info(`${client.user.username} is online.`);
   },
 };
