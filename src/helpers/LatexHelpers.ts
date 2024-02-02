@@ -74,15 +74,20 @@ export const EquationRender = async (
       },
       async function (data: any) {
         if (!data.errors) {
-          await interaction.deferReply();
-          const equationSVG = data.svg.replace(/"currentColor"/g, '"black"');
-
           try {
+            await interaction.reply({
+              content: "Generating equation...",
+            });
+            const equationSVG = data.svg.replace(/"currentColor"/g, '"black"');
             const buffer = await svgToImgBuffer(equationSVG);
             const attachment = new AttachmentBuilder(buffer, {
               name: `equation-${
                 interaction.member?.user.username
               }-${Date.now()}.jpg`,
+            });
+            await interaction.editReply({
+              content: "",
+              files: [attachment],
             });
             resolve(attachment);
           } catch (error) {
