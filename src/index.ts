@@ -7,11 +7,12 @@ import process from "process";
 import "dotenv/config";
 
 // Gracefully exit on SIGINT
-process.on('SIGINT', async () => {
+require("shutdown-handler").on("exit", (e: Event) => {
+  e.preventDefault();
   logger.info("Gracefully shutting down...");
-  await client.destroy();
-  await prisma.$disconnect();
-  process.exit(0);
+  client.destroy();
+  prisma.$disconnect();
+  process.exit();
 });
 
 const client = new Client({

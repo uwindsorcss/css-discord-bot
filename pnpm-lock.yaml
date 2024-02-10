@@ -38,6 +38,9 @@ dependencies:
   prisma:
     specifier: ^5.9.1
     version: 5.9.1
+  shutdown-handler:
+    specifier: ^1.0.1
+    version: 1.0.1
   svg2img:
     specifier: 1.0.0-beta.2
     version: 1.0.0-beta.2
@@ -2839,6 +2842,10 @@ packages:
   /shebang-regex@3.0.0:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
+
+  /shutdown-handler@1.0.1:
+    resolution: {integrity: sha512-Iw0EU9clRLRnIvDKoqcGTDlS0F8uQHZNBrOLOUh9oFZ6Nx8wqb6dS5VkGg/gP1v3HJKe4fMFWi89Q0HERkttTw==}
+    dev: false
 
   /signal-exit@3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}

@@ -46,6 +46,7 @@
     "pino-pretty": "^10.3.1",
     "pino-roll": "1.0.0-rc.1",
     "prisma": "^5.9.1",
+    "shutdown-handler": "^1.0.1",
     "svg2img": "1.0.0-beta.2"
   },
   "devDependencies": {
