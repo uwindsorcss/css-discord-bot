@@ -23,6 +23,14 @@ year_roles:
   4+: ""
   Masters: ""
 
+# Pin Reaction feature
+pin:
+  enabled: true
+  count: 5 # The number of pins that the message needs to have to be pinned
+  categories: # The categories that the pin feature is enabled in
+    - ""
+    - ""
+
 # featurization - if you want to disable a feature, set it to false
 features:
   art: true

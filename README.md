@@ -36,6 +36,13 @@ cp config.example.yaml config.yaml
 
 - `year_roles`: A mapping of academic years to Discord role IDs. This allows the bot to assign roles based on the year of study. Replace the empty strings with the corresponding role IDs.
 
+#### Pin Reaction Configuration
+
+- `pin`
+  - `enabled`: A boolean value indicating whether reaction pinning is enabled (`true`) or disabled (`false`).
+  - `count`: The number of reactions required to pin a message.
+  - `channels`: The channel IDs where reaction pinning is enabled.
+
 #### Features Configuration
 
 - `features`: A map of bot features, where you can enable (`true`) or disable (`false`) specific features by setting their values accordingly.

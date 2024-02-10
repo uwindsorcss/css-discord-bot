@@ -1,4 +1,4 @@
-import {Client, GatewayIntentBits} from "discord.js";
+import {Client, GatewayIntentBits, Partials} from "discord.js";
 import {logger, prisma, Config} from "@/config";
 import {ClientType} from "./types";
 import events from "./events";
@@ -16,17 +16,23 @@ require("shutdown-handler").on("exit", (e: Event) => {
 });
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessageReactions,
+  ],
+  partials: [
+    Partials.Message,
+    Partials.Channel,
+    Partials.Reaction,
+    Partials.User,
+  ],
 }) as ClientType;
 
 (async () => {
-  // load in the events
   await events(client);
-
-  // load in the commands
   await commands(client);
-
-  // login the client
   logger.info("Logging in...");
   await client.login(Config.discord_api_token);
 })();

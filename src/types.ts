@@ -17,6 +17,13 @@ interface ConfigType {
   year_roles: {
     [key: string]: string;
   };
+  pin: {
+    enabled: boolean;
+    count: number;
+    categories: {
+      [key: string]: string;
+    };
+  };
   discord_api_version: string;
   discord_api_token: string;
   discord_client_id: string;
@@ -61,11 +68,4 @@ interface ASCIIArt {
   };
 }
 
-export {
-  ConfigType,
-  buildingType,
-  CommandType,
-  EventType,
-  ASCIIArt,
-  ClientType,
-};
+export {ConfigType, buildingType, CommandType, EventType, ASCIIArt, ClientType};

@@ -8,8 +8,8 @@ export default async (client: ClientType) => {
 
   // all event files except index.ts
   const eventFiles: string[] = (await fs.readdir(__dirname))
-    .filter((file: string) => (file.endsWith(".ts") || file.endsWith(".js")))
-    .filter((file: string) => (file !== "index.ts" && file !== "index.js"));
+    .filter((file: string) => file.endsWith(".ts") || file.endsWith(".js"))
+    .filter((file: string) => file !== "index.ts" && file !== "index.js");
 
   // event loader
   for (const file of eventFiles) {
