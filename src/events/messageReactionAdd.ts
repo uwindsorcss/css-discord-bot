@@ -11,7 +11,7 @@ module.exports = {
       // Pin feature
       if (
         reaction.emoji.name === "📌" &&
-        reaction.count >= 1 &&
+        reaction.count >= Config.pin.count &&
         reaction.message.pinnable &&
         !reaction.message.pinned
       ) {
@@ -20,8 +20,7 @@ module.exports = {
 
         if (
           category &&
-          Config.pin.categories.toString().includes(category.id) &&
-          reaction.count >= Config.pin.count
+          Config.pin.categories.toString().includes(category.id)
         ) {
           await reaction.message.pin();
           logger.info(
