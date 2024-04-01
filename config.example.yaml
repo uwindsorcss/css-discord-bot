@@ -33,6 +33,7 @@ pin:
 
 # featurization - if you want to disable a feature, set it to false
 features:
+  aprilfools: false
   art: true
   edit: true
   equation: true
