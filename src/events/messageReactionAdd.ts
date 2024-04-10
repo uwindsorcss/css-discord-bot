@@ -1,36 +1,51 @@
 import {logger, Config} from "@/config";
-import {Events, User, MessageReaction, Client, TextChannel} from "discord.js";
+import {
+  Events,
+  User,
+  MessageReaction,
+  TextChannel,
+  GuildChannel,
+  Client,
+} from "discord.js";
 
 module.exports = {
   name: Events.MessageReactionAdd,
   async execute(client: Client, reaction: MessageReaction, user: User) {
     try {
       if (user.bot || !Config.pin.enabled) return;
-      if (reaction.partial) await reaction.fetch();
 
-      // Pin feature
-      if (
-        reaction.emoji.name === "📌" &&
-        reaction.count >= Config.pin.count &&
-        reaction.message.pinnable &&
-        !reaction.message.pinned
-      ) {
-        const channel = (await reaction.message.channel.fetch()) as TextChannel;
-        const category = channel.parent;
-
-        if (
-          category &&
-          Config.pin.categories.toString().includes(category.id)
-        ) {
-          await reaction.message.pin();
-          logger.info(
-            `Pinned message | channel: ${channel.name}, message: ${reaction.message}`
-          );
-        }
+      if (reaction.emoji.name === "📌") {
+        await tryPinMessage(reaction, user);
       }
     } catch (error) {
-      console.error("Something went wrong when fetching the message:", error);
-      return;
+      logger.error("Something went wrong when fetching the message:", error);
     }
   },
 };
+
+async function shouldPinInChannel(channel: GuildChannel) {
+  return (
+    channel.parent !== null &&
+    Config.pin.categories.toString().includes(channel.parent.id)
+  );
+}
+
+async function tryPinMessage(reaction: MessageReaction, user: User) {
+  if (reaction.partial) await reaction.fetch();
+  if (!reaction.message.pinnable || reaction.message.pinned) return;
+
+  const channel = reaction.message.channel as TextChannel;
+  if (!(channel instanceof TextChannel) || !(await shouldPinInChannel(channel)))
+    return;
+
+  const isGeneralChannel = channel.name === "general";
+  const reactionThreshold = isGeneralChannel
+    ? Config.pin.general_count
+    : Config.pin.count;
+  if (reaction.count >= reactionThreshold) {
+    await reaction.message.pin();
+    logger.info(
+      `Pinned message | channel: ${channel.name}, message ID: ${reaction.message.id}`
+    );
+  }
+}

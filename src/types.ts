@@ -19,6 +19,7 @@ interface ConfigType {
   };
   pin: {
     enabled: boolean;
+    general_count: number;
     count: number;
     categories: {
       [key: string]: string;

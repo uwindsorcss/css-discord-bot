@@ -27,6 +27,7 @@ year_roles:
 pin:
   enabled: true
   count: 5 # The number of pins that the message needs to have to be pinned
+  general_count: 8 # The number of pins that the message needs to have to be pinned in general
   categories: # The categories that the pin feature is enabled in
     - ""
     - ""
