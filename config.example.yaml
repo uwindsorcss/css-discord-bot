@@ -32,6 +32,12 @@ pin:
     - ""
     - ""
 
+# Automod feature
+automod:
+  enabled: true
+  channel_id: "" # The channel ID that the bot will flag messages in
+  api_url: "" # The URL to the API that the bot will use to access the automod service
+
 # featurization - if you want to disable a feature, set it to false
 features:
   aprilfools: false
