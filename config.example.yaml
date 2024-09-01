@@ -15,6 +15,7 @@ discord_status: ""
 google_search_key: ""
 google_search_id: ""
 
+# Roles
 year_roles:
   1: ""
   2: ""
@@ -22,6 +23,9 @@ year_roles:
   4: ""
   4+: ""
   Masters: ""
+
+other_roles:
+  welcome_week: ""
 
 # Pin Reaction feature
 pin:
@@ -51,3 +55,6 @@ features:
   year: true
   google: true
   course: true
+  optin: true
+  optout: true
+  welcome_week_role: true

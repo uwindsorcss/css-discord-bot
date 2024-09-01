@@ -17,6 +17,9 @@ interface ConfigType {
   year_roles: {
     [key: string]: string;
   };
+  other_roles: {
+    [key: string]: string;
+  };
   pin: {
     enabled: boolean;
     general_count: number;

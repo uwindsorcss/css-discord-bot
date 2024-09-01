@@ -32,9 +32,11 @@ cp config.example.yaml config.yaml
 - `google_search_key`: The Google API search key to use.
 - `google_search_id`: The Google API search ID to use.
 
-#### Year Roles
+#### Roles
 
 - `year_roles`: A mapping of academic years to Discord role IDs. This allows the bot to assign roles based on the year of study. Replace the empty strings with the corresponding role IDs.
+
+- `other_roles`: A mapping of miscellaneous roles to Discord role IDs. This allows the bot to assign roles based on specific criteria. Replace the empty strings with the corresponding role IDs.
 
 #### Pin Reaction Configuration
 
