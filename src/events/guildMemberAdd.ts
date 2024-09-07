@@ -10,26 +10,26 @@ module.exports = {
   name: Events.GuildMemberAdd,
   async execute(client: Client, member: GuildMember) {
     try {
-      if (Config?.features?.welcome_week_role) {
-        await assignWelcomeWeekRole(member);
+      if (Config?.features?.assign_role_on_join) {
+        await assignEventPingRole(member);
       }
     } catch (error) {
-      console.error(`Error adding Welcome Week role to ${member.user.tag}:`, error);
+      console.error(`Error adding Event Ping role to ${member.user.tag}:`, error);
     }
   },
 };
 
-async function assignWelcomeWeekRole(member: GuildMember): Promise<void> {
-  const welcomeWeekRoleID: RoleResolvable | undefined = Config?.other_roles?.welcome_week;
+async function assignEventPingRole(member: GuildMember): Promise<void> {
+  const eventPingRoleID: RoleResolvable | undefined = Config?.other_roles?.event_ping;
 
-  if (!welcomeWeekRoleID) {
-    console.warn("Welcome Week role ID is not defined in the config.");
+  if (!eventPingRoleID) {
+    console.warn("Event Ping role ID is not defined in the config.");
     return;
   }
 
   try {
-    await member.roles.add(welcomeWeekRoleID);
+    await member.roles.add(eventPingRoleID);
   } catch (error) {
-    console.error(`Failed to assign Welcome Week role to ${member.user.tag}:`, error);
+    console.error(`Failed to assign Event Ping role to ${member.user.tag}:`, error);
   }
 }
