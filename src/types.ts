@@ -8,6 +8,7 @@ import {
   Message,
   AutocompleteInteraction,
   ChatInputCommandInteraction,
+  SlashCommandOptionsOnlyBuilder,
 } from "discord.js";
 
 interface ConfigType {
@@ -46,6 +47,7 @@ interface buildingType {
 interface CommandType {
   data:
     | SlashCommandBuilder // normal slash command builder instance
+    | SlashCommandOptionsOnlyBuilder
     | SlashCommandSubcommandsOnlyBuilder
     | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">; // slash command without any subcommands
   execute: (
