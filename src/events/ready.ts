@@ -1,5 +1,4 @@
 import {logger, Config} from "@/config";
-import {initMathJax} from "@/helpers/LatexHelpers";
 import {Client, Events} from "discord.js";
 
 module.exports = {
@@ -9,8 +8,6 @@ module.exports = {
     if (!client.user || !client.application) {
       return;
     }
-
-    await initMathJax();
 
     // Set status
     if (Config.discord_status && Config.discord_status !== "") {

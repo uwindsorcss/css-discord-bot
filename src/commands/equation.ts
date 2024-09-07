@@ -7,12 +7,11 @@ import {
   CacheType,
   ChatInputCommandInteraction,
   ComponentType,
-  Interaction,
   SlashCommandBuilder,
   SlashCommandStringOption,
 } from "discord.js";
 import {CommandType} from "../types";
-import {EquationRender, Sanitize} from "../helpers/LatexHelpers";
+import {renderEquation, sanitizeEquation} from "../helpers/LatexHelpers";
 
 const equationModule: CommandType = {
   data: new SlashCommandBuilder()
@@ -27,8 +26,8 @@ const equationModule: CommandType = {
   execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
     try {
       const message = interaction.options.getString("equation")!;
-      const cleanedMessage = Sanitize(message);
-      const img = await EquationRender(cleanedMessage, interaction);
+      const cleanedMessage = sanitizeEquation(message);
+      const img = await renderEquation(cleanedMessage, interaction);
 
       const deleteBtn = new ButtonBuilder()
         .setCustomId("delete")

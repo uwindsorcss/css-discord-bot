@@ -1,105 +1,86 @@
-import {AttachmentBuilder, CacheType, CommandInteraction} from "discord.js";
-import svg2img, {ResvgRenderOptions} from "svg2img";
-var mjAPI = require("mathjax-node");
+import { AttachmentBuilder, CacheType, CommandInteraction } from "discord.js";
+import { Resvg } from "@resvg/resvg-js";
+import mjAPI from "mathjax-node";
 
+// Sanitize function optimized using a single regex replace
 export const Sanitize = (message: string): string => {
-  const res_commands = [
-    [`\text{`, `\\backslash text~{`],
-    ["$", `\\$`],
-    ['"', '\\"'],
-    ["\\union", "\\cup"],
+  const resCommands: [RegExp, string][] = [
+    [/\text{/g, `\\backslash text~{`],
+    [/\$/g, `\\$`],
+    [/"/g, '\\"'],
+    [/\\union/g, "\\cup"],
   ];
 
-  let cleanedMessage = message;
-  res_commands.forEach(([searchValue, replaceValue]) => {
-    cleanedMessage = cleanedMessage.replace(searchValue, replaceValue);
-  });
-  return cleanedMessage;
-};
-export const initMathJax = async () => {
-  mjAPI.start();
+  return resCommands.reduce(
+    (acc, [searchValue, replaceValue]) => acc.replace(searchValue, replaceValue),
+    message
+  );
 };
 
-//return img
-// Helper function to convert svg to img buffer
-const svgToImgBuffer = (svg: string): Promise<Buffer> => {
-  return new Promise((resolve, reject) => {
-    // Add padding to the svg by modifying the viewBox
+// Initialize MathJax only once globally
+mjAPI.config({ MathJax: { SVG: { font: "TeX" } } });
+mjAPI.start();
+
+// Helper function to convert svg to img buffer using resvg-js
+const svgToImgBuffer = async (svg: string): Promise<Buffer> => {
+  try {
     const padding = 200;
-
     const equationSVGWithPadding = svg.replace(
       /viewBox\s*=\s*"([^"]*)"/,
       (_: any, viewBox: string) => {
         const [x, y, width, height] = viewBox.split(/\s*,*\s+/).map(Number);
-        return `viewBox="${x - padding} ${y - padding} ${width + padding * 2} ${
-          height + padding * 2
-        }"`;
+        return `viewBox="${x - padding} ${y - padding} ${width + padding * 2} ${height + padding * 2}"`;
       }
     );
 
-    const imgSizeObj: ResvgRenderOptions = {
+    const resvg = new Resvg(equationSVGWithPadding, {
       background: "white",
-      fitTo: {
-        mode: "zoom",
-        value: 2.5,
-      },
-    };
+      fitTo: { mode: "zoom", value: 2.5 },
+    });
 
-    svg2img(
-      equationSVGWithPadding,
-      {
-        resvg: imgSizeObj,
-      },
-      (error: string, buffer: Buffer) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(buffer);
-        }
-      }
-    );
-  });
+    return resvg.render().asPng();
+  } catch (error) {
+    throw new Error(`Error in svgToImgBuffer: ${error}`);
+  }
 };
 
 export const EquationRender = async (
   cleanedMessage: string,
   interaction: CommandInteraction<CacheType>
 ): Promise<AttachmentBuilder> => {
-  return new Promise(async (resolve, reject) => {
-    mjAPI.typeset(
-      {
-        math: cleanedMessage,
-        format: "inline-TeX",
-        svg: true,
-      },
-      async function (data: any) {
-        if (!data.errors) {
-          try {
-            await interaction.reply({
-              content: "Generating equation...",
+  try {
+    await interaction.reply({ content: "Generating equation..." });
+
+    return new Promise((resolve, reject) => {
+      mjAPI.typeset(
+        { math: cleanedMessage, format: "inline-TeX", svg: true },
+        async (data: any) => {
+          if (data.errors) {
+            await interaction.editReply({
+              content: `Sorry, there was an error: ${data.errors}`,
             });
+            return reject(new Error(`MathJax Error: ${data.errors}`));
+          }
+
+          try {
             const equationSVG = data.svg.replace(/"currentColor"/g, '"black"');
             const buffer = await svgToImgBuffer(equationSVG);
             const attachment = new AttachmentBuilder(buffer, {
-              name: `equation-${
-                interaction.member?.user.username
-              }-${Date.now()}.jpg`,
+              name: `equation-${interaction.user?.username}-${Date.now()}.png`,
             });
-            await interaction.editReply({
-              content: "",
-              files: [attachment],
-            });
+
+            await interaction.editReply({ content: "", files: [attachment] });
             resolve(attachment);
           } catch (error) {
+            await interaction.editReply({
+              content: `Error generating image: ${(error as Error).message}`,
+            });
             reject(error);
           }
-        } else {
-          await interaction.reply({
-            content: `Sorry, I'm struggling with this error: ${data.errors}`,
-          });
-          reject(new Error(`Error: ${data.errors}`));
         }
-      }
-    );
-  });
+      );
+    });
+  } catch (error) {
+    throw new Error(`EquationRender error: ${(error as Error).message}`);
+  }
 };
