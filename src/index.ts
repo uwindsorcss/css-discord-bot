@@ -5,7 +5,7 @@ import commands from "./commands";
 import process from "process";
 
 // Gracefully exit on SIGINT
-process.on('SIGINT', function() {
+process.on("SIGINT", function () {
   logger.info("Gracefully shutting down...");
   client.destroy();
   prisma.$disconnect();

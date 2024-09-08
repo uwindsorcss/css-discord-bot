@@ -74,7 +74,7 @@ const googleModule: CommandType = {
         });
       }
 
-      const data: Results = await res.json() as Results;
+      const data: Results = (await res.json()) as Results;
 
       if (data.items.length == 0) {
         response = "No results.";

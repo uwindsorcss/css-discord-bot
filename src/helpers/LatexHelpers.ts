@@ -1,5 +1,9 @@
-import { AttachmentBuilder, type CacheType, CommandInteraction } from "discord.js";
-import { Resvg } from "@resvg/resvg-js";
+import {
+  AttachmentBuilder,
+  type CacheType,
+  CommandInteraction,
+} from "discord.js";
+import {Resvg} from "@resvg/resvg-js";
 import mjAPI from "mathjax-node";
 
 // Sanitize function optimized using a single regex replace
@@ -12,13 +16,14 @@ export const sanitizeEquation = (message: string): string => {
   ];
 
   return resCommands.reduce(
-    (acc, [searchValue, replaceValue]) => acc.replace(searchValue, replaceValue),
+    (acc, [searchValue, replaceValue]) =>
+      acc.replace(searchValue, replaceValue),
     message
   );
 };
 
 // Initialize MathJax only once globally
-mjAPI.config({ MathJax: { SVG: { font: "TeX" } } });
+mjAPI.config({MathJax: {SVG: {font: "TeX"}}});
 mjAPI.start();
 
 // Helper function to convert svg to img buffer using resvg-js
@@ -35,7 +40,7 @@ const svgToImgBuffer = async (svg: string): Promise<Buffer> => {
 
     const resvg = new Resvg(equationSVGWithPadding, {
       background: "white",
-      fitTo: { mode: "zoom", value: 2.5 },
+      fitTo: {mode: "zoom", value: 2.5},
     });
 
     return resvg.render().asPng();
@@ -49,11 +54,11 @@ export const renderEquation = async (
   interaction: CommandInteraction<CacheType>
 ): Promise<AttachmentBuilder> => {
   try {
-    await interaction.reply({ content: "Generating equation..." });
+    await interaction.reply({content: "Generating equation..."});
 
     return new Promise((resolve, reject) => {
       mjAPI.typeset(
-        { math: cleanedMessage, format: "inline-TeX", svg: true },
+        {math: cleanedMessage, format: "inline-TeX", svg: true},
         async (data: any) => {
           if (data.errors) {
             await interaction.editReply({
@@ -69,7 +74,7 @@ export const renderEquation = async (
               name: `equation-${interaction.user?.username}-${Date.now()}.png`,
             });
 
-            await interaction.editReply({ content: "", files: [attachment] });
+            await interaction.editReply({content: "", files: [attachment]});
             resolve(attachment);
           } catch (error) {
             await interaction.editReply({

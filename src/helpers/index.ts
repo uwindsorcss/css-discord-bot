@@ -48,4 +48,4 @@ export const createEmbed = (
 
 export const standardizeLinkName = (name: string) => {
   return name.trim().toLowerCase().replace(/ /g, "-");
-}
+};

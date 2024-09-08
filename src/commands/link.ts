@@ -59,7 +59,7 @@ const linkModule: CommandType = {
           where: {
             id: {
               contains: id,
-            }
+            },
           },
         });
         if (res) {
@@ -184,7 +184,8 @@ const linkModule: CommandType = {
     }
   },
   autoComplete: async (interaction: AutocompleteInteraction) => {
-    let searchString = interaction.options.getString("link", true).toLowerCase() ?? "";
+    let searchString =
+      interaction.options.getString("link", true).toLowerCase() ?? "";
     let res: Link[];
     if (searchString.length == 0) {
       res = await prisma.link.findMany({
@@ -194,7 +195,7 @@ const linkModule: CommandType = {
       res = await prisma.link.findMany({
         where: {
           name: {
-            contains: searchString
+            contains: searchString,
           },
         },
         take: 25,

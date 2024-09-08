@@ -16,10 +16,12 @@ export default async (client: ClientType) => {
 
   // all command files except index.ts
   const commandFiles: string[] = (await fs.readdir(__dirname))
-    .filter((file: string) => (file.endsWith(".ts") || file.endsWith(".js")))
+    .filter((file: string) => file.endsWith(".ts") || file.endsWith(".js"))
     .filter(
       (file: string) =>
-        file !== "index.ts" && file !== "index.js" && (Config.features as any)[file.slice(0, -3)]
+        file !== "index.ts" &&
+        file !== "index.js" &&
+        (Config.features as any)[file.slice(0, -3)]
     );
 
   // command loader
@@ -47,12 +49,9 @@ export default async (client: ClientType) => {
   // else register in development guild
   if (Config.environment === "production") {
     logger.debug("Registering commands globally...");
-    await rest.put(
-      Routes.applicationCommands(Config.discord.client_id),
-      {
-        body: commandArr,
-      }
-    );
+    await rest.put(Routes.applicationCommands(Config.discord.client_id), {
+      body: commandArr,
+    });
   } else {
     logger.debug("Registering commands in development guild...");
     await rest.put(

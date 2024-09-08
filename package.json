@@ -6,22 +6,12 @@
   "scripts": {
     "dev": "tsc && tsx watch ./src/index.ts | pino-pretty",
     "start": "tsx ./src/index.ts",
+    "format": "prettier --write .",
     "start:prod": "pnpm prisma migrate deploy && pnpm run start"
   },
   "author": "CSS Software Devs css@uwindsor.ca",
   "license": "MIT",
   "repository": "git@github.com:UWindsorCSS/uwindsor-discord-bot.git",
-  "prettier": {
-    "tabWidth": 2,
-    "useTabs": false,
-    "semi": true,
-    "singleQuote": false,
-    "quoteProps": "as-needed",
-    "trailingComma": "es5",
-    "bracketSpacing": false,
-    "arrowParens": "always",
-    "endOfLine": "lf"
-  },
   "dependencies": {
     "@prisma/client": "^5.19.1",
     "@resvg/resvg-js": "^2.6.2",
@@ -35,6 +25,7 @@
   },
   "devDependencies": {
     "@types/mathjax-node": "^2.1.0",
+    "prettier": "^3.3.3",
     "tsx": "^4.19.0",
     "typescript": "^5.5.4"
   }
