@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsc && tsx watch ./src/index.ts | pino-pretty",
     "start": "tsx ./src/index.ts",
-    "format": "prettier --write .",
+    "format": "prettier --write src/**/*.ts",
     "start:prod": "pnpm prisma migrate deploy && pnpm run start"
   },
   "author": "CSS Software Devs css@uwindsor.ca",
