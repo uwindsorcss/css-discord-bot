@@ -1,10 +1,9 @@
-import {CommandType} from "../types";
 import {logger} from "@/config";
 import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
-  CacheType,
-  UserResolvable,
+  type CacheType,
+  type UserResolvable,
 } from "discord.js";
 
 const jailModule: CommandType = {

@@ -3,7 +3,7 @@ import {
   Events,
   Client,
   Message,
-  GuildTextBasedChannel,
+  type GuildTextBasedChannel,
 } from "discord.js";
 
 module.exports = {

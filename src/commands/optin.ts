@@ -3,10 +3,9 @@ import {
     GuildMember,
     AutocompleteInteraction,
     ChatInputCommandInteraction,
-    CacheType,
+    type CacheType,
   } from "discord.js";
 import { Config } from "@/config";
-import { CommandType } from "@/types";
   
 // The roles that are eligible for opt-in
 const availableRoles = [

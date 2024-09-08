@@ -1,5 +1,3 @@
-import {ASCIIArt} from "@/types";
-
 export const ASCIIArts: ASCIIArt = {
   goat: {
     art: `

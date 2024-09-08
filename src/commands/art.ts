@@ -1,7 +1,6 @@
-import {CommandType} from "../types";
 import {logger} from "@/config";
 import {
-  CacheType,
+  type CacheType,
   ChatInputCommandInteraction,
   SlashCommandBuilder,
 } from "discord.js";
@@ -48,7 +47,7 @@ const artModule: CommandType = {
 
       const codeBlockAdded =
         "```" +
-        ASCIIArts[args].art.replace(
+        ASCIIArts[args]?.art.replace(
           /%s/g,
           string ?? ASCIIArts[args].defaultString
         ) +

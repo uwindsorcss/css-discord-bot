@@ -1,12 +1,11 @@
 import {logger} from "@/config";
-import {ClientType} from "@/types";
 import {
   ApplicationCommandOptionType,
   AutocompleteInteraction,
-  CacheType,
+  type CacheType,
   ChatInputCommandInteraction,
   Events,
-  Interaction,
+  type Interaction,
 } from "discord.js";
 
 module.exports = {

@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ES2021",
-    "module": "commonjs",
-    "rootDir": "./",
-    "outDir": "./dist/",
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": ["ES2022"],
     "strict": true,
-    "moduleResolution": "node",
+    "allowJs": false,
+    "moduleResolution": "Node",
     "importHelpers": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
@@ -14,17 +14,12 @@
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
     "removeComments": true,
-    "typeRoots": ["node_modules/@types"],
     "sourceMap": false,
+    "rootDir": "./src",
+    "outDir": "./build",
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"]
     }
-  },
-  "files": ["src/index.ts"],
-  "include": ["./**/*.ts"],
-  "exclude": ["node_modules", "dist"],
-  "ts-node": {
-		"require": ["tsconfig-paths/register"]
-	}
+  }
 }

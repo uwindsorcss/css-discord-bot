@@ -1,7 +1,6 @@
 import {
-  ButtonInteraction,
   ChatInputCommandInteraction,
-  ColorResolvable,
+  type ColorResolvable,
   Colors,
   EmbedBuilder,
 } from "discord.js";

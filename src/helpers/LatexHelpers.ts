@@ -1,4 +1,4 @@
-import { AttachmentBuilder, CacheType, CommandInteraction } from "discord.js";
+import { AttachmentBuilder, type CacheType, CommandInteraction } from "discord.js";
 import { Resvg } from "@resvg/resvg-js";
 import mjAPI from "mathjax-node";
 
@@ -29,7 +29,7 @@ const svgToImgBuffer = async (svg: string): Promise<Buffer> => {
       /viewBox\s*=\s*"([^"]*)"/,
       (_: any, viewBox: string) => {
         const [x, y, width, height] = viewBox.split(/\s*,*\s+/).map(Number);
-        return `viewBox="${x - padding} ${y - padding} ${width + padding * 2} ${height + padding * 2}"`;
+        return `viewBox="${x! - padding} ${y! - padding} ${width! + padding * 2} ${height! + padding * 2}"`;
       }
     );
 

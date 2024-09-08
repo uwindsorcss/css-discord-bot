@@ -1,6 +1,6 @@
 import {logger} from "@/config";
 import {
-  CacheType,
+  type CacheType,
   inlineCode,
   SlashCommandBuilder,
   SlashCommandChannelOption,
@@ -9,7 +9,6 @@ import {
   ChatInputCommandInteraction,
   PermissionFlagsBits,
 } from "discord.js";
-import {CommandType} from "../types";
 import {handleEmbedResponse} from "@/helpers";
 
 const sayModule: CommandType = {

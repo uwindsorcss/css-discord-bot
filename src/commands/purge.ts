@@ -1,8 +1,7 @@
-import {CommandType} from "../types";
 import {logger} from "@/config";
 import {handleEmbedResponse} from "@/helpers";
 import {
-  CacheType,
+  type CacheType,
   TextChannel,
   ThreadChannel,
   inlineCode,

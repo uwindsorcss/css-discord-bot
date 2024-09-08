@@ -1,9 +1,8 @@
 import {logger} from "@/config";
-import {CommandType} from "../types";
 import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
-  CacheType,
+  type CacheType,
   EmbedBuilder,
   Colors,
 } from "discord.js";

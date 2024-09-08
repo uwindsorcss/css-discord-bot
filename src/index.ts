@@ -1,14 +1,11 @@
 import {Client, GatewayIntentBits, Partials} from "discord.js";
 import {logger, prisma, Config} from "@/config";
-import {ClientType} from "./types";
 import events from "./events";
 import commands from "./commands";
 import process from "process";
-import "dotenv/config";
 
 // Gracefully exit on SIGINT
-require("shutdown-handler").on("exit", (e: Event) => {
-  e.preventDefault();
+process.on('SIGINT', function() {
   logger.info("Gracefully shutting down...");
   client.destroy();
   prisma.$disconnect();

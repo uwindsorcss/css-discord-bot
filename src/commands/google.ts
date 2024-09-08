@@ -1,8 +1,7 @@
-import {CommandType} from "../types";
 import {logger, Config} from "@/config";
 
 import {
-  CacheType,
+  type CacheType,
   SlashCommandBuilder,
   ChatInputCommandInteraction,
   EmbedBuilder,
@@ -75,7 +74,7 @@ const googleModule: CommandType = {
         });
       }
 
-      const data: Results = await res.json();
+      const data: Results = await res.json() as Results;
 
       if (data.items.length == 0) {
         response = "No results.";

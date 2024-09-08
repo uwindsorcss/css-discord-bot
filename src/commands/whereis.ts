@@ -1,14 +1,13 @@
 import {Config, logger} from "@/config";
 import Fuse from "fuse.js";
 import {
-  CacheType,
+  type CacheType,
   SlashCommandBuilder,
   SlashCommandStringOption,
   EmbedBuilder,
   AutocompleteInteraction,
   ChatInputCommandInteraction,
 } from "discord.js";
-import {CommandType} from "../types";
 import {
   FindBuildingByCode,
   FindBuildingByName,
@@ -88,8 +87,8 @@ const whereIsModule: CommandType = {
 
             const embed = new EmbedBuilder()
               .setTitle("Building Search")
-              .setDescription(`${bestRes.item.name} (${bestRes.item.code}) `)
-              .setImage(`${imageDirectoryURL}/${bestRes.item.code}.png`);
+              .setDescription(`${bestRes?.item.name} (${bestRes?.item.code}) `)
+              .setImage(`${imageDirectoryURL}/${bestRes?.item.code}.png`);
 
             return await interaction.reply({embeds: [embed]});
           } else {

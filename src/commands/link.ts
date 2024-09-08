@@ -3,7 +3,7 @@ import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
   SlashCommandStringOption,
-  CacheType,
+  type CacheType,
   AutocompleteInteraction,
   inlineCode,
   Colors,
@@ -14,8 +14,7 @@ import {
   ComponentType,
   ButtonInteraction,
 } from "discord.js";
-import {CommandType} from "../types";
-import {Link} from "@prisma/client";
+import type {Link} from "@prisma/client";
 import {handleEmbedResponse, standardizeLinkName} from "@/helpers";
 
 const linkModule: CommandType = {

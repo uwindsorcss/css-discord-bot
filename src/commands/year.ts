@@ -1,10 +1,9 @@
-import {CommandType} from "../types";
 import {Config, logger} from "@/config";
 import {handleEmbedResponse} from "@/helpers";
 import {
   SlashCommandBuilder,
   SlashCommandStringOption,
-  CacheType,
+  type CacheType,
   GuildMemberRoleManager,
   ChatInputCommandInteraction,
 } from "discord.js";

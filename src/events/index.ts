@@ -1,6 +1,5 @@
 import {promises as fs} from "fs";
 import path from "path";
-import {ClientType} from "@/types";
 import {logger} from "@/config";
 
 export default async (client: ClientType) => {

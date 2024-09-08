@@ -1,8 +1,7 @@
-import {CommandType} from "../types";
 import {logger} from "@/config";
 import {handleEmbedResponse} from "@/helpers";
 import {
-  CacheType,
+  type CacheType,
   ChatInputCommandInteraction,
   MessageType,
   PermissionFlagsBits,
@@ -52,7 +51,7 @@ const editModule: CommandType = {
       const [link, guild, channel, messageID] = messageLinkMatch;
 
       const channelToEdit: TextChannel | undefined =
-        interaction.guild?.channels.cache.get(channel) as TextChannel;
+        interaction.guild?.channels.cache.get(channel!) as TextChannel;
 
       if (!channelToEdit) {
         return await handleEmbedResponse(interaction, true, {
@@ -62,7 +61,7 @@ const editModule: CommandType = {
       }
 
       const messageToEdit = await channelToEdit.messages
-        .fetch(messageID)
+        .fetch(messageID!)
         .then((message) => message)
         .catch(() => null);
 
@@ -100,7 +99,7 @@ const editModule: CommandType = {
       const oldMessage = messageToEdit.content;
 
       //check if message is a community prompt
-      if (oldMessage.split("\n")[0].toLowerCase().includes("community prompt"))
+      if (oldMessage.split("\n")[0]?.toLowerCase().includes("community prompt"))
         newMessage = `${oldMessage.split("\n")[0]}\n${newMessage}`;
 
       await messageToEdit.edit(newMessage);

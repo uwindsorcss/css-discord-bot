@@ -3,7 +3,7 @@ import {
   Client,
   Events,
   GuildMember,
-  RoleResolvable
+  type RoleResolvable
 } from "discord.js";
 
 module.exports = {

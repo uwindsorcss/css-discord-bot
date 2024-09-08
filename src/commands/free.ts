@@ -1,8 +1,7 @@
-import {CommandType} from "../types";
 import {logger} from "@/config";
 import {
-  CacheType,
-  UserResolvable,
+  type CacheType,
+  type UserResolvable,
   SlashCommandBuilder,
   ChatInputCommandInteraction,
 } from "discord.js";

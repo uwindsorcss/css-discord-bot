@@ -1,14 +1,13 @@
-import {CommandType} from "../types";
 import {logger} from "@/config";
 import {createEmbed} from "@/helpers";
 import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
-  CacheType,
+  type CacheType,
   Colors,
   PermissionsBitField,
-  PermissionResolvable,
-  RESTPostAPIChatInputApplicationCommandsJSONBody,
+  type PermissionResolvable,
+  type RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from "discord.js";
 import {commandArr} from ".";
 

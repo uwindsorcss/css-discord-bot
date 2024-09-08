@@ -1,13 +1,11 @@
 import {promises as fs} from "fs";
 import path from "path";
-import {ClientType, CommandType} from "@/types";
 import {Config, logger} from "@/config";
-import "dotenv/config";
 import {
   Collection,
   REST,
-  RESTPostAPIChatInputApplicationCommandsJSONBody,
   Routes,
+  type RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from "discord.js";
 
 export const commandArr: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
@@ -47,7 +45,7 @@ export default async (client: ClientType) => {
 
   // if in production mode, register globally, can take up to an hour to show up
   // else register in development guild
-  if (process.env.NODE_ENV === "production") {
+  if (Config.environment === "production") {
     logger.debug("Registering commands globally...");
     await rest.put(
       Routes.applicationCommands(Config.discord.client_id),

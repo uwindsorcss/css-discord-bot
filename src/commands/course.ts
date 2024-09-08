@@ -1,14 +1,13 @@
 import {prisma} from "@/config";
 import {
-  CacheType,
+  type CacheType,
   SlashCommandBuilder,
   ChatInputCommandInteraction,
   SlashCommandStringOption,
   AutocompleteInteraction,
 } from "discord.js";
-import {CommandType} from "../types";
 import {handleEmbedResponse} from "@/helpers";
-import {Course} from "@prisma/client";
+import type {Course} from "@prisma/client";
 
 const courseModule: CommandType = {
   data: new SlashCommandBuilder()

@@ -3,12 +3,11 @@ import {
   SlashCommandBuilder,
   SlashCommandChannelOption,
   SlashCommandStringOption,
-  CacheType,
+  type CacheType,
   TextChannel,
   ChatInputCommandInteraction,
   PermissionFlagsBits,
 } from "discord.js";
-import {CommandType} from "../types";
 import {handleEmbedResponse} from "@/helpers";
 import {logger} from "@/config";
 

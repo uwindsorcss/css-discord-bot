@@ -4,13 +4,12 @@ import {
   ButtonBuilder,
   ButtonInteraction,
   ButtonStyle,
-  CacheType,
+  type CacheType,
   ChatInputCommandInteraction,
   ComponentType,
   SlashCommandBuilder,
   SlashCommandStringOption,
 } from "discord.js";
-import {CommandType} from "../types";
 import {renderEquation, sanitizeEquation} from "../helpers/LatexHelpers";
 
 const equationModule: CommandType = {

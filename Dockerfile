@@ -14,9 +14,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 COPY ./src /app/src
 COPY ./prisma /app/prisma
 COPY ./tsconfig.json /app/tsconfig.json
-COPY ./.swcrc /app/.swcrc
 COPY ./config.json /app/config.json
-RUN pnpm run build:prod
-
+RUN pnpm prisma generate
 
 CMD ["pnpm", "run", "start:prod"]
