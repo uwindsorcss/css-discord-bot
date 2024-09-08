@@ -5,10 +5,8 @@
   "main": "build/index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon --exec ts-node -r @swc-node/register src/index.ts",
-    "dev:start": "cross-env NODE_ENV=production ts-node -r @swc-node/register src/index.ts",
-    "dev:compile": "swc src -d build",
     "build:clean": "rimraf build/",
-    "build:compile": "swc src -d build -D",
+    "build:compile": "swc src -d build && cp config.json build/config.json",
     "build:start": "pnpm run build && pnpm run start",
     "type:check": "tsc --pretty --skipLibCheck --noEmit",
     "build": "pnpm run build:clean && pnpm run build:compile && pnpm run type:check",

@@ -15,8 +15,8 @@ COPY ./src /app/src
 COPY ./prisma /app/prisma
 COPY ./tsconfig.json /app/tsconfig.json
 COPY ./.swcrc /app/.swcrc
+COPY ./config.json /app/config.json
 RUN pnpm run build:prod
 
-COPY ./config.json /app/config.json
 
 CMD ["pnpm", "run", "start:prod"]
