@@ -7,47 +7,109 @@ A multi-purpose Discord bot built for the University of Windsor CS program's Dis
 _**Warning**: This bot was designed to work on a Unix-based OS. We strongly recommend installing with docker._
 
 
-### Bot Config (`config.yaml`)
+### Bot Config (`config.json`)
 
-To get the bot up and running, you need to set the configuration file `config.yaml` which contains settings specific to the bot's functionality.
+To get the bot up and running, you need to create a `config.json` which contains the necessary configuration for the bot to function.
 
-To set up the `config.yaml` file, you can copy the provided `config.example.yaml` file:
+To set up the `config.json` file, you can copy the provided `config.example.json` file:
 
 ```sh
-cp config.example.yaml config.yaml
+cp config.example.json config.json
 ```
 
-- `debug`: A boolean value indicating whether debugging features are enabled (`true`) or disabled (`false`).
-- `image_directory_url`: The base URL for the directory where images are stored.
+#### Root Configuration
 
-#### Discord Credentials
+- `debug`
+  - **Type**: `boolean`
+  - **Description**: Determines whether the application should run in debug mode. If set to `true`, additional debug information may be logged.
 
-- `discord_api_version`: The Discord API version to use.
-- `discord_api_token`: The Discord API token to use.
-- `discord_client_id`: The Discord client ID to use.
-- `discord_guild_id`: The Discord guild ID to use.
+- `seed`
+  - **Type**: `boolean`
+  - **Description**: Specifies whether the database should be seeded with initial sample data. 
 
-#### Google API Credentials
+- `image_directory_url`
+  - **Type**: `string`
+  - **Description**: URL where images related to buildings are hosted.
 
-- `google_search_key`: The Google API search key to use.
-- `google_search_id`: The Google API search ID to use.
+---
 
-#### Roles
+#### Discord Server Configuration
+Configuration for Discord API integration.
 
-- `year_roles`: A mapping of academic years to Discord role IDs. This allows the bot to assign roles based on the year of study. Replace the empty strings with the corresponding role IDs.
+- `discord.api_version`
+  - **Type**: `string`
+  - **Description**: Specifies the Discord API version used by the application.
 
-- `other_roles`: A mapping of miscellaneous roles to Discord role IDs. This allows the bot to assign roles based on specific criteria. Replace the empty strings with the corresponding role IDs.
+- `discord.api_token`
+  - **Type**: `string`
+  - **Description**: Token used to authenticate with the Discord API. This field must be populated with a valid token for proper functionality.
 
-#### Pin Reaction Configuration
+- `discord.client_id`
+  - **Type**: `string`
+  - **Description**: Client ID for the Discord application.
 
-- `pin`
-  - `enabled`: A boolean value indicating whether reaction pinning is enabled (`true`) or disabled (`false`).
-  - `count`: The number of reactions required to pin a message.
-  - `channels`: The channel IDs where reaction pinning is enabled.
+- `discord.guild_id`
+  - **Type**: `string`
+  - **Description**: Guild ID (Server ID) where the bot will operate.
+
+- `discord.status`
+  - **Type**: `string`
+  - **Description**: Status message displayed for the bot on Discord.
+
+---
+
+#### Google Search Configuration
+Configuration for Google Search API.
+
+- `google.search_key`
+  - **Type**: `string`
+  - **Description**: API key used to authenticate with the Google Search API.
+
+- `google.search_id`
+  - **Type**: `string`
+  - **Description**: Search engine ID used in conjunction with the Google Search API.
+
+---
 
 #### Features Configuration
 
-- `features`: A map of bot features, where you can enable (`true`) or disable (`false`) specific features by setting their values accordingly.
+- `features`
+  - **Type**: `object`
+  - **Description**: A map of bot features, where you can enable (`true`) or disable (`false`) specific features by setting their values accordingly.
+
+---
+
+#### Roles Configuration
+Defines roles that can be assigned to users.
+
+- `roles.years`
+  - **Type**: `object`
+  - **Description**: The role IDs for each academic year.
+
+- `roles.other`
+  - **Type**: `object`
+  - **Description**: The role IDs for other miscellaneous roles.
+
+---
+
+#### Pin Feature Configuration
+Controls pinning behavior in channels.
+
+- `pin.enabled`
+  - **Type**: `boolean`
+  - **Description**: Determines if the pinning feature is enabled.
+
+- `pin.count`
+  - **Type**: `number`
+  - **Description**: Specifies how many pin reactions are required to pin a message.
+
+- `pin.general_count`
+  - **Type**: `number`
+  - **Description**: Specifies how many pin reactions are required to pin a message in the general channel.
+
+- `pin.categories`
+  - **Type**: `array of strings`
+  - **Description**: List of categories where pinning is enabled.
 
 ## Build and Run with Docker Compose
 

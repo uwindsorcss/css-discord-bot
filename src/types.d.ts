@@ -11,34 +11,6 @@ import {
   SlashCommandOptionsOnlyBuilder,
 } from "discord.js";
 
-interface ConfigType {
-  seed: boolean;
-  debug: boolean;
-  image_directory_url: string;
-  year_roles: {
-    [key: string]: string;
-  };
-  other_roles: {
-    [key: string]: string;
-  };
-  pin: {
-    enabled: boolean;
-    general_count: number;
-    count: number;
-    categories: {
-      [key: string]: string;
-    };
-  };
-  discord_api_version: string;
-  discord_api_token: string;
-  discord_client_id: string;
-  discord_guild_id: string;
-  discord_status: string;
-  google_search_key: "";
-  google_search_id: "";
-  features: {[keyof: string]: boolean | undefined};
-}
-
 interface buildingType {
   code: string;
   name: string;

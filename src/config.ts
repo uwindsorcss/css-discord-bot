@@ -1,15 +1,9 @@
-import {readFileSync} from "fs";
-import yaml from "js-yaml";
+import ConfigJson from "../config.json";
+export const Config = ConfigJson;
 import pino from "pino";
-import {ConfigType} from "./types";
 import {PrismaClient} from "@prisma/client";
 import {join} from "path";
 import {seedDatabase} from "./helpers/seed";
-
-// load in the config file
-export const Config: ConfigType = yaml.load(
-  readFileSync("config.yaml", "utf8")
-) as ConfigType;
 
 const transport = pino.transport({
   targets: [

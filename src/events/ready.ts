@@ -10,11 +10,11 @@ module.exports = {
     }
 
     // Set status
-    if (Config.discord_status && Config.discord_status !== "") {
+    if (Config.discord.status && Config.discord.status !== "") {
       client.user.setActivity({
         name: "status",
         type: 4,
-        state: Config.discord_status,
+        state: Config.discord.status,
       });
     }
 

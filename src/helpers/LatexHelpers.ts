@@ -3,7 +3,7 @@ import { Resvg } from "@resvg/resvg-js";
 import mjAPI from "mathjax-node";
 
 // Sanitize function optimized using a single regex replace
-export const Sanitize = (message: string): string => {
+export const sanitizeEquation = (message: string): string => {
   const resCommands: [RegExp, string][] = [
     [/\text{/g, `\\backslash text~{`],
     [/\$/g, `\\$`],
@@ -44,7 +44,7 @@ const svgToImgBuffer = async (svg: string): Promise<Buffer> => {
   }
 };
 
-export const EquationRender = async (
+export const renderEquation = async (
   cleanedMessage: string,
   interaction: CommandInteraction<CacheType>
 ): Promise<AttachmentBuilder> => {

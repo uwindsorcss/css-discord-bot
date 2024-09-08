@@ -9,7 +9,7 @@ import {
   ChatInputCommandInteraction,
 } from "discord.js";
 
-const rolesMap = new Map<string, string>(Object.entries(Config!.year_roles));
+const rolesMap = new Map<string, string>(Object.entries(Config.roles.years));
 const choices: {name: string; value: string}[] = Array.from(rolesMap).map(
   ([key]) => ({
     name: key,

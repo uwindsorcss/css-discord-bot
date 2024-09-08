@@ -35,5 +35,5 @@ const client = new Client({
   await events(client);
   await commands(client);
   logger.info("Logging in...");
-  await client.login(Config.discord_api_token);
+  await client.login(Config.discord.api_token);
 })();

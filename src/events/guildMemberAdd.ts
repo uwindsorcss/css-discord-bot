@@ -20,7 +20,7 @@ module.exports = {
 };
 
 async function assignEventPingRole(member: GuildMember): Promise<void> {
-  const eventPingRoleID: RoleResolvable | undefined = Config?.other_roles?.event_ping;
+  const eventPingRoleID: RoleResolvable | undefined = Config.roles.other.event_ping;
 
   if (!eventPingRoleID) {
     console.warn("Event Ping role ID is not defined in the config.");

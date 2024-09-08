@@ -48,13 +48,13 @@ const googleModule: CommandType = {
         })
         .setTimestamp();
 
-      if (!Config.google_search_key || !Config.google_search_id) {
+      if (!Config.google.search_key || !Config.google.search_id) {
         logger.info("No key or search engine ID.");
         return;
       }
 
-      const search_key = Config.google_search_key;
-      const search_id = Config.google_search_id;
+      const search_key = Config.google.search_key;
+      const search_id = Config.google.search_id;
       const url = `https://www.googleapis.com/customsearch/v1?key=${search_key}&cx=${search_id}&q=${query}`;
 
       let response: string = "";

@@ -10,7 +10,7 @@ import { CommandType } from "@/types";
   
 // The roles that are eligible for opt-in
 const availableRoles = [
-{ name: "Welcome Week", value: "welcome_week" }
+{ name: "Event Ping", value: "event_ping" }
 ];
 
 const optInModule: CommandType = {
@@ -31,7 +31,7 @@ autoComplete: async (interaction: AutocompleteInteraction) => {
     // Filter roles based on what the user does not have
     const memberRoles = member.roles.cache.map(role => role.id);
     const filteredRoles = availableRoles.filter(role => {
-    const roleId = Config?.other_roles?.[role.value];
+    const roleId = (Config.roles.other as any)[role.value];
     return roleId && !memberRoles.includes(roleId);
     });
 
@@ -49,8 +49,8 @@ execute: async (interaction: ChatInputCommandInteraction<CacheType>) => {
 
     let roleId: string | undefined;
 
-    if (selectedRole === "welcome_week") {
-    roleId = Config?.other_roles?.welcome_week;
+    if (selectedRole === "event_ping") {
+    roleId = Config.roles.other.event_ping;
     }
 
     if (!roleId) {

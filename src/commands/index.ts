@@ -21,7 +21,7 @@ export default async (client: ClientType) => {
     .filter((file: string) => (file.endsWith(".ts") || file.endsWith(".js")))
     .filter(
       (file: string) =>
-        file !== "index.ts" && file !== "index.js" && Config.features[file.slice(0, -3)]
+        file !== "index.ts" && file !== "index.js" && (Config.features as any)[file.slice(0, -3)]
     );
 
   // command loader
@@ -42,15 +42,15 @@ export default async (client: ClientType) => {
   }
 
   const rest = new REST({
-    version: Config.discord_api_version,
-  }).setToken(Config.discord_api_token);
+    version: Config.discord.api_version,
+  }).setToken(Config.discord.api_token);
 
   // if in production mode, register globally, can take up to an hour to show up
   // else register in development guild
   if (process.env.NODE_ENV === "production") {
     logger.debug("Registering commands globally...");
     await rest.put(
-      Routes.applicationCommands(Config.discord_client_id),
+      Routes.applicationCommands(Config.discord.client_id),
       {
         body: commandArr,
       }
@@ -59,8 +59,8 @@ export default async (client: ClientType) => {
     logger.debug("Registering commands in development guild...");
     await rest.put(
       Routes.applicationGuildCommands(
-        Config.discord_client_id,
-        Config.discord_guild_id
+        Config.discord.client_id,
+        Config.discord.guild_id
       ),
       {
         body: commandArr,
