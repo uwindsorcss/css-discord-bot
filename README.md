@@ -19,6 +19,10 @@ cp config.example.json config.json
 
 #### Root Configuration
 
+- `environment`
+  - **Type**: `development` | `production`
+  - **Description**: Specifies the environment in which the application is running.
+
 - `debug`
   - **Type**: `boolean`
   - **Description**: Determines whether the application should run in debug mode. If set to `true`, additional debug information may be logged.
