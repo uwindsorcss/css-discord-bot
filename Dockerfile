@@ -17,6 +17,6 @@ COPY ./tsconfig.json /app/tsconfig.json
 COPY ./.swcrc /app/.swcrc
 RUN pnpm run build:prod
 
-COPY ./config.yaml /app/config.yaml
+COPY ./config.json /app/config.json
 
 CMD ["pnpm", "run", "start:prod"]
