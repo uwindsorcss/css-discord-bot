@@ -30,6 +30,7 @@
     "say": true,
     "whereis": true,
     "year": true,
+    "notify": true,
     "google": true,
     "course": true,
     "optin": true,
