@@ -50,40 +50,29 @@ const notifyModule: CommandType = {
       courseSubject.toLowerCase().slice(1);
     const courseNumber = courseCode.slice(4);
 
-    if (subCommand === "add") {
-      try {
-        const courseRole = interaction.guild.roles.cache.find(
-          (role) => role.name === `${courseSubject}-${courseNumber}`
-        );
+    try {
+      const courseRole = interaction.guild.roles.cache.find(
+        (role) => role.name === `${courseSubject}-${courseNumber}`
+      );
+      if (subCommand === "add") {
         await student.roles.add(courseRole);
         await interaction.reply({
           content: `You are now notified for **${courseSubject.toUpperCase()}-${courseNumber}** updates.`,
           ephemeral: true,
         });
-      } catch (error: any) {
-        logger.info(`Invalid Role: ${courseSubject}-${courseNumber}`);
-        await interaction.reply({
-          content: "Invalid course code!",
-          ephemeral: true,
-        });
-      }
-    } else {
-      try {
-        const courseRole = interaction.guild.roles.cache.find(
-          (role) => role.name === `${courseSubject}-${courseNumber}`
-        );
+      } else {
         await student.roles.remove(courseRole);
         await interaction.reply({
           content: `You are no longer notified for **${courseSubject.toUpperCase()}-${courseNumber}** updates.`,
           ephemeral: true,
         });
-      } catch (error: any) {
-        logger.info(`Invalid Role: ${courseSubject}-${courseNumber}`);
-        await interaction.reply({
-          content: "Invalid course code!",
-          ephemeral: true,
-        });
       }
+    } catch (error: any) {
+      logger.info(`Invalid Role: ${courseSubject}-${courseNumber}`);
+      await interaction.reply({
+        content: "Invalid course code!",
+        ephemeral: true,
+      });
     }
   },
 };
