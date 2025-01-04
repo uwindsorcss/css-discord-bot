@@ -8,7 +8,8 @@
     "api_token": "",
     "client_id": "",
     "guild_id": "",
-    "status": ""
+    "status": "",
+    "bot_channel": ""
   },
   "google": {
     "search_key": "",
