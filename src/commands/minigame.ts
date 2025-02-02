@@ -1,9 +1,5 @@
 import { logger, Config } from "@/config";
-
-import { EmbedBuilder } from "@discordjs/builders";
 import { readFile } from 'fs';
-import { EmbedBuilder, ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
-import { EmbedBuilder, ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
 
 import {
