@@ -1,10 +1,10 @@
 import { logger, Config } from "@/config";
-<<<<<<< Updated upstream
+
 import { EmbedBuilder } from "@discordjs/builders";
 import { readFile } from 'fs';
-=======
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
->>>>>>> Stashed changes
+import { EmbedBuilder, ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
+import { EmbedBuilder, ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
 
 import {
   CacheType,
@@ -90,7 +90,6 @@ const minigameModule: CommandType = {
 
             let players: Array<Player> = []
             let previousMessage: Message;
-<<<<<<< Updated upstream
 
             // Test Case Sigma
             let sigmaValid = validateWord("sigma")
@@ -104,7 +103,6 @@ const minigameModule: CommandType = {
                 .catch((error) => {
                     logger.log(error);
                 })
-=======
             
             const collector = interaction.channel.createMessageComponentCollector(
                 { 
@@ -144,7 +142,6 @@ const minigameModule: CommandType = {
         } else {
             await interaction.editReply({ content: "Invalid game", embeds: [embed] });
 
->>>>>>> Stashed changes
         }
 
     }
