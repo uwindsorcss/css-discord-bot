@@ -1,6 +1,10 @@
 import { logger, Config } from "@/config";
+<<<<<<< Updated upstream
 import { EmbedBuilder } from "@discordjs/builders";
 import { readFile } from 'fs';
+=======
+import { EmbedBuilder, ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
+>>>>>>> Stashed changes
 
 import {
   CacheType,
@@ -8,6 +12,8 @@ import {
   GuildMember,
   ChatInputCommandInteraction,
   Message,
+  Colors,
+  ComponentType,
 } from "discord.js";
 
 function validateWord(word: string): Promise<boolean> {
@@ -63,9 +69,28 @@ const minigameModule: CommandType = {
 
         const subcommand = interaction.options.getSubcommand();
 
+        console.log(subcommand);
+
+        const embed = new EmbedBuilder()
+        .setColor(Colors.Blue)
+        .setTitle(`${"Word Bomb! 💣"}`)
+        .setDescription(`${"Click to join the Word-Bomb game!"}`)
+
+        const response = await interaction.reply({
+            embeds: [embed],
+            fetchReply: true,
+          });
+
         if (subcommand === "wordbomb") {
-            let players: Array<GuildMember> = []
+
+            type Player = {
+                Member: GuildMember,
+                Chances: Number, // # number of chances until eliminated
+            }
+
+            let players: Array<Player> = []
             let previousMessage: Message;
+<<<<<<< Updated upstream
 
             // Test Case Sigma
             let sigmaValid = validateWord("sigma")
@@ -79,6 +104,47 @@ const minigameModule: CommandType = {
                 .catch((error) => {
                     logger.log(error);
                 })
+=======
+            
+            const collector = interaction.channel.createMessageComponentCollector(
+                { 
+                componentType: ComponentType.Button,
+                //filter: (i) => i.user,
+                time: 7_000,    
+                }
+            )
+
+            collector.on("collect", async (i) => {
+
+                if (players.find(p => p.Member.id === i.member.id)) {
+                    return await i.reply({ content: "You are already in the game!" });
+                }
+
+                players.push({
+                    Member: i.member as GuildMember,
+                    Chances: 2
+                } as Player);
+
+                await i.reply({ content: "You have joined the game!" });
+            })
+
+            const joinButton = new ButtonBuilder()
+                .setCustomId("join-minigame")
+                .setLabel("Join")
+                .setStyle(3);
+
+
+
+            const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+                joinButton
+            );
+
+            await interaction.editReply({ embeds: [embed], components: [row] });
+
+        } else {
+            await interaction.editReply({ content: "Invalid game", embeds: [embed] });
+
+>>>>>>> Stashed changes
         }
 
     }
