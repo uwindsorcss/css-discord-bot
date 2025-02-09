@@ -14,8 +14,9 @@ import {
 } from "discord.js";
 
 // game config
-const WORDBOMB_TURN_TIME = 20_000 // in ms
+const WORDBOMB_TURN_TIME = 10_000 // in ms
 const JOIN_TIME = 8_000
+const REQUIRED_PLAYERS = 2
 
 // hello
 
@@ -160,12 +161,12 @@ const minigameModule: CommandType = {
             setTimeout(async () => {
 
                 // checks for atleast two palyers
-                if (players.length < 2){
+                if (players.length < REQUIRED_PLAYERS){
                     interaction.channel.send(`Atleast 2 people are required for this game 😔`)
                     return
                 }
                 
-                while (players.length > 0){
+                while (players.length > 1){
                     for (let i in players){
 
                         currentPlayer = players[i]
@@ -204,14 +205,14 @@ const minigameModule: CommandType = {
                                 channel.send(`**No more chances left, you have been Elimnated ❌**`)
                             
                             } else{
-                                channel.send(`Times up! 😕\n -1 Chance 👎`)
+                                channel.send(`Times up! 😕\n-1 Chance 👎`)
                             }
 
                         }
 
                     }
                 }
-                interaction.channel.send(`game ended`)
+                interaction.channel.send(`The Winner is: ${players[0].Member.user} 🥳🏆`)
             }, JOIN_TIME);
 
 
