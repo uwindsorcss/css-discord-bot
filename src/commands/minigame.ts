@@ -14,15 +14,16 @@ import {
 } from "discord.js";
 
 // game config
-const WORDBOMB_TURN_TIME = 10_000 // in ms
-const JOIN_TIME = 8_000
-const REQUIRED_PLAYERS = 2
+const WORDBOMB_TURN_TIME = 10_000 // time each player gets in their turn
+const JOIN_TIME = 8_000 // amt of time for people to join
+const REQUIRED_PLAYERS = 1 // (CHANGE IN PRODUCTION) required players in order for the game to start and continue
 
 // hello
+// hi 🙂
 
 function validateWord(word: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        readFile("data/words.txt", (error, text) => {
+        readFile("data/wordlist.txt", (error, text) => {
             if (error) {
                 logger.debug(error);
                 reject(error);
@@ -166,7 +167,7 @@ const minigameModule: CommandType = {
                     return
                 }
                 
-                while (players.length > 1){
+                while (players.length >= REQUIRED_PLAYERS){
                     for (let i in players){
 
                         currentPlayer = players[i]
@@ -212,7 +213,14 @@ const minigameModule: CommandType = {
 
                     }
                 }
-                interaction.channel.send(`The Winner is: ${players[0].Member.user} 🥳🏆`)
+
+                (players.length > 0) ?
+                    interaction.channel.send(`The Winner is: ${players[0].Member.user} 🥳🏆`)
+                :
+                    interaction.channel.send(`No one Won 😞`)
+                
+
+
             }, JOIN_TIME);
 
 
