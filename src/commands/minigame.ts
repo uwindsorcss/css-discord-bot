@@ -14,14 +14,14 @@ import {
 } from "discord.js";
 
 // game config
-const WORDBOMB_TURN_TIME = 10_000 // time each player gets in their turn
-const JOIN_TIME = 8_000 // amt of time for people to join
-const REQUIRED_PLAYERS = 1 // (CHANGE IN PRODUCTION) required players in order for the game to start and continue
-
+const WORDBOMB_TURN_TIME = 10_000; // time each player gets in their turn
+const JOIN_TIME = 8_000; // amt of time for people to join
+const REQUIRED_PLAYERS = 1; // (CHANGE IN PRODUCTION) required players in order for the game to start and continue
+let WORD_LIST: string[] = [];
 // hello
 // hi 🙂
 
-function validateWord(word: string): Promise<boolean> {
+function InitWordList(): Promise<string[]> {
     return new Promise((resolve, reject) => {
         readFile("data/wordlist.txt", (error, text) => {
             if (error) {
@@ -29,30 +29,47 @@ function validateWord(word: string): Promise<boolean> {
                 reject(error);
                 return;
             }
-    
             const words = text.toString().split("\n").map((dWord) => dWord.trim());
+            resolve(words);
+        });
+    });
+}
 
-            let low: number = 0;
-            let high: number = words.length - 1;
-            while (low <= high) {
-                let mid: number = Math.floor((low + high) / 2);
-                let currentWord = words[mid];
-                if (currentWord === word) {
-                    logger.info("found word: " + currentWord)
-                    resolve(true);
-                    return;
-                }
-    
-                if (currentWord < word) {
-                    low = mid + 1;
-                } else {
-                    high = mid - 1;
-                }
-                
+function getSubstring(words: string[]): string {
+    const eligibleWords = words.filter(word => word.length >= 3);
+    const word = eligibleWords[Math.floor(Math.random() * eligibleWords.length)];
+    const startIndex = Math.floor(Math.random() * (word.length - 2));
+
+    return word.substring(startIndex, startIndex + 3);
+}
+
+function validateWord(word: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+        if (WORD_LIST.length === 0) {
+            logger.debug("Word list is empty");
+            reject("Word list is empty");
+            return;
+        }
+        let low: number = 0;
+        let high: number = WORD_LIST.length - 1;
+        while (low <= high) {
+            let mid: number = Math.floor((low + high) / 2);
+            let currentWord = WORD_LIST[mid];
+            if (currentWord === word) {
+                logger.info("found word: " + currentWord)
+                resolve(true);
+                return;
             }
 
-            resolve(false);
-        });
+            if (currentWord < word) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+            
+        }
+
+        resolve(false);
     });
 }
 
@@ -77,51 +94,40 @@ const minigameModule: CommandType = {
         const {channel} = interaction
 
         console.log(subcommand);
-
-        const embed = new EmbedBuilder()
-        .setColor(Colors.Blue)
-        .setTitle(`${"Word Bomb! 💣"}`)
-        .setDescription(`${"Click to join the Word-Bomb game!"}`)
-
-        const response = await interaction.reply({
-            embeds: [embed],
-            fetchReply: true,
-          });
-
+        
         if (subcommand === "wordbomb") {
+            InitWordList().then((words) => {
+                logger.info(`Word list initialized with ${words.length} words`);
+                WORD_LIST = words;
+            });
 
             type Player = {
                 Member: GuildMember,
                 Chances: number, // # number of chances until eliminated
                 CorrectGuess: Boolean,
+                Score: number,
             }
 
             let players: Array<Player> = []
-            let previousMessage: Message;
+            let joinEmbed = new EmbedBuilder()
+            .setColor(Colors.Blue)
+            .setTitle(`${"Word Bomb! 💣"}`)
+            .setDescription(`Click to join the Word-Bomb game! \n\n**${players.length}/${REQUIRED_PLAYERS} players required to start!**`)
+            .addFields({name: "Rules", value: "1. Guess a word with a substring\n2. Wait for your turn to be announced\n3. You get a strike if you fail to guess a word or run out of time.\n4. You cannot use a word already used\n5. 2 strikes and you're out!", inline: false});
+    
+            let joinGame = await interaction.reply({
+                embeds: [joinEmbed],
+                fetchReply: true,
+            });
 
-            // Test Case Sigma
-            let sigmaValid = validateWord("sigma")
-                .then(async (valid) => {
-                    if (valid) {
-                        await interaction.reply("sigma is a word");
-                    } else {
-                        await interaction.reply("sigma is not a word");
-                    }
-                })
-                .catch((error) => {
-                    logger.debug(error);
-                })
-            
-            const collector = interaction.channel.createMessageComponentCollector(
-                { 
+
+            const collector = interaction.channel.createMessageComponentCollector({ 
                 componentType: ComponentType.Button,
                 //filter: (i) => i.user,
                 time: JOIN_TIME,    
-                }
-            )
+            });
 
             collector.on("collect", async (i : ChatInputCommandInteraction) => {
-
                 if (players.find(p => p.Member.id === i.member.id)) {
                     return await i.reply({ content: "You are already in the game!", ephemeral: true});
                 }
@@ -129,10 +135,21 @@ const minigameModule: CommandType = {
                 players.push({
                     Member: i.member as GuildMember,
                     Chances: 2,
-                    CorrectGuess: false
+                    CorrectGuess: false,
+                    Score: 0
                 } as Player);
 
                 await i.reply({ content: "You have joined the game!", ephemeral: true});
+                
+                if (players.length > 1) {
+                    joinEmbed.setFields({name: "Players", value: `${players.map(player => player.Member).join("\n")}`});
+                } else {
+                    joinEmbed.addFields({ name: "Players", value: `${players.map(player => player.Member).join("\n")}`, inline: false });
+                }
+
+                joinEmbed.setDescription(`Click to join the Word-Bomb game! \n\n**${players.length}/${REQUIRED_PLAYERS} players required to start!**`);
+
+                joinGame.edit({embeds: [ joinEmbed ]});
             })
 
             const joinButton = new ButtonBuilder()
@@ -140,17 +157,12 @@ const minigameModule: CommandType = {
                 .setLabel("Join")
                 .setStyle(3);
 
+            const row = new ActionRowBuilder<ButtonBuilder>().addComponents(joinButton);
 
+            await interaction.editReply({ embeds: [joinEmbed], components: [row] });
 
-            const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-                joinButton
-            );
-
-            await interaction.editReply({ embeds: [embed], components: [row] });
-
-            var resolveTurn : any
-            var currentPlayer : Player;
-            var refreshId : number; 
+            let resolveTurn : any;
+            let currentPlayer : Player;
 
             async function wait(ms : number) : Promise<void> {
                 return new Promise(resolve => {
@@ -163,50 +175,66 @@ const minigameModule: CommandType = {
 
                 // checks for atleast two palyers
                 if (players.length < REQUIRED_PLAYERS){
-                    interaction.channel.send(`Atleast 2 people are required for this game 😔`)
+                    interaction.channel.send(`Atleast ${REQUIRED_PLAYERS} people are required for this game 😔`)
                     return
                 }
                 
+                let usedWords: string[] = [];
+
+                // This is to keep track of scores since original player list is updated.
+                let scoreboard: Player[] = players;
+
                 while (players.length >= REQUIRED_PLAYERS){
                     for (let i in players){
 
-                        currentPlayer = players[i]
-                        channel.send(`**its ${players[i].Member.user} turn!**`)
-                        
-                        let guessedCorrectly : Boolean = false
+                        currentPlayer = players[i];
+                        const subString: string = getSubstring(WORD_LIST);
+                        channel.send(`**It's ${currentPlayer.Member}'s turn!**\n\n**Substring: ${subString}**`);
+                        let guessedCorrectly : Boolean = false;
 
-                        const filter = (msg : Message) => (msg.member.id === players[i].Member.id );
+                        const filter = (msg : Message) => (msg.member.id === currentPlayer.Member.id);
                         const collector = channel.createMessageCollector({filter, time: WORDBOMB_TURN_TIME});
-                        collector.on('collect', async (msg : Message) => {   
-                            let wordIsValid : Boolean = await validateWord(msg.content)
-                            console.log(`${msg.content} is a valid word? : ${wordIsValid}` )
-                            
-                            if (wordIsValid){
-                                console.log("VALID WORD!")
-                                collector.stop()
-                                resolveTurn()
-                                guessedCorrectly = true
-                                channel.send(`**Correct! 👍**`)
+
+                        collector.on('collect', async (msg : Message) => {
+                            let wordIsValid : Boolean = await validateWord(msg.content.toLowerCase());
+                            if (wordIsValid && msg.content.includes(subString)) {
+                                console.log(`${msg.content} is a valid word? : ${wordIsValid}` );
+                                if (msg.content.toLowerCase() in usedWords) {
+                                    channel.send("Can't use a word that has already been used, -1 Chance.");
+                                    wordIsValid = false;
+                                } else {
+                                    console.log("VALID WORD!");
+                                    usedWords.push(msg.content.toLowerCase());
+                                    currentPlayer.Score += 1;
+                                    collector.stop();
+                                    resolveTurn();
+                                    guessedCorrectly = true;
+                                    channel.send(`${currentPlayer.Member} **Correct! 👍**, your current score is **${currentPlayer.Score}**`);
+                                }
+                            } else {
+                                guessedCorrectly = false;
                             }
                         });
                         
-                        await wait(WORDBOMB_TURN_TIME)
-                        if (!guessedCorrectly){
-                            currentPlayer.Chances -= 1
-                            
+                        await wait(WORDBOMB_TURN_TIME);
+                        if (!guessedCorrectly) {
+                            currentPlayer.Chances -= 1;
                             if (currentPlayer.Chances <= 0) {
-                                const index = players.findIndex(p => p.Member.id == currentPlayer.Member.id)
+                                const index = players.findIndex(p => p.Member.id === currentPlayer.Member.id);
 
-                                if (index > -1){
-                                    players.splice(index, 1)
-                                }else{
-                                    logger.info("could not find player")
+                                scoreboard[index].Score = currentPlayer.Score;
+                                
+                                if (index > -1) {
+                                    players.splice(index, 1);
+                                } else {
+                                    logger.info("could not find player");
                                 }
 
-                                channel.send(`**No more chances left, you have been Elimnated ❌**`)
+
+                                channel.send(`**No more chances left, you have been Eliminated ❌**`);
                             
                             } else{
-                                channel.send(`Times up! 😕\n-1 Chance 👎`)
+                                channel.send(`Times up! 😕\n-1 Chance 👎`);
                             }
 
                         }
@@ -214,12 +242,12 @@ const minigameModule: CommandType = {
                     }
                 }
 
-                (players.length > 0) ?
-                    interaction.channel.send(`The Winner is: ${players[0].Member.user} 🥳🏆`)
-                :
+                if (players.length > 0) {
+                    scoreboard.sort((a, b) => b.Score - a.Score);
+                    interaction.channel.send(`The Winner is: ${players[0].Member.user} 🥳🏆\n\n**Scoreboard:** ${scoreboard.map(scores => `${scores.Member}: ${scores.Score}`).join("\n")}`);
+                } else {
                     interaction.channel.send(`No one Won 😞`)
-                
-
+                }
 
             }, JOIN_TIME);
 
